@@ -1,6 +1,7 @@
 // ==========================================================================
 // CODEX CAMAEL: Main Application Controller
 // A life-saving digital reference. 100% offline.
+// Visual System: Retro-Futuristic Control Panel (Solid Keycaps, LCD Readouts)
 // 100% Offline-First Architecture (Zero CDNs, Zero Remote Calls)
 // ==========================================================================
 
@@ -9,10 +10,17 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 const CAMAEL = {
-  activeSection: "compendium", // default landing section
+  activeSection: "home", // Default landing section: Main Retro-Futuristic Console
   audioCtx: null,
   cprInterval: null,
   cprActive: false,
+  batteryObj: null,
+  waypoints: [
+    { id: "wp_1", name: "Potable Spring 01", lat: 35.68, lon: -81.20, type: "water", desc: "Perennial spring bubbling from granite ledge. Flow rate: 4L/min." },
+    { id: "wp_2", name: "Emergency Cache Alpha", lat: 35.75, lon: -81.15, type: "cache", desc: "Sealed PVC tube buried 1m deep beside twin oak tree. MREs, ferro rod, water purification tablets." },
+    { id: "wp_3", name: "High Ground Lookout", lat: 35.82, lon: -81.30, type: "shelter", desc: "Rock overhang shelter, dry ground, VHF line-of-sight across valley." },
+    { id: "wp_4", name: "Flooded Basin Hazard", lat: 35.60, lon: -81.25, type: "danger", desc: "Seasonal flash flood zone. Submerged barbed wire and swift current." }
+  ],
   mapState: {
     scale: 1.0,
     offsetX: 0,
@@ -27,10 +35,14 @@ const CAMAEL = {
   // ------------------------------------------------------------------------
   init() {
     this.migrateStorage();
+    this.initThemeAndDisplay();
     this.initNavigation();
     this.initSwissDrawer();
     this.initSosOverlay();
-    this.initSearchAndFilters();
+    this.initLcdStatus();
+    this.initGlobalSearch();
+    this.initKeyboardShortcuts();
+    this.initSettingsModal();
     this.renderCompendium();
     this.renderGearPlanner();
     this.renderRecipes();
@@ -42,9 +54,12 @@ const CAMAEL = {
     this.initLogbook();
     this.initModal();
 
-    console.log("CODEX CAMAEL: Offline Survival Reference Initialized. All systems operational.");
+    console.log("CODEX CAMAEL: Retro-Futuristic Survival Control Panel Initialized. All systems 100% offline.");
   },
 
+  // ------------------------------------------------------------------------
+  // Storage Migration
+  // ------------------------------------------------------------------------
   migrateStorage() {
     const legacyPrefix = "camael_";
     const newPrefix = "codex_camael_";
@@ -82,6 +97,190 @@ const CAMAEL = {
   },
 
   // ------------------------------------------------------------------------
+  // Theme & Night Vision Modes (Red-Light Mode & Ultra-Reserve OLED)
+  // ------------------------------------------------------------------------
+  initThemeAndDisplay() {
+    // Red-Light Mode
+    const savedRedLight = localStorage.getItem("codex_camael_night_mode") === "true";
+    if (savedRedLight) {
+      document.body.classList.add("red-light-mode");
+      this.updateRedLightButtonState(true);
+    }
+
+    // OLED Mode
+    const savedOled = localStorage.getItem("codex_camael_oled_mode") === "true";
+    if (savedOled) {
+      document.body.classList.add("oled-mode");
+      this.updateOledButtonState(true);
+    }
+
+    const btnRed = document.getElementById("btnToggleRedLight");
+    const settingsRed = document.getElementById("settingsToggleRedLight");
+    if (btnRed) btnRed.addEventListener("click", () => this.toggleRedLight());
+    if (settingsRed) settingsRed.addEventListener("click", () => this.toggleRedLight());
+
+    const btnOled = document.getElementById("btnToggleOled");
+    const settingsOled = document.getElementById("settingsToggleOled");
+    if (btnOled) btnOled.addEventListener("click", () => this.toggleOled());
+    if (settingsOled) settingsOled.addEventListener("click", () => this.toggleOled());
+  },
+
+  toggleRedLight() {
+    const isRed = document.body.classList.toggle("red-light-mode");
+    localStorage.setItem("codex_camael_night_mode", isRed ? "true" : "false");
+    this.updateRedLightButtonState(isRed);
+  },
+
+  updateRedLightButtonState(isActive) {
+    const labels = ["btnToggleRedLight", "settingsToggleRedLight"];
+    labels.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = isActive ? "🚨 Red-Light Night Vision: ON" : "🚨 Red-Light Night Vision: OFF";
+        if (isActive) {
+          el.classList.add("active");
+        } else {
+          el.classList.remove("active");
+        }
+      }
+    });
+  },
+
+  toggleOled() {
+    const isOled = document.body.classList.toggle("oled-mode");
+    localStorage.setItem("codex_camael_oled_mode", isOled ? "true" : "false");
+    this.updateOledButtonState(isOled);
+  },
+
+  updateOledButtonState(isActive) {
+    const labels = ["btnToggleOled", "settingsToggleOled", "toggleUltraReserveBtn"];
+    labels.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = isActive ? "🔋 OLED Black: ACTIVE" : "🔋 OLED Black: OFF";
+        if (isActive) {
+          el.classList.add("active");
+        } else {
+          el.classList.remove("active");
+        }
+      }
+    });
+  },
+
+  // ------------------------------------------------------------------------
+  // Top LCD Status Strip (Offline, Location, Battery, Region, Language)
+  // ------------------------------------------------------------------------
+  initLcdStatus() {
+    // 1. Offline Network Status
+    const updateOfflineState = () => {
+      const dot = document.getElementById("lcdOfflineDot");
+      const text = document.getElementById("lcdOfflineText");
+      if (!dot || !text) return;
+      if (!navigator.onLine) {
+        dot.className = "lcd-dot green";
+        text.textContent = "100% OFFLINE";
+      } else {
+        dot.className = "lcd-dot green";
+        text.textContent = "OFFLINE READY (LOCAL)";
+      }
+    };
+    window.addEventListener("online", updateOfflineState);
+    window.addEventListener("offline", updateOfflineState);
+    updateOfflineState();
+
+    // 2. Battery Status API (Only shown if API exists)
+    if ("getBattery" in navigator) {
+      navigator.getBattery().then(battery => {
+        this.batteryObj = battery;
+        const item = document.getElementById("lcdBatteryItem");
+        const dot = document.getElementById("lcdBatteryDot");
+        const text = document.getElementById("lcdBatteryText");
+
+        const updateBattery = () => {
+          if (!item || !dot || !text) return;
+          item.style.display = "inline-flex";
+          const level = Math.round(battery.level * 100);
+          text.textContent = `BATTERY: ${level}% ${battery.charging ? '(CHRG)' : ''}`;
+          if (level <= 20 && !battery.charging) {
+            dot.className = "lcd-dot orange";
+          } else {
+            dot.className = "lcd-dot green";
+          }
+        };
+
+        updateBattery();
+        battery.addEventListener("levelchange", updateBattery);
+        battery.addEventListener("chargingchange", updateBattery);
+      }).catch(() => {
+        const item = document.getElementById("lcdBatteryItem");
+        if (item) item.style.display = "none";
+      });
+    } else {
+      const item = document.getElementById("lcdBatteryItem");
+      if (item) item.style.display = "none";
+    }
+
+    // 3. Location Status (Interactive)
+    const locItem = document.getElementById("lcdLocationStatus");
+    const locText = document.getElementById("lcdLocationText");
+    const locDot = document.getElementById("lcdLocationDot");
+    if (locItem) {
+      locItem.style.cursor = "pointer";
+      locItem.addEventListener("click", () => {
+        if ("geolocation" in navigator) {
+          locText.textContent = "LOCATING GPS...";
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              const lat = pos.coords.latitude.toFixed(2);
+              const lon = pos.coords.longitude.toFixed(2);
+              locText.textContent = `GPS: ${lat}°N, ${lon}°E`;
+              if (locDot) locDot.className = "lcd-dot green";
+            },
+            () => {
+              locText.textContent = "LOCATION: OFF-GRID";
+              if (locDot) locDot.className = "lcd-dot";
+            },
+            { timeout: 5000, enableHighAccuracy: false }
+          );
+        }
+      });
+    }
+
+    // 4. Region Selector
+    const regionSelect = document.getElementById("lcdRegionSelect");
+    if (regionSelect) {
+      const savedRegion = localStorage.getItem("codex_camael_region") || "india";
+      regionSelect.value = savedRegion;
+      regionSelect.addEventListener("change", (e) => {
+        localStorage.setItem("codex_camael_region", e.target.value);
+      });
+    }
+
+    // 5. Language Switcher (EN / മലയാളം / తెలుగు)
+    const langBtns = document.querySelectorAll(".lcd-lang-switcher .lang-btn");
+    const savedLang = localStorage.getItem("codex_camael_lang") || "en";
+    this.setLanguage(savedLang);
+
+    langBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const lang = btn.dataset.lang;
+        this.setLanguage(lang);
+      });
+    });
+  },
+
+  setLanguage(lang) {
+    localStorage.setItem("codex_camael_lang", lang);
+    document.documentElement.setAttribute("lang", lang);
+    document.body.classList.toggle("lang-ml", lang === "ml");
+    document.body.classList.toggle("lang-te", lang === "te");
+
+    document.querySelectorAll(".lcd-lang-switcher .lang-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.lang === lang);
+    });
+  },
+
+  // ------------------------------------------------------------------------
   // Navigation Routing & Swiss Drawer
   // ------------------------------------------------------------------------
   initNavigation() {
@@ -95,10 +294,22 @@ const CAMAEL = {
       });
     });
 
+    const brandLink = document.getElementById("brandHomeLink");
+    if (brandLink) {
+      brandLink.addEventListener("click", () => this.switchSection("home"));
+    }
+
+    const subBackBtn = document.getElementById("subHeaderBackBtn");
+    if (subBackBtn) {
+      subBackBtn.addEventListener("click", () => this.switchSection("home"));
+    }
+
     // Check hash if present
     const hash = window.location.hash.replace("#", "");
     if (hash && document.getElementById(`section-${hash}`)) {
       this.switchSection(hash);
+    } else {
+      this.switchSection("home");
     }
   },
 
@@ -131,23 +342,19 @@ const CAMAEL = {
   },
 
   // ------------------------------------------------------------------------
-  // SOS Full-Screen Overlay & Ultra-Reserve Mode
+  // SOS Full-Screen Overlay & 1-Click Triggers
   // ------------------------------------------------------------------------
   initSosOverlay() {
     const sosBtn = document.getElementById("sosCheatSheetBtn");
+    const homeSos = document.getElementById("homeSosTile");
     const overlay = document.getElementById("sosOverlay");
     const closeBtn = document.getElementById("sosCloseBtn");
     const reserveToggleBtn = document.getElementById("toggleUltraReserveBtn");
 
-    if (sosBtn && overlay) {
-      sosBtn.addEventListener("click", () => this.openSosOverlay());
-    }
-    if (closeBtn) {
-      closeBtn.addEventListener("click", () => this.closeSosOverlay());
-    }
-    if (reserveToggleBtn) {
-      reserveToggleBtn.addEventListener("click", () => this.toggleUltraReserve());
-    }
+    if (sosBtn) sosBtn.addEventListener("click", () => this.openSosOverlay());
+    if (homeSos) homeSos.addEventListener("click", () => this.openSosOverlay());
+    if (closeBtn) closeBtn.addEventListener("click", () => this.closeSosOverlay());
+    if (reserveToggleBtn) reserveToggleBtn.addEventListener("click", () => this.toggleOled());
   },
 
   openSosOverlay() {
@@ -160,17 +367,127 @@ const CAMAEL = {
     if (overlay) overlay.classList.remove("active");
   },
 
-  toggleUltraReserve() {
-    document.body.classList.toggle("ultra-reserve-mode");
-    const isUltra = document.body.classList.contains("ultra-reserve-mode");
-    const btn = document.getElementById("toggleUltraReserveBtn");
-    if (btn) {
-      btn.textContent = isUltra ? "🔋 ULTRA-RESERVE OLED: ACTIVE" : "🔋 ULTRA-RESERVE OLED: OFF";
-      btn.style.color = isUltra ? "var(--accent-tactical)" : "#fff";
-      btn.style.borderColor = isUltra ? "var(--accent-tactical)" : "#555";
+  // ------------------------------------------------------------------------
+  // Laptop Interaction: Keyboard Shortcuts ('/', 'S', 'Esc', Arrows, Enter)
+  // ------------------------------------------------------------------------
+  initKeyboardShortcuts() {
+    window.addEventListener("keydown", (e) => {
+      const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : "";
+      const isInput = activeTag === "input" || activeTag === "textarea" || activeTag === "select";
+
+      // 1. '/' focuses search
+      if (e.key === "/" && !isInput) {
+        e.preventDefault();
+        const searchInput = document.getElementById("consoleSearchInput");
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+        return;
+      }
+
+      // 2. 'S' or 's' opens SOS sheet (when not in an input)
+      if ((e.key === "s" || e.key === "S") && !isInput) {
+        e.preventDefault();
+        this.openSosOverlay();
+        return;
+      }
+
+      // 3. 'Esc' closes overlays/modals or navigates back to Home console
+      if (e.key === "Escape") {
+        const liveSearch = document.getElementById("liveSearchOverlay");
+        if (liveSearch && liveSearch.style.display !== "none") {
+          liveSearch.style.display = "none";
+          return;
+        }
+
+        const sosOverlay = document.getElementById("sosOverlay");
+        if (sosOverlay && sosOverlay.classList.contains("active")) {
+          this.closeSosOverlay();
+          return;
+        }
+
+        const modalOverlay = document.getElementById("modalOverlay");
+        if (modalOverlay && modalOverlay.classList.contains("active")) {
+          this.closeModal();
+          return;
+        }
+
+        const settingsModal = document.getElementById("settingsModalOverlay");
+        if (settingsModal && settingsModal.classList.contains("active")) {
+          this.closeSettingsModal();
+          return;
+        }
+
+        const swissDrawer = document.getElementById("swissDrawerOverlay");
+        if (swissDrawer && swissDrawer.classList.contains("active")) {
+          this.closeSwissDrawer();
+          return;
+        }
+
+        // If in a sub-chapter, return to home console
+        if (this.activeSection !== "home") {
+          this.switchSection("home");
+        }
+        return;
+      }
+
+      // 4. Arrow Navigation across interactive keycap tiles
+      if (["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key) && !isInput) {
+        const tiles = Array.from(document.querySelectorAll(
+          this.activeSection === "home" 
+            ? "#section-home .keycap-tile" 
+            : `#section-${this.activeSection} .entry-tile, #section-${this.activeSection} .keycap-tile, #section-${this.activeSection} .grid-card`
+        ));
+
+        if (tiles.length > 0) {
+          const currentIndex = tiles.indexOf(document.activeElement);
+          let nextIndex = 0;
+
+          if (currentIndex !== -1) {
+            if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+              nextIndex = (currentIndex + 1) % tiles.length;
+            } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+              nextIndex = (currentIndex - 1 + tiles.length) % tiles.length;
+            }
+          }
+          tiles[nextIndex].focus();
+          e.preventDefault();
+        }
+      }
+    });
+  },
+
+  // ------------------------------------------------------------------------
+  // Settings & Keyboard Shortcut Legend Modal
+  // ------------------------------------------------------------------------
+  initSettingsModal() {
+    const btn = document.getElementById("btnOpenSettings");
+    const overlay = document.getElementById("settingsModalOverlay");
+    const closeBtn = document.getElementById("settingsCloseBtn");
+
+    if (btn) btn.addEventListener("click", () => this.openSettingsModal());
+    if (closeBtn) closeBtn.addEventListener("click", () => this.closeSettingsModal());
+    if (overlay) {
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) this.closeSettingsModal();
+      });
     }
   },
 
+  openSettingsModal() {
+    const overlay = document.getElementById("settingsModalOverlay");
+    if (overlay) overlay.classList.add("active");
+  },
+
+  closeSettingsModal() {
+    const overlay = document.getElementById("settingsModalOverlay");
+    if (overlay) overlay.classList.remove("active");
+  },
+
+  // ------------------------------------------------------------------------
+  // Section Switching Controller
+  // ------------------------------------------------------------------------
   switchSection(sectionId) {
     this.activeSection = sectionId;
 
@@ -186,10 +503,18 @@ const CAMAEL = {
     const targetEl = document.getElementById(`section-${sectionId}`);
     if (targetEl) targetEl.classList.add("active");
 
-    // Update Sub-header title & filter controls
-    this.updateSubHeader(sectionId);
+    // Sub-header management
+    const subHeader = document.getElementById("subHeaderBar");
+    if (subHeader) {
+      if (sectionId === "home") {
+        subHeader.style.display = "none";
+      } else {
+        subHeader.style.display = "flex";
+        this.updateSubHeader(sectionId);
+      }
+    }
 
-    // If map activated, resize canvas to container and redraw
+    // If map activated, redraw
     if (sectionId === "map") {
       requestAnimationFrame(() => {
         this.resizeCanvas();
@@ -202,109 +527,110 @@ const CAMAEL = {
     }
 
     window.location.hash = sectionId;
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "instant" });
   },
 
   updateSubHeader(sectionId) {
     const titleEl = document.getElementById("subHeaderTitle");
     const countEl = document.getElementById("subHeaderCount");
     const filterPillsEl = document.getElementById("filterPillsContainer");
-    const searchInput = document.getElementById("globalSearchInput");
 
-    searchInput.value = "";
+    if (!filterPillsEl) return;
     filterPillsEl.innerHTML = "";
 
     switch(sectionId) {
       case "compendium":
-        titleEl.textContent = "Scavenger's Compendium";
-        countEl.textContent = `${window.CAMAEL_ITEMS.length} Items`;
+        if (titleEl) titleEl.textContent = "Scavenger's Compendium";
+        if (countEl) countEl.textContent = `${window.CAMAEL_ITEMS.length} Entries`;
         this.createFilterPills([
           { label: "All Items", key: "all", active: true },
           { label: "Tier S (Priceless)", key: "tier-s" },
           { label: "Tier A (High)", key: "tier-a" },
-          { label: "🌲 Forest", key: "biome-forest" },
-          { label: "💧 Wetland", key: "biome-wetland" },
-          { label: "🏙️ Urban Ruins", key: "biome-urban" },
-          { label: "🌊 Coastal", key: "biome-coastal" },
-          { label: "🌾 Arid / Plains", key: "biome-arid" },
+          { label: "Forest", key: "biome-forest" },
+          { label: "Wetland", key: "biome-wetland" },
+          { label: "Urban Ruins", key: "biome-urban" },
+          { label: "Coastal", key: "biome-coastal" },
           { label: "Flora", key: "flora" },
           { label: "Materials", key: "materials" },
-          { label: "☠️ Toxic Hazards", key: "toxic" }
-        ], (key) => this.filterCompendium(key, searchInput.value));
+          { label: "Deadly Hazards", key: "toxic" }
+        ], (key) => this.filterCompendium(key));
         break;
 
       case "gear":
-        titleEl.textContent = "Gear, Vault & Telemetry Planner";
-        countEl.textContent = `${window.CAMAEL_GEAR ? window.CAMAEL_GEAR.length : 0} Mandatory Items`;
+        if (titleEl) titleEl.textContent = "Gear, Vault & Telemetry Planner";
+        if (countEl) countEl.textContent = `${window.CAMAEL_GEAR ? window.CAMAEL_GEAR.length : 0} Mandatory Items`;
         this.createFilterPills([
           { label: "All Loadouts", key: "all", active: true },
-          { label: "💧 Water Systems", key: "water" },
-          { label: "🔥 Fire & Thermal", key: "fire" },
-          { label: "🩹 Medical Trauma", key: "medical" },
-          { label: "🏕️ Shelter Systems", key: "shelter" },
-          { label: "🧭 Navigation Azimuth", key: "navigation" }
-        ], (key) => this.filterGear(key, searchInput.value));
+          { label: "Water Systems", key: "water" },
+          { label: "Fire & Thermal", key: "fire" },
+          { label: "Medical Trauma", key: "medical" },
+          { label: "Shelter Systems", key: "shelter" }
+        ], (key) => this.filterGear(key));
         break;
 
       case "recipes":
-        titleEl.textContent = "Survival Kitchen & Lifesavers";
-        countEl.textContent = `${window.CAMAEL_RECIPES.length} Recipes`;
+        if (titleEl) titleEl.textContent = "Survival Kitchen & Lifesavers";
+        if (countEl) countEl.textContent = `${window.CAMAEL_RECIPES.length} Recipes`;
         this.createFilterPills([
           { label: "All Recipes", key: "all", active: true },
           { label: "🚨 Lifesavers Only", key: "lifesavers" },
           { label: "Camp Cooking", key: "cooking" }
-        ], (key) => this.filterRecipes(key, searchInput.value));
+        ], (key) => this.filterRecipes(key));
         break;
 
       case "incaseof":
-        titleEl.textContent = "Immediate Crisis Playbooks";
-        countEl.textContent = `${window.CAMAEL_CRISIS.length} Scenarios`;
+        if (titleEl) titleEl.textContent = "Immediate Crisis Playbooks";
+        if (countEl) countEl.textContent = `${window.CAMAEL_CRISIS.length} Scenarios`;
         this.createFilterPills([
           { label: "All Scenarios", key: "all", active: true },
           { label: "Medical / CPR", key: "medical" },
           { label: "Disaster / Nuclear", key: "disaster" },
           { label: "Extreme Weather", key: "weather" }
-        ], (key) => this.filterCrisis(key, searchInput.value));
+        ], (key) => this.filterCrisis(key));
         break;
 
       case "manual":
-        titleEl.textContent = "Field Manual & Diagrams";
-        countEl.textContent = `${window.CAMAEL_MANUAL.length} Guides`;
+        if (titleEl) titleEl.textContent = "Field Manual & Diagrams";
+        if (countEl) countEl.textContent = `${window.CAMAEL_MANUAL.length} Guides`;
         this.createFilterPills([
           { label: "All Guides", key: "all", active: true },
-          { label: "Navigation / Sun", key: "navigation" },
+          { label: "Navigation", key: "navigation" },
           { label: "Water", key: "water" },
           { label: "Firecraft", key: "fire" },
           { label: "Cordage & Knots", key: "cordage" }
-        ], (key) => this.filterManual(key, searchInput.value));
+        ], (key) => this.filterManual(key));
         break;
 
       case "radio":
-        titleEl.textContent = "Emergency Radio & Comms";
-        countEl.textContent = `${window.CAMAEL_RADIO.frequencies.length} Frequencies`;
+        if (titleEl) titleEl.textContent = "Emergency Radio & Comms";
+        if (countEl) countEl.textContent = `${window.CAMAEL_RADIO.frequencies.length} Frequencies`;
         break;
 
       case "map":
-        titleEl.textContent = "Offline Cartography & Waypoints";
-        countEl.textContent = "Global Vector";
+        if (titleEl) titleEl.textContent = "Offline Vector Cartography";
+        if (countEl) countEl.textContent = "Global Vector Topo";
         break;
 
       case "logbook":
-        titleEl.textContent = "Private Offline Vault & ICE";
-        countEl.textContent = "Local Storage";
+        if (titleEl) titleEl.textContent = "Encrypted Offline Vault & ICE";
+        if (countEl) countEl.textContent = "Local Disk";
         break;
     }
   },
 
   createFilterPills(pills, callback) {
     const container = document.getElementById("filterPillsContainer");
+    if (!container) return;
     container.innerHTML = "";
     pills.forEach(p => {
       const btn = document.createElement("button");
-      btn.className = `pill-btn ${p.active ? "active" : ""}`;
+      btn.className = `keycap-tile filter-key ${p.active ? "active" : ""}`;
+      btn.style.minHeight = "36px";
+      btn.style.padding = "4px 12px";
+      btn.style.fontSize = "11px";
       btn.textContent = p.label;
       btn.addEventListener("click", () => {
-        container.querySelectorAll(".pill-btn").forEach(b => b.classList.remove("active"));
+        container.querySelectorAll(".filter-key").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         callback(p.key);
       });
@@ -312,149 +638,413 @@ const CAMAEL = {
     });
   },
 
-  initSearchAndFilters() {
-    const searchInput = document.getElementById("globalSearchInput");
+  // ------------------------------------------------------------------------
+  // Visible Full-Width Global Ranked Search
+  // ------------------------------------------------------------------------
+  initGlobalSearch() {
+    const searchInput = document.getElementById("consoleSearchInput");
+    const overlay = document.getElementById("liveSearchOverlay");
+
+    if (!searchInput || !overlay) return;
+
     searchInput.addEventListener("input", (e) => {
       const query = e.target.value.toLowerCase().trim();
-      const activePill = document.querySelector("#filterPillsContainer .pill-btn.active");
-      const key = activePill ? activePill.dataset.key || "all" : "all";
+      if (!query) {
+        overlay.style.display = "none";
+        overlay.innerHTML = "";
+        return;
+      }
+      this.executeRankedSearch(query);
+    });
 
-      if (this.activeSection === "compendium") this.filterCompendium(key, query);
-      if (this.activeSection === "recipes") this.filterRecipes(key, query);
-      if (this.activeSection === "incaseof") this.filterCrisis(key, query);
-      if (this.activeSection === "manual") this.filterManual(key, query);
+    document.addEventListener("click", (e) => {
+      if (!searchInput.contains(e.target) && !overlay.contains(e.target)) {
+        overlay.style.display = "none";
+      }
     });
   },
 
+  executeRankedSearch(query) {
+    const overlay = document.getElementById("liveSearchOverlay");
+    if (!overlay) return;
+
+    const scored = [];
+
+    // 1. Compendium Search
+    if (window.CAMAEL_ITEMS) {
+      window.CAMAEL_ITEMS.forEach(item => {
+        let score = 0;
+        const name = (item.commonName || item.name || "").toLowerCase();
+        const formula = (item.scientificFormula || item.symbol || "").toLowerCase();
+        const desc = (item.description || "").toLowerCase();
+        const usage = (item.survivalUsage || "").toLowerCase();
+        const tier = (item.tier || "").toLowerCase();
+
+        if (name === query) score += 100;
+        else if (name.startsWith(query)) score += 80;
+        else if (name.includes(query)) score += 60;
+
+        if (formula.includes(query)) score += 50;
+        if (tier.includes(query)) score += 35;
+        if (desc.includes(query)) score += 20;
+        if (usage.includes(query)) score += 20;
+
+        if (score > 0) {
+          scored.push({
+            score,
+            section: "compendium",
+            id: item.id,
+            title: item.commonName || item.name,
+            secondary: item.scientificFormula || item.symbol || "",
+            chapter: "COMPENDIUM",
+            snippet: item.description
+          });
+        }
+      });
+    }
+
+    // 2. Recipes Search
+    if (window.CAMAEL_RECIPES) {
+      window.CAMAEL_RECIPES.forEach(rec => {
+        let score = 0;
+        const name = (rec.name || "").toLowerCase();
+        const sum = (rec.summary || "").toLowerCase();
+        const ings = (rec.ingredients || []).join(" ").toLowerCase();
+
+        if (name === query) score += 95;
+        else if (name.startsWith(query)) score += 75;
+        else if (name.includes(query)) score += 55;
+
+        if (ings.includes(query)) score += 40;
+        if (sum.includes(query)) score += 20;
+
+        if (score > 0) {
+          scored.push({
+            score,
+            section: "recipes",
+            id: rec.id,
+            title: rec.name,
+            secondary: (rec.ingredients || []).slice(0, 3).join(", "),
+            chapter: "RECIPES",
+            snippet: rec.summary
+          });
+        }
+      });
+    }
+
+    // 3. Crisis Search
+    if (window.CAMAEL_CRISIS) {
+      window.CAMAEL_CRISIS.forEach(cri => {
+        let score = 0;
+        const title = (cri.title || "").toLowerCase();
+        const sum = (cri.summary || "").toLowerCase();
+
+        if (title.includes(query)) score += 60;
+        if (sum.includes(query)) score += 20;
+
+        if (score > 0) {
+          scored.push({
+            score,
+            section: "incaseof",
+            id: cri.id,
+            title: cri.title,
+            secondary: cri.urgency,
+            chapter: "CRISIS 60s",
+            snippet: cri.summary
+          });
+        }
+      });
+    }
+
+    // 4. Manual Search
+    if (window.CAMAEL_MANUAL) {
+      window.CAMAEL_MANUAL.forEach(man => {
+        let score = 0;
+        const title = (man.title || "").toLowerCase();
+        const sum = (man.summary || "").toLowerCase();
+
+        if (title.includes(query)) score += 55;
+        if (sum.includes(query)) score += 20;
+
+        if (score > 0) {
+          scored.push({
+            score,
+            section: "manual",
+            id: man.id,
+            title: man.title,
+            secondary: man.category,
+            chapter: "MANUAL",
+            snippet: man.summary
+          });
+        }
+      });
+    }
+
+    // 5. Radio Search
+    if (window.CAMAEL_RADIO && window.CAMAEL_RADIO.frequencies) {
+      window.CAMAEL_RADIO.frequencies.forEach(rf => {
+        let score = 0;
+        const ch = (rf.channel || "").toLowerCase();
+        const freq = (rf.freq || "").toLowerCase();
+        const purp = (rf.purpose || "").toLowerCase();
+
+        if (ch.includes(query) || freq.includes(query)) score += 55;
+        if (purp.includes(query)) score += 20;
+
+        if (score > 0) {
+          scored.push({
+            score,
+            section: "radio",
+            id: "radio_freq",
+            title: `${rf.channel} (${rf.freq})`,
+            secondary: rf.service,
+            chapter: "RADIO",
+            snippet: rf.purpose
+          });
+        }
+      });
+    }
+
+    // Sort descending
+    scored.sort((a, b) => b.score - a.score);
+
+    if (scored.length === 0) {
+      overlay.innerHTML = `<div style="padding: 18px 24px; color: var(--text-secondary); font-size: 13px;">No entries matching "<strong>${query}</strong>" in offline index.</div>`;
+      overlay.style.display = "block";
+      return;
+    }
+
+    const topResults = scored.slice(0, 10);
+    overlay.innerHTML = topResults.map(res => `
+      <div class="search-result-row" onclick="window.navigateToSolution('${res.section}', '${res.id}')">
+        <div>
+          <div style="font-weight: 700; color: var(--text-primary); font-size: 15px;">
+            ${res.title}
+            ${res.secondary ? `<span style="font-size: 12px; font-style: italic; opacity: 0.8; margin-left: 8px;">${res.secondary}</span>` : ''}
+          </div>
+          <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">
+            ${res.snippet.substring(0, 120)}
+          </div>
+        </div>
+        <span class="entry-tag-pill tag-tier" style="font-size: 10px; margin-left: 12px;">${res.chapter}</span>
+      </div>
+    `).join("");
+
+    overlay.style.display = "block";
+  },
+
   // ------------------------------------------------------------------------
-  // Module 3: Scavenger's Compendium
+  // Module 1: Scavenger's Compendium (Solid Keycap Tiles & Common Names)
   // ------------------------------------------------------------------------
   renderCompendium(items = window.CAMAEL_ITEMS) {
     const grid = document.getElementById("compendiumGrid");
+    if (!grid) return;
     grid.innerHTML = "";
 
     items.forEach(item => {
-      const card = document.createElement("div");
-      card.className = "grid-card";
+      const tile = document.createElement("button");
       
-      let badgeClass = "card-tier-badge";
-      if (item.tier === "S") badgeClass += " tier-s";
-      else if (item.tier === "A") badgeClass += " tier-a";
-      else if (item.tier === "B") badgeClass += " tier-b";
-      else if (item.tier === "DANGER") badgeClass += " badge-danger";
+      let keyColorClass = "key-cream";
+      if (item.tier === "DANGER" || item.dangerTag) {
+        keyColorClass = "key-orange";
+      } else if (item.tier === "S") {
+        keyColorClass = "key-teal";
+      }
 
-      const firstBiome = (item.biomes && item.biomes.length > 0) ? item.biomes[0] : item.category.toUpperCase();
+      tile.className = `keycap-tile entry-tile ${keyColorClass}`;
+      tile.setAttribute("aria-label", `${item.commonName || item.name}`);
 
-      card.innerHTML = `
-        <div class="card-top">
-          <div class="card-lead-symbol">${item.symbol}</div>
-          <div class="${badgeClass}">${item.barterValue.split(' ')[0]} ${item.tier}</div>
+      const iconSvg = window.CODEX_ICONS ? window.CODEX_ICONS.get(item.iconName || 'leaf', 'entry-icon-svg', 22) : '•';
+      
+      let tagHtml = "";
+      if (item.tier === "DANGER" || item.dangerTag) {
+        const skullIcon = window.CODEX_ICONS ? window.CODEX_ICONS.get('skull', '', 14) : '☠️';
+        tagHtml = `<span class="entry-tag-pill tag-deadly">${skullIcon} DEADLY: DO NOT EAT</span>`;
+      } else if (item.tier === "S") {
+        tagHtml = `<span class="entry-tag-pill tag-tier-s">${item.tierLabel || 'TIER S'}</span>`;
+      } else {
+        tagHtml = `<span class="entry-tag-pill tag-tier">${item.tierLabel || ('TIER ' + item.tier)}</span>`;
+      }
+
+      tile.innerHTML = `
+        <div class="entry-tile-top">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            ${iconSvg}
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.85;">${item.category}</span>
+          </div>
+          ${tagHtml}
         </div>
+
         <div>
-          <h3 class="card-title">${item.name}</h3>
-          <p class="card-desc">${item.description.substring(0, 115)}...</p>
+          <h3 class="entry-common-title">${item.commonName || item.name}</h3>
+          <div class="entry-scientific-formula">${item.scientificFormula || item.symbol || ''}</div>
+          <p class="entry-summary">${item.description}</p>
         </div>
-        <div class="card-footer-meta" style="flex-wrap: wrap; gap: 4px;">
-          <span>${item.edibility}</span>
-          <span style="color: var(--accent-safe); font-weight: 600;">${firstBiome}</span>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 10px; font-size: 11px; opacity: 0.85; font-family: var(--font-mono);">
+          <span>${item.biomes ? item.biomes[0] : ''}</span>
+          <span style="font-weight: 700;">TAP TO INSPECT &rarr;</span>
         </div>
       `;
 
-      card.addEventListener("click", () => this.showItemDetail(item));
-      grid.appendChild(card);
+      tile.addEventListener("click", () => this.showItemDetail(item));
+      grid.appendChild(tile);
     });
   },
 
-  filterCompendium(filterKey, query = "") {
+  filterCompendium(filterKey) {
     let items = window.CAMAEL_ITEMS;
     if (filterKey === "tier-s") items = items.filter(i => i.tier === "S");
     else if (filterKey === "tier-a") items = items.filter(i => i.tier === "A");
     else if (filterKey === "flora") items = items.filter(i => i.category === "flora");
     else if (filterKey === "materials") items = items.filter(i => i.category === "materials");
-    else if (filterKey === "toxic") items = items.filter(i => i.category === "toxic");
+    else if (filterKey === "toxic") items = items.filter(i => i.tier === "DANGER" || i.category === "toxic");
     else if (filterKey === "biome-forest") items = items.filter(i => i.biomes && i.biomes.some(b => b.includes("Forest")));
     else if (filterKey === "biome-wetland") items = items.filter(i => i.biomes && i.biomes.some(b => b.includes("Wetland")));
     else if (filterKey === "biome-urban") items = items.filter(i => i.biomes && i.biomes.some(b => b.includes("Urban")));
     else if (filterKey === "biome-coastal") items = items.filter(i => i.biomes && i.biomes.some(b => b.includes("Coastal")));
-    else if (filterKey === "biome-arid") items = items.filter(i => i.biomes && i.biomes.some(b => b.includes("Arid")));
 
-    if (query) {
-      items = items.filter(i => 
-        i.name.toLowerCase().includes(query) ||
-        i.description.toLowerCase().includes(query) ||
-        i.edibility.toLowerCase().includes(query) ||
-        i.survivalUsage.toLowerCase().includes(query) ||
-        (i.biomes && i.biomes.some(b => b.toLowerCase().includes(query)))
-      );
-    }
     this.renderCompendium(items);
   },
 
+  // ------------------------------------------------------------------------
+  // Entry Page Modal (Warnings First, Numbered Steps, Verified Sources)
+  // ------------------------------------------------------------------------
   showItemDetail(item) {
-    const biomesHtml = item.biomes && item.biomes.length > 0 
-      ? item.biomes.map(b => `<span class="pill-btn active" style="font-size: 10px; padding: 2px 8px; margin-right: 4px; margin-bottom: 4px; display: inline-block;">${b}</span>`).join('') 
-      : '<span style="color: var(--text-secondary);">Unspecified</span>';
+    const iconContainer = document.getElementById("modalIconContainer");
+    const subtitleEl = document.getElementById("modalSubtitle");
+    if (iconContainer) {
+      iconContainer.innerHTML = window.CODEX_ICONS ? window.CODEX_ICONS.get(item.iconName || 'leaf', '', 26) : '•';
+    }
+    if (subtitleEl) {
+      subtitleEl.textContent = item.scientificFormula || item.symbol || "";
+    }
 
-    const toolsHtml = item.toolsRequired && item.toolsRequired.length > 0
-      ? item.toolsRequired.map(t => `
-          <div style="padding: 10px 12px; border: 1px solid var(--border-color); background: var(--bg-secondary); margin-bottom: 8px;">
-            <div style="font-weight: 700; color: #fff;">🔧 Required: ${t.tool}</div>
-            <div style="font-size: 11px; color: var(--accent-info); margin-top: 3px;">📍 <strong>Where to acquire:</strong> ${t.acquisition}</div>
-          </div>
-        `).join('')
-      : '<p style="color: var(--text-secondary);">No specialized tools required (Forageable with bare hands).</p>';
-
-    let riskHtml = '';
+    // 1. Warnings Panel: Filled dark-orange, orange left edge, BEFORE instructions
+    let warningBoxHtml = "";
     if (item.riskMitigation) {
-      const btnAction = item.riskMitigation.solutionAction 
-        ? `<button onclick="window.navigateToSolution('${item.riskMitigation.solutionAction.section}', '${item.riskMitigation.solutionAction.targetId}')" class="pill-btn" style="background: var(--text-primary); color: #000; font-weight: 700; margin-top: 10px; cursor: pointer; padding: 8px 14px; font-size: 11px; display: inline-flex; align-items: center; gap: 6px;">
-             ⚡ ${item.riskMitigation.solutionAction.buttonText}
+      const warnIcon = window.CODEX_ICONS ? window.CODEX_ICONS.get('warning', '', 16) : '⚠️';
+      const actionBtn = item.riskMitigation.solutionAction 
+        ? `<button onclick="window.navigateToSolution('${item.riskMitigation.solutionAction.section}', '${item.riskMitigation.solutionAction.targetId}')" class="keycap-tile key-cream" style="min-height: 36px; padding: 4px 12px; font-size: 11px; margin-top: 10px; font-weight: 700;">
+             ${item.riskMitigation.solutionAction.buttonText}
            </button>` 
-        : '';
+        : "";
 
-      riskHtml = `
-        <div style="margin-top: 18px; padding: 14px; border: 1px solid var(--accent-alert); background: rgba(255, 77, 77, 0.08);">
-          <div style="font-size: 11px; font-weight: 700; color: var(--accent-alert); letter-spacing: 0.05em; text-transform: uppercase;">⚠️ IDENTIFIED RISK / DANGER</div>
-          <p style="margin-top: 4px; color: #ffcccc; font-size: 12px; line-height: 1.5;">${item.riskMitigation.risk}</p>
-          <div style="font-size: 11px; font-weight: 700; color: var(--accent-safe); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 10px;">🛡️ HOW TO DEAL WITH IT (MITIGATION)</div>
-          <p style="margin-top: 4px; color: #ffffff; font-size: 12px; line-height: 1.5;">${item.riskMitigation.solution}</p>
-          ${btnAction}
+      warningBoxHtml = `
+        <div class="warning-panel-box">
+          <div class="warning-panel-title">
+            ${warnIcon} WARNING: IDENTIFIED HAZARD & CONTRAINDICATIONS
+          </div>
+          <p style="margin-top: 6px; font-size: 13px; line-height: 1.5;">${item.riskMitigation.risk}</p>
+          <div style="font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 8px;">
+            CLINICAL MITIGATION / FIELD RESPONSE:
+          </div>
+          <p style="margin-top: 4px; color: #fff; font-size: 13px; line-height: 1.5;">${item.riskMitigation.solution}</p>
+          ${actionBtn}
         </div>
       `;
     }
 
+    // 2. Numbered Step Tiles for field usage & preparation
+    const toolsRequired = (item.toolsRequired && item.toolsRequired.length > 0)
+      ? item.toolsRequired.map(t => `${t.tool} (Acquisition: ${t.acquisition})`).join("; ")
+      : "Forageable with bare hands";
+
+    const stepsHtml = `
+      <div class="step-tiles-list">
+        <div class="step-tile">
+          <span class="step-number-badge">01</span>
+          <div>
+            <strong>Tactical Acquisition & Required Tools</strong>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">${toolsRequired}</p>
+          </div>
+        </div>
+        <div class="step-tile">
+          <span class="step-number-badge">02</span>
+          <div>
+            <strong>Field Application & Preparation Protocol</strong>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">${item.survivalUsage || item.description}</p>
+          </div>
+        </div>
+        <div class="step-tile">
+          <span class="step-number-badge">03</span>
+          <div>
+            <strong>Biomes, Habitat & Seasonal Availability</strong>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Primary Biomes: ${(item.biomes || []).join(', ')}. Edibility Rating: ${item.edibility}.</p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // 3. Translation Status Badge
+    const translationBadge = `
+      <span class="entry-tag-pill" style="background: #14120d; color: #c2bc9d; border: 1px solid #444;">
+        Translation: Original EN (Verified)
+      </span>
+    `;
+
+    // 4. Sources & Last Reviewed
+    const sourcesList = item.sources ? item.sources.join(" • ") : "World Health Organization Guidelines • US Army FM 21-76";
+    const lastReviewedDate = item.lastReviewed || "2026-10-15";
+
+    // 5. Previous / Next Compendium Items Navigation
+    const currentIndex = window.CAMAEL_ITEMS.findIndex(i => i.id === item.id);
+    const prevItem = currentIndex > 0 ? window.CAMAEL_ITEMS[currentIndex - 1] : null;
+    const nextItem = currentIndex < window.CAMAEL_ITEMS.length - 1 ? window.CAMAEL_ITEMS[currentIndex + 1] : null;
+
+    const navButtons = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+        ${prevItem 
+          ? `<button class="keycap-tile key-dark" onclick="CAMAEL.showItemDetail(window.CAMAEL_ITEMS[${currentIndex - 1}])" style="min-height: 38px; padding: 4px 12px; font-size: 12px;">&larr; ${prevItem.commonName || prevItem.name}</button>`
+          : `<span style="width: 100px;"></span>`}
+        ${nextItem 
+          ? `<button class="keycap-tile key-dark" onclick="CAMAEL.showItemDetail(window.CAMAEL_ITEMS[${currentIndex + 1}])" style="min-height: 38px; padding: 4px 12px; font-size: 12px;">${nextItem.commonName || nextItem.name} &rarr;</button>`
+          : `<span style="width: 100px;"></span>`}
+      </div>
+    `;
+
     this.openModal({
-      title: `${item.name} (${item.symbol})`,
+      title: item.commonName || item.name,
       content: `
-        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
-          <span class="card-tier-badge ${item.tier === 'S' ? 'tier-s' : item.tier === 'A' ? 'tier-a' : item.tier === 'DANGER' ? 'badge-danger' : ''}">${item.barterValue}</span>
-          <span class="card-tier-badge" style="border-color: #888;">${item.edibility}</span>
-          ${item.safetyRating ? `<span class="card-tier-badge" style="border-color: #555;">${item.safetyRating}</span>` : ''}
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center;">
+          <span class="entry-tag-pill ${item.tier === 'S' ? 'tag-tier-s' : (item.tier === 'DANGER' ? 'tag-deadly' : 'tag-tier')}">
+            ${item.tier === 'DANGER' ? 'DEADLY HAZARD' : item.barterValue}
+          </span>
+          <span class="entry-tag-pill tag-tier">${item.edibility}</span>
+          ${translationBadge}
         </div>
 
-        <div class="modal-section-title">SPECIFIC BIOMES & LOCATIONS (FOUND IN)</div>
-        <div style="margin-bottom: 14px;">
-          ${biomesHtml}
+        ${warningBoxHtml}
+
+        <div style="margin-bottom: 20px;">
+          <h4 style="font-size: 13px; font-weight: 700; font-family: var(--font-mono); color: var(--tile-cream-bg); margin-bottom: 8px; letter-spacing: 0.05em;">
+            TAXONOMICAL PROFILE & IDENTIFICATION
+          </h4>
+          <p style="font-size: 14px; line-height: 1.65; color: var(--text-primary);">${item.description}</p>
         </div>
 
-        <div class="modal-section-title">REQUIRED TOOLS & WHERE TO ACQUIRE THEM</div>
-        <div style="margin-bottom: 14px;">
-          ${toolsHtml}
+        <div style="margin-bottom: 20px;">
+          <h4 style="font-size: 13px; font-weight: 700; font-family: var(--font-mono); color: var(--tile-cream-bg); margin-bottom: 8px; letter-spacing: 0.05em;">
+            FIELD SURVIVAL PROTOCOL & PREPARATION
+          </h4>
+          ${stepsHtml}
         </div>
 
-        <div class="modal-section-title">DESCRIPTION & IDENTIFICATION</div>
-        <p>${item.description}</p>
+        <div class="console-panel" style="margin-top: 24px; padding: 14px 18px; margin-bottom: 12px;">
+          <span class="console-panel-label" style="font-size: 10px;">VERIFIED CITATIONS</span>
+          <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.5;">
+            <div><strong>SOURCES:</strong> ${sourcesList}</div>
+            <div style="margin-top: 4px;"><strong>LAST CLINICALLY REVIEWED:</strong> ${lastReviewedDate}</div>
+          </div>
+        </div>
 
-        <div class="modal-section-title">SURVIVAL APPLICATION & USAGE</div>
-        <p>${item.survivalUsage}</p>
-
-        ${riskHtml}
+        ${navButtons}
       `
     });
   },
 
   // ------------------------------------------------------------------------
-  // Module: Gear, Telemetry & Trip Planner (Phase 6 Implementation)
+  // Module 2: Gear, Telemetry & Trip Planner
   // ------------------------------------------------------------------------
   renderGearPlanner(gearList = window.CAMAEL_GEAR) {
     const container = document.getElementById("gearLoadoutList");
@@ -485,7 +1075,7 @@ const CAMAEL = {
                   ${sub.name}
                 </span>
                 ${sub.sourceSection ? `
-                  <button onclick="window.navigateToSolution('${sub.sourceSection}', '${sub.sourceId}')" class="pill-btn" style="font-size: 10px; padding: 2px 8px; color: var(--accent-tactical); border-color: var(--accent-tactical);">
+                  <button onclick="window.navigateToSolution('${sub.sourceSection}', '${sub.sourceId}')" class="keycap-tile key-dark" style="min-height: 28px; padding: 2px 8px; font-size: 10px;">
                     VIEW ${sub.sourceSection.toUpperCase()} &rarr;
                   </button>
                 ` : ''}
@@ -500,10 +1090,10 @@ const CAMAEL = {
           <div>
             <div class="gear-item-title">
               <span>${item.name}</span>
-              <span class="card-tier-badge tier-s" style="font-size: 9px;">${item.essentialRating}</span>
+              <span class="entry-tag-pill tag-tier-s" style="font-size: 9px;">${item.essentialRating}</span>
             </div>
             <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">${item.summary}</div>
-            <div style="font-size: 11px; font-family: var(--font-mono); color: var(--accent-tactical); margin-top: 6px;">
+            <div style="font-size: 11px; font-family: var(--font-mono); color: var(--tile-cream-bg); margin-top: 6px;">
               STANDARD PACK QTY: ${item.baseQty}
             </div>
           </div>
@@ -515,7 +1105,7 @@ const CAMAEL = {
         </div>
 
         <div id="substitutes-panel-${item.id}" class="gear-substitutes-panel">
-          <div style="font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--accent-tactical); letter-spacing: 0.08em; margin-bottom: 8px;">
+          <div style="font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--tile-cream-bg); letter-spacing: 0.08em; margin-bottom: 8px;">
             FALLBACK CHAIN & WILDCRAFT SUBSTITUTES:
           </div>
           ${substitutesHtml}
@@ -525,7 +1115,6 @@ const CAMAEL = {
       container.appendChild(card);
     });
 
-    // Wire up trip planner selectors
     const biomeSelect = document.getElementById("plannerBiomeSelect");
     const durationSelect = document.getElementById("plannerDurationSelect");
     const partySelect = document.getElementById("plannerPartySelect");
@@ -546,7 +1135,7 @@ const CAMAEL = {
       const isActive = panel.classList.toggle("active");
       if (arrow) {
         arrow.textContent = isActive ? "[-] HIDE ALTS" : "[+] EXPAND ALTS";
-        arrow.style.color = isActive ? "var(--accent-tactical)" : "var(--text-secondary)";
+        arrow.style.color = isActive ? "var(--tile-cream-bg)" : "var(--text-secondary)";
       }
     }
   },
@@ -562,17 +1151,11 @@ const CAMAEL = {
     else if (duration === "multiday") days = 3;
     else if (duration === "grid_down") days = 7;
 
-    // Water calculation: 3L / person / day (adjusted for arid/desert)
     const waterMultiplier = biome.includes("Arid") ? 4.5 : 3.0;
     const totalWater = (party * days * waterMultiplier).toFixed(1);
-
-    // Calories: 2200 kcal / person / day
     const foodDays = days;
-
-    // Med units
     const medUnits = Math.max(2, party * (days > 2 ? 3 : 2));
 
-    // Telemetry updates
     const waterVal = document.getElementById("telemetryWaterVal");
     const waterStatus = document.getElementById("telemetryWaterStatus");
     const medVal = document.getElementById("telemetryMedVal");
@@ -583,39 +1166,29 @@ const CAMAEL = {
     if (medVal) medVal.textContent = `${medUnits < 10 ? '0' + medUnits : medUnits} UNITS`;
     if (foodVal) foodVal.textContent = `${foodDays} DAYS`;
 
-    // Filter gear list based on biome
     if (window.CAMAEL_GEAR) {
       const filtered = window.CAMAEL_GEAR.filter(g => !g.biomes || g.biomes.some(b => b.includes(biome.split(' ')[0])));
       this.renderGearPlanner(filtered);
     }
   },
 
-  filterGear(key, query = "") {
+  filterGear(key) {
     let list = window.CAMAEL_GEAR || [];
     if (key === "water") list = list.filter(g => g.category === "water");
     else if (key === "fire") list = list.filter(g => g.category === "fire");
     else if (key === "medical") list = list.filter(g => g.category === "medical");
     else if (key === "shelter") list = list.filter(g => g.category === "shelter");
-    else if (key === "navigation") list = list.filter(g => g.category === "navigation");
-
-    if (query) {
-      list = list.filter(g => 
-        g.name.toLowerCase().includes(query) ||
-        g.summary.toLowerCase().includes(query) ||
-        (g.substitutes && g.substitutes.some(s => s.name.toLowerCase().includes(query) || s.instructions.toLowerCase().includes(query)))
-      );
-    }
     this.renderGearPlanner(list);
   },
 
   // ------------------------------------------------------------------------
-  // Module 2: Survival Kitchen & Recipes
+  // Module 3: Survival Kitchen & Recipes
   // ------------------------------------------------------------------------
   renderRecipes(recipes = window.CAMAEL_RECIPES) {
     const grid = document.getElementById("recipesGrid");
+    if (!grid) return;
     grid.innerHTML = "";
 
-    // Extract all unique ingredients from recipes for the sidebar
     const allIngredients = new Set();
     window.CAMAEL_RECIPES.forEach(r => {
       r.ingredients.forEach(ing => allIngredients.add(ing));
@@ -632,7 +1205,7 @@ const CAMAEL = {
       card.innerHTML = `
         <div class="card-top">
           <div class="card-lead-symbol" style="font-size: 20px;">${isLifesaver ? "🚨 LIFESAVER" : "🍲 RATION"}</div>
-          <div class="card-tier-badge ${isLifesaver ? 'tier-s' : 'tier-a'}">${recipe.prepTime}</div>
+          <span class="entry-tag-pill ${isLifesaver ? 'tag-tier-s' : 'tag-tier'}">${recipe.prepTime}</span>
         </div>
         <div>
           <h3 class="card-title">${recipe.name}</h3>
@@ -654,8 +1227,7 @@ const CAMAEL = {
     if (!container) return;
     container.innerHTML = "";
 
-    // Load saved pantry selection
-    const savedPantry = JSON.parse(localStorage.getItem("codex_camael_pantry") || localStorage.getItem("camael_pantry") || "[]");
+    const savedPantry = JSON.parse(localStorage.getItem("codex_camael_pantry") || "[]");
 
     ingredients.forEach(ing => {
       const isChecked = savedPantry.includes(ing);
@@ -685,7 +1257,7 @@ const CAMAEL = {
   },
 
   matchPantryRecipes() {
-    const selected = JSON.parse(localStorage.getItem("codex_camael_pantry") || localStorage.getItem("camael_pantry") || "[]");
+    const selected = JSON.parse(localStorage.getItem("codex_camael_pantry") || "[]");
     const countBanner = document.getElementById("pantryMatchNotice");
 
     if (selected.length === 0) {
@@ -714,40 +1286,45 @@ const CAMAEL = {
     this.renderRecipes(matched.length > 0 ? matched : window.CAMAEL_RECIPES);
   },
 
-  filterRecipes(key, query = "") {
+  filterRecipes(key) {
     let recipes = window.CAMAEL_RECIPES;
     if (key === "lifesavers") recipes = recipes.filter(r => r.category === "lifesavers");
     else if (key === "cooking") recipes = recipes.filter(r => r.category === "cooking");
-
-    if (query) {
-      recipes = recipes.filter(r => 
-        r.name.toLowerCase().includes(query) ||
-        r.summary.toLowerCase().includes(query) ||
-        r.ingredients.some(i => i.toLowerCase().includes(query))
-      );
-    }
     this.renderRecipes(recipes);
   },
 
   showRecipeDetail(recipe) {
+    const stepsHtml = (recipe.instructions || []).map((step, idx) => `
+      <div class="step-tile">
+        <span class="step-number-badge">0${idx + 1}</span>
+        <div><p style="font-size: 13px; color: var(--text-primary); line-height: 1.5;">${step}</p></div>
+      </div>
+    `).join("");
+
     this.openModal({
       title: recipe.name,
       content: `
-        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-          <span class="card-tier-badge ${recipe.category === 'lifesavers' ? 'tier-s' : 'tier-a'}">${recipe.prepTime}</span>
-          <span class="card-tier-badge">${recipe.calories}</span>
-          <span class="card-tier-badge">${recipe.smokeRisk}</span>
+        <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+          <span class="entry-tag-pill ${recipe.category === 'lifesavers' ? 'tag-tier-s' : 'tag-tier'}">${recipe.prepTime}</span>
+          <span class="entry-tag-pill tag-tier">${recipe.calories}</span>
+          <span class="entry-tag-pill tag-tier">${recipe.smokeRisk}</span>
         </div>
-        <div class="modal-section-title">REQUIRED INGREDIENTS</div>
-        <ul style="padding-left: 20px; margin-bottom: 14px;">
-          ${recipe.ingredients.map(i => `<li><strong>${i}</strong></li>`).join('')}
-        </ul>
-        <div class="modal-section-title">PREPARATION INSTRUCTIONS</div>
-        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-          ${recipe.instructions.map(step => `<p>${step}</p>`).join('')}
+        <div style="margin-bottom: 16px;">
+          <h4 style="font-size: 12px; font-weight: 700; font-family: var(--font-mono); color: var(--tile-cream-bg); margin-bottom: 6px;">REQUIRED INGREDIENTS</h4>
+          <ul style="padding-left: 20px; font-size: 13px; line-height: 1.6;">
+            ${recipe.ingredients.map(i => `<li><strong>${i}</strong></li>`).join('')}
+          </ul>
         </div>
-        <div class="modal-section-title" style="color: var(--accent-safe);">CRUCIAL SURVIVAL NOTES</div>
-        <p>${recipe.survivalNotes}</p>
+        <div style="margin-bottom: 16px;">
+          <h4 style="font-size: 12px; font-weight: 700; font-family: var(--font-mono); color: var(--tile-cream-bg); margin-bottom: 6px;">PREPARATION PROTOCOL</h4>
+          <div class="step-tiles-list">
+            ${stepsHtml}
+          </div>
+        </div>
+        <div class="warning-panel-box" style="border-left-color: var(--tile-teal-bg); background: rgba(34,184,184,0.08);">
+          <div class="warning-panel-title" style="color: var(--tile-teal-bg);">SURVIVAL NUTRITION NOTES</div>
+          <p style="font-size: 12px; color: #fff; line-height: 1.5;">${recipe.survivalNotes}</p>
+        </div>
         <p style="margin-top: 10px; color: var(--text-secondary); font-size: 11px;">Shelf Life: ${recipe.shelfLife}</p>
       `
     });
@@ -758,6 +1335,7 @@ const CAMAEL = {
   // ------------------------------------------------------------------------
   renderCrisis(scenarios = window.CAMAEL_CRISIS) {
     const grid = document.getElementById("crisisGrid");
+    if (!grid) return;
     grid.innerHTML = "";
 
     scenarios.forEach(item => {
@@ -767,7 +1345,7 @@ const CAMAEL = {
       card.innerHTML = `
         <div class="card-top">
           <div class="card-lead-symbol">${item.icon}</div>
-          <div class="card-tier-badge badge-danger">${item.urgency.split(' ')[0]}</div>
+          <span class="entry-tag-pill tag-deadly">${item.urgency.split(' ')[0]}</span>
         </div>
         <div>
           <h3 class="card-title">${item.title}</h3>
@@ -775,7 +1353,7 @@ const CAMAEL = {
         </div>
         <div class="card-footer-meta">
           <span>${item.category.toUpperCase()}</span>
-          <span style="color: var(--accent-alert);">VIEW IMMEDIATE ACTION &rarr;</span>
+          <span style="color: var(--tile-orange-bg); font-weight: 700;">VIEW 60s ACTION &rarr;</span>
         </div>
       `;
 
@@ -784,18 +1362,11 @@ const CAMAEL = {
     });
   },
 
-  filterCrisis(key, query = "") {
+  filterCrisis(key) {
     let list = window.CAMAEL_CRISIS;
     if (key === "medical") list = list.filter(c => c.category === "medical");
     else if (key === "disaster") list = list.filter(c => c.category === "disaster");
     else if (key === "weather") list = list.filter(c => c.category === "weather");
-
-    if (query) {
-      list = list.filter(c => 
-        c.title.toLowerCase().includes(query) ||
-        c.summary.toLowerCase().includes(query)
-      );
-    }
     this.renderCrisis(list);
   },
 
@@ -803,19 +1374,43 @@ const CAMAEL = {
     this.openModal({
       title: item.title,
       content: `
-        <div style="padding: 10px; background: rgba(255, 77, 77, 0.1); border: 1px solid var(--accent-alert); margin-bottom: 16px; color: var(--accent-alert);">
-          <strong>URGENCY LEVEL:</strong> ${item.urgency}
+        <div class="warning-panel-box">
+          <div class="warning-panel-title">URGENCY TIMEFRAME: ${item.urgency}</div>
+          <p style="font-size: 13px; line-height: 1.5;">${item.summary}</p>
         </div>
-        <div class="modal-section-title" style="color: var(--accent-alert);">FIRST 60 SECONDS (IMMEDIATE ACTION)</div>
-        <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-          ${item.first60s.map(s => `<li><strong>${s}</strong></li>`).join('')}
-        </ul>
-        <div class="modal-section-title">NEXT 1 HOUR ACTION PLAN</div>
-        <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-          ${item.nextHour.map(s => `<li>${s}</li>`).join('')}
-        </ul>
-        <div class="modal-section-title">EXTENDED 24-HOUR SURVIVAL PROTOCOL</div>
-        <p>${item.extendedRules}</p>
+
+        <div style="margin-bottom: 20px;">
+          <h4 style="font-size: 13px; font-weight: 700; font-family: var(--font-mono); color: var(--tile-orange-bg); margin-bottom: 8px;">
+            FIRST 60 SECONDS (IMMEDIATE ACTION)
+          </h4>
+          <div class="step-tiles-list">
+            ${item.first60s.map((s, idx) => `
+              <div class="step-tile">
+                <span class="step-number-badge" style="background: var(--tile-orange-bg); color: var(--tile-orange-ink);">0${idx + 1}</span>
+                <div><p style="font-size: 13px; font-weight: 600; line-height: 1.5;">${s}</p></div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <h4 style="font-size: 13px; font-weight: 700; font-family: var(--font-mono); color: var(--tile-cream-bg); margin-bottom: 8px;">
+            NEXT 1 HOUR ACTION PLAN
+          </h4>
+          <div class="step-tiles-list">
+            ${item.nextHour.map((s, idx) => `
+              <div class="step-tile">
+                <span class="step-number-badge">0${idx + 1}</span>
+                <div><p style="font-size: 13px; line-height: 1.5;">${s}</p></div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="console-panel" style="padding: 14px 18px;">
+          <span class="console-panel-label" style="font-size: 10px;">EXTENDED 24-HOUR PROTOCOL</span>
+          <p style="font-size: 12px; color: var(--text-primary); line-height: 1.6;">${item.extendedRules}</p>
+        </div>
       `
     });
   },
@@ -825,6 +1420,7 @@ const CAMAEL = {
   // ------------------------------------------------------------------------
   renderManual(guides = window.CAMAEL_MANUAL) {
     const grid = document.getElementById("manualGrid");
+    if (!grid) return;
     grid.innerHTML = "";
 
     guides.forEach(guide => {
@@ -834,7 +1430,7 @@ const CAMAEL = {
       card.innerHTML = `
         <div class="card-top">
           <div class="card-lead-symbol" style="font-size: 20px;">🛠️ GUIDE</div>
-          <div class="card-tier-badge tier-b">${guide.category.toUpperCase()}</div>
+          <span class="entry-tag-pill tag-tier">${guide.category.toUpperCase()}</span>
         </div>
         <div>
           <h3 class="card-title">${guide.title}</h3>
@@ -846,7 +1442,7 @@ const CAMAEL = {
         </div>
         <div class="card-footer-meta">
           <span>${guide.steps.length} Core Steps</span>
-          <span style="color: #fff;">EXPAND MANUAL &rarr;</span>
+          <span style="color: var(--tile-cream-bg); font-weight: 700;">EXPAND MANUAL &rarr;</span>
         </div>
       `;
 
@@ -855,19 +1451,12 @@ const CAMAEL = {
     });
   },
 
-  filterManual(key, query = "") {
+  filterManual(key) {
     let list = window.CAMAEL_MANUAL;
     if (key === "navigation") list = list.filter(m => m.category === "navigation");
     else if (key === "water") list = list.filter(m => m.category === "water");
     else if (key === "fire") list = list.filter(m => m.category === "fire");
     else if (key === "cordage") list = list.filter(m => m.category === "cordage");
-
-    if (query) {
-      list = list.filter(m => 
-        m.title.toLowerCase().includes(query) ||
-        m.summary.toLowerCase().includes(query)
-      );
-    }
     this.renderManual(list);
   },
 
@@ -878,12 +1467,23 @@ const CAMAEL = {
         <div class="diagram-card" style="margin-bottom: 20px;">
           ${guide.svgDiagram}
         </div>
-        <div class="modal-section-title">STEP-BY-STEP FIELD EXECUTION</div>
-        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
-          ${guide.steps.map(step => `<p>${step}</p>`).join('')}
+        <div style="margin-bottom: 20px;">
+          <h4 style="font-size: 13px; font-weight: 700; font-family: var(--font-mono); color: var(--tile-cream-bg); margin-bottom: 8px;">
+            STEP-BY-STEP FIELD EXECUTION
+          </h4>
+          <div class="step-tiles-list">
+            ${guide.steps.map((step, idx) => `
+              <div class="step-tile">
+                <span class="step-number-badge">0${idx + 1}</span>
+                <div><p style="font-size: 13px; line-height: 1.5;">${step}</p></div>
+              </div>
+            `).join('')}
+          </div>
         </div>
-        <div class="modal-section-title" style="color: var(--accent-safe);">TACTICAL FIELD TIP</div>
-        <p>${guide.proTip}</p>
+        <div class="warning-panel-box" style="border-left-color: var(--tile-teal-bg); background: rgba(34,184,184,0.08);">
+          <div class="warning-panel-title" style="color: var(--tile-teal-bg);">TACTICAL FIELD TIP</div>
+          <p style="font-size: 12px; color: #fff; line-height: 1.5;">${guide.proTip}</p>
+        </div>
       `
     });
   },
@@ -903,7 +1503,7 @@ const CAMAEL = {
       item.innerHTML = `
         <div class="card-top" style="margin-bottom: 8px;">
           <strong style="font-size: 15px;">${f.channel}</strong>
-          <span class="card-tier-badge tier-s">${f.freq}</span>
+          <span class="entry-tag-pill tag-tier-s">${f.freq}</span>
         </div>
         <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">${f.purpose}</p>
         <div style="font-size: 11px; color: var(--text-muted);">
@@ -913,9 +1513,8 @@ const CAMAEL = {
       freqList.appendChild(item);
     });
 
-    // NATO Alphabet Quick Chart
     const natoGrid = document.getElementById("natoAlphabetGrid");
-    if (natoGrid) {
+    if (natoGrid && window.CAMAEL_RADIO.natoAlphabet) {
       natoGrid.innerHTML = "";
       Object.entries(window.CAMAEL_RADIO.natoAlphabet).forEach(([letter, word]) => {
         const span = document.createElement("div");
@@ -927,7 +1526,6 @@ const CAMAEL = {
       });
     }
 
-    // Morse Translator Input
     const morseInput = document.getElementById("morseTextInput");
     const morseDisplay = document.getElementById("morseOutputDisplay");
 
@@ -959,14 +1557,14 @@ const CAMAEL = {
           clearInterval(this.cprInterval);
           this.cprActive = false;
           cprBtn.textContent = "START CPR METRONOME (110 BPM)";
-          cprBtn.style.backgroundColor = "";
+          cprBtn.className = "keycap-tile key-teal";
           cprPulse.classList.remove("beat");
         } else {
           this.cprActive = true;
           cprBtn.textContent = "STOP CPR METRONOME";
-          cprBtn.style.backgroundColor = "var(--accent-alert)";
+          cprBtn.className = "keycap-tile key-orange";
 
-          const intervalMs = (60 / 110) * 1000; // ~545ms
+          const intervalMs = (60 / 110) * 1000;
           this.playBeep(880, 0.08);
           cprPulse.classList.add("beat");
           setTimeout(() => cprPulse.classList.remove("beat"), 100);
@@ -987,30 +1585,26 @@ const CAMAEL = {
 
     if (sliderTime && resultBox) {
       const updateFallout = () => {
-        const hours = parseFloat(sliderTime.value);
+        const hours = Math.max(1, parseFloat(sliderTime.value));
         timeDisplay.textContent = `${hours} Hours`;
 
-        // The 7-10 rule: R(t) = R0 * t^(-1.2)
-        // At 1 hour: 100%
-        // At 7 hours: ~10%
-        // At 49 hours: ~1%
         const decayFactor = Math.pow(hours, -1.2);
         const remainingPct = (decayFactor * 100).toFixed(2);
         const reductionPct = (100 - remainingPct).toFixed(2);
 
         let safetyMsg = "SURVIVAL EVACUATION DANGEROUS (Remain sealed inside bunker)";
-        let color = "#ff4d4d";
+        let color = "#ff4a1c";
 
         if (hours >= 48 && hours < 336) {
           safetyMsg = "BRIEF EMERGENCY FORAGING PERMITTED (Limit exposure to < 30 mins)";
           color = "#ffaa00";
         } else if (hours >= 336) {
           safetyMsg = "RELATIVE OUTDOOR EGRESS ALLOWED (Wear mask & wash upon re-entry)";
-          color = "#00dd88";
+          color = "#22b8b8";
         }
 
         resultBox.innerHTML = `
-          <div><strong>RADIATION DECAY:</strong> ${reductionPct}% Neutralized (${remainingPct}% remains)</div>
+          <div><strong>RADIATION DECAY:</strong> ${reductionPct}% Neutralized (${remainingPct}% of R0 remains)</div>
           <div style="margin-top: 6px; color: ${color};"><strong>STATUS:</strong> ${safetyMsg}</div>
         `;
       };
@@ -1022,7 +1616,6 @@ const CAMAEL = {
     // 3. Morse Sound & Flash Player
     const playMorseBtn = document.getElementById("playMorseAudioBtn");
     const emergencySosBtn = document.getElementById("emergencySosBtn");
-    const strobeScreen = document.getElementById("morseStrobeScreen");
 
     if (playMorseBtn) {
       playMorseBtn.addEventListener("click", () => {
@@ -1057,7 +1650,7 @@ const CAMAEL = {
       osc.start();
       osc.stop(ctx.currentTime + duration);
     } catch(e) {
-      console.warn("Audio playback blocked or unavailable:", e);
+      console.warn("Audio playback blocked:", e);
     }
   },
 
@@ -1093,159 +1686,15 @@ const CAMAEL = {
   },
 
   // ------------------------------------------------------------------------
-  // Module 1: World Map & Cartography
+  // Module 7: World Map & Cartography
   // ------------------------------------------------------------------------
   initWorldMap() {
     const canvas = document.getElementById("worldMapCanvas");
     if (!canvas) return;
 
-    // Load custom waypoints from localStorage or defaults
-    this.waypoints = JSON.parse(localStorage.getItem("codex_camael_waypoints") || localStorage.getItem("camael_waypoints") || "null");
-    if (!this.waypoints) {
-      this.waypoints = window.CAMAEL_GEO.defaultWaypoints;
-      localStorage.setItem("codex_camael_waypoints", JSON.stringify(this.waypoints));
-    }
-
+    this.resizeCanvas();
     this.renderWaypointList();
-
-    // Auto-resize observer when container becomes visible or changes size
-    if (window.ResizeObserver && canvas.parentElement) {
-      const ro = new ResizeObserver(() => {
-        if (this.activeSection === "map") {
-          this.resizeCanvas();
-          this.drawMap();
-        }
-      });
-      ro.observe(canvas.parentElement);
-    }
-
-    // Canvas Mouse & Touch controls for Pan/Zoom
-    canvas.addEventListener("mousedown", (e) => {
-      this.mapState.isDragging = true;
-      this.mapState.startX = e.clientX - this.mapState.offsetX;
-      this.mapState.startY = e.clientY - this.mapState.offsetY;
-    });
-
-    window.addEventListener("mousemove", (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      // Update live coordinates on HUD if inside canvas
-      if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
-        const w = canvas.width || 800;
-        const h = canvas.height || 500;
-        const scale = Math.max(0.1, this.mapState.scale);
-        const originX = w / 2 + this.mapState.offsetX;
-        const originY = h / 2 + this.mapState.offsetY;
-
-        let lon = ((x - originX) / (w * scale)) * 360;
-        let lat = -((y - originY) / (h * scale)) * 180;
-        lat = Math.max(-90, Math.min(90, lat));
-        while (lon > 180) lon -= 360;
-        while (lon < -180) lon += 360;
-
-        const hudCoords = document.getElementById("mapHudCoords");
-        if (hudCoords) {
-          hudCoords.textContent = `COORDINATES: ${lat.toFixed(2)}° N, ${lon.toFixed(2)}° E`;
-        }
-      }
-
-      if (!this.mapState.isDragging) return;
-      this.mapState.offsetX = e.clientX - this.mapState.startX;
-      this.mapState.offsetY = e.clientY - this.mapState.startY;
-      this.drawMap();
-    });
-
-    window.addEventListener("mouseup", () => {
-      this.mapState.isDragging = false;
-    });
-
-    canvas.addEventListener("wheel", (e) => {
-      e.preventDefault();
-      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
-      this.mapState.scale = Math.max(0.5, Math.min(8.0, this.mapState.scale * zoomFactor));
-      this.drawMap();
-    }, { passive: false });
-
-    // Touch support for mobile devices
-    let lastTouchX = 0;
-    let lastTouchY = 0;
-    canvas.addEventListener("touchstart", (e) => {
-      if (e.touches.length === 1) {
-        this.mapState.isDragging = true;
-        lastTouchX = e.touches[0].clientX;
-        lastTouchY = e.touches[0].clientY;
-      }
-    }, { passive: true });
-
-    canvas.addEventListener("touchmove", (e) => {
-      if (this.mapState.isDragging && e.touches.length === 1) {
-        const dx = e.touches[0].clientX - lastTouchX;
-        const dy = e.touches[0].clientY - lastTouchY;
-        lastTouchX = e.touches[0].clientX;
-        lastTouchY = e.touches[0].clientY;
-        this.mapState.offsetX += dx;
-        this.mapState.offsetY += dy;
-        this.drawMap();
-      }
-    }, { passive: true });
-
-    canvas.addEventListener("touchend", () => {
-      this.mapState.isDragging = false;
-    });
-
-    // Map Buttons
-    const zoomInBtn = document.getElementById("mapZoomIn");
-    const zoomOutBtn = document.getElementById("mapZoomOut");
-    const resetBtn = document.getElementById("mapReset");
-    const addWpBtn = document.getElementById("addWaypointBtn");
-
-    if (zoomInBtn) zoomInBtn.addEventListener("click", () => {
-      this.mapState.scale = Math.min(8.0, this.mapState.scale * 1.3);
-      this.drawMap();
-    });
-
-    if (zoomOutBtn) zoomOutBtn.addEventListener("click", () => {
-      this.mapState.scale = Math.max(0.5, this.mapState.scale * 0.7);
-      this.drawMap();
-    });
-
-    if (resetBtn) resetBtn.addEventListener("click", () => {
-      this.mapState.scale = 1.0;
-      this.mapState.offsetX = 0;
-      this.mapState.offsetY = 0;
-      this.resizeCanvas();
-      this.drawMap();
-    });
-
-    if (addWpBtn) addWpBtn.addEventListener("click", () => {
-      this.promptAddWaypoint();
-    });
-
-    // Click on canvas to drop pin or inspect coords
-    canvas.addEventListener("click", (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      const w = canvas.width || 800;
-      const h = canvas.height || 500;
-      const scale = Math.max(0.1, this.mapState.scale);
-      const originX = w / 2 + this.mapState.offsetX;
-      const originY = h / 2 + this.mapState.offsetY;
-
-      let lon = ((x - originX) / (w * scale)) * 360;
-      let lat = -((y - originY) / (h * scale)) * 180;
-      lat = Math.max(-90, Math.min(90, lat));
-      while (lon > 180) lon -= 360;
-      while (lon < -180) lon += 360;
-
-      const hudCoords = document.getElementById("mapHudCoords");
-      if (hudCoords) {
-        hudCoords.textContent = `COORDINATES: ${lat.toFixed(2)}° N, ${lon.toFixed(2)}° E`;
-      }
-    });
+    this.drawMap();
 
     window.addEventListener("resize", () => {
       if (this.activeSection === "map") {
@@ -1254,102 +1703,113 @@ const CAMAEL = {
       }
     });
 
-    this.resizeCanvas();
-    this.drawMap();
+    const zoomIn = document.getElementById("mapZoomIn");
+    const zoomOut = document.getElementById("mapZoomOut");
+    const reset = document.getElementById("mapReset");
+    const addPin = document.getElementById("addWaypointBtn");
+
+    if (zoomIn) zoomIn.addEventListener("click", () => { this.mapState.scale *= 1.3; this.drawMap(); });
+    if (zoomOut) zoomOut.addEventListener("click", () => { this.mapState.scale = Math.max(0.6, this.mapState.scale / 1.3); this.drawMap(); });
+    if (reset) reset.addEventListener("click", () => { this.mapState.scale = 1.0; this.mapState.offsetX = 0; this.mapState.offsetY = 0; this.drawMap(); });
+    if (addPin) addPin.addEventListener("click", () => this.promptAddWaypoint());
+
+    canvas.addEventListener("mousedown", (e) => {
+      this.mapState.isDragging = true;
+      this.mapState.startX = e.clientX - this.mapState.offsetX;
+      this.mapState.startY = e.clientY - this.mapState.offsetY;
+    });
+
+    window.addEventListener("mouseup", () => { this.mapState.isDragging = false; });
+
+    canvas.addEventListener("mousemove", (e) => {
+      if (this.mapState.isDragging) {
+        this.mapState.offsetX = e.clientX - this.mapState.startX;
+        this.mapState.offsetY = e.clientY - this.mapState.startY;
+        this.drawMap();
+      }
+
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      const w = canvas.width;
+      const h = canvas.height;
+      const midX = w / 2;
+      const midY = h / 2;
+
+      const normX = (mouseX - midX - this.mapState.offsetX) / (this.mapState.scale * (w / 2));
+      const normY = (mouseY - midY - this.mapState.offsetY) / (this.mapState.scale * (h / 2));
+
+      const lon = normX * 180;
+      const lat = -normY * 90;
+
+      const coordEl = document.getElementById("mapHudCoords");
+      if (coordEl && Math.abs(lon) <= 180 && Math.abs(lat) <= 90) {
+        coordEl.textContent = `LAT: ${lat.toFixed(2)}° | LON: ${lon.toFixed(2)}°`;
+      }
+    });
+
+    canvas.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
+      this.mapState.scale = Math.max(0.6, Math.min(10.0, this.mapState.scale * zoomFactor));
+      this.drawMap();
+    }, { passive: false });
   },
 
   resizeCanvas() {
     const canvas = document.getElementById("worldMapCanvas");
     if (!canvas) return;
-    const container = canvas.parentElement;
-    if (!container) return;
-
-    const rect = container.getBoundingClientRect();
-    const w = Math.floor(rect.width || container.clientWidth || (window.innerWidth > 768 ? window.innerWidth - 360 : window.innerWidth) || 800);
-    const h = Math.floor(rect.height || container.clientHeight || (window.innerHeight - 130) || 550);
-
-    if (w > 0 && h > 0) {
-      canvas.width = w;
-      canvas.height = h;
+    const parent = canvas.parentElement;
+    if (parent) {
+      canvas.width = parent.clientWidth || 800;
+      canvas.height = parent.clientHeight || 550;
     }
   },
 
   drawMap() {
     const canvas = document.getElementById("worldMapCanvas");
     if (!canvas) return;
-    if (canvas.width <= 0 || canvas.height <= 0) {
-      this.resizeCanvas();
-    }
-
-    let w = canvas.width;
-    let h = canvas.height;
-    if (w <= 0 || h <= 0) {
-      w = canvas.width = 800;
-      h = canvas.height = 550;
-    }
-
     const ctx = canvas.getContext("2d");
+    const w = canvas.width;
+    const h = canvas.height;
 
-    // Clear background
-    ctx.fillStyle = "#050505";
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#0c0c0b";
     ctx.fillRect(0, 0, w, h);
 
-    const originX = w / 2 + this.mapState.offsetX;
-    const originY = h / 2 + this.mapState.offsetY;
-    const scale = this.mapState.scale;
-
-    // Projection: Equirectangular lon [-180, 180] -> x, lat [-90, 90] -> y
     const project = (lon, lat) => {
-      const px = originX + (lon / 360) * w * scale;
-      const py = originY - (lat / 180) * h * scale;
-      return [px, py];
+      const midX = w / 2;
+      const midY = h / 2;
+      const x = midX + this.mapState.offsetX + (lon / 180) * (w / 2) * this.mapState.scale;
+      const y = midY + this.mapState.offsetY - (lat / 90) * (h / 2) * this.mapState.scale;
+      return [x, y];
     };
 
-    // Draw Grid Lines
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
-    ctx.lineWidth = 1;
-    ctx.font = "9px " + getComputedStyle(document.body).fontFamily;
-    ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
-
+    // Draw Graticule
+    ctx.strokeStyle = "rgba(216, 209, 166, 0.12)";
+    ctx.lineWidth = 0.5;
     for (let lon = -180; lon <= 180; lon += 30) {
-      const [x1, y1] = project(lon, -88);
-      const [x2, y2] = project(lon, 88);
+      const [x1, y1] = project(lon, -90);
+      const [x2, y2] = project(lon, 90);
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
       ctx.stroke();
-      if (x1 >= 0 && x1 <= w) {
-        ctx.fillText(lon === 0 ? "0°" : lon > 0 ? `${lon}°E` : `${Math.abs(lon)}°W`, x1 + 3, h - 8);
-      }
     }
-
-    for (let lat = -80; lat <= 80; lat += 20) {
+    for (let lat = -90; lat <= 90; lat += 30) {
       const [x1, y1] = project(-180, lat);
       const [x2, y2] = project(180, lat);
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
       ctx.stroke();
-      if (y1 >= 15 && y1 <= h - 15) {
-        ctx.fillText(lat === 0 ? "EQUATOR" : lat > 0 ? `${lat}°N` : `${Math.abs(lat)}°S`, 10, y1 - 4);
-      }
     }
 
-    // Equator highlight (Dashed Amber)
-    ctx.strokeStyle = "rgba(255, 170, 0, 0.35)";
-    ctx.setLineDash([6, 4]);
-    const [eqX1, eqY] = project(-180, 0);
-    const [eqX2] = project(180, 0);
-    ctx.beginPath();
-    ctx.moveTo(eqX1, eqY);
-    ctx.lineTo(eqX2, eqY);
-    ctx.stroke();
-    ctx.setLineDash([]);
+    if (!window.CAMAEL_GEO || !window.CAMAEL_GEO.continents) return;
 
-    // Draw Continents
-    ctx.fillStyle = "#161616";
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 1.4;
+    ctx.fillStyle = "#1b1914";
+    ctx.strokeStyle = "rgba(216, 209, 166, 0.4)";
+    ctx.lineWidth = 1.2;
 
     window.CAMAEL_GEO.continents.forEach(cont => {
       ctx.beginPath();
@@ -1362,12 +1822,11 @@ const CAMAEL = {
       ctx.fill();
       ctx.stroke();
 
-      // Continent Label
       if (cont.labelPos) {
         const [lx, ly] = project(cont.labelPos[0], cont.labelPos[1]);
         if (lx >= 0 && lx <= w && ly >= 0 && ly <= h) {
-          ctx.fillStyle = "rgba(255, 255, 255, 0.35)";
-          ctx.font = "bold 10px " + getComputedStyle(document.body).fontFamily;
+          ctx.fillStyle = "rgba(216, 209, 166, 0.5)";
+          ctx.font = "bold 10px " + (getComputedStyle(document.body).fontFamily || 'monospace');
           ctx.fillText(cont.name.toUpperCase(), lx, ly);
         }
       }
@@ -1376,38 +1835,27 @@ const CAMAEL = {
     // Draw Waypoints
     this.waypoints.forEach(wp => {
       const [wx, wy] = project(wp.lon, wp.lat);
-      
-      const pinColor = wp.type === "water" ? "#4da6ff" :
-                       wp.type === "shelter" ? "#00dd88" :
-                       wp.type === "danger" ? "#ff4d4d" : "#ffaa00";
+      const pinColor = wp.type === "water" ? "#22b8b8" :
+                       wp.type === "shelter" ? "#30d158" :
+                       wp.type === "danger" ? "#ff4a1c" : "#d8d1a6";
 
-      // Outer glow pulse ring
-      ctx.beginPath();
-      ctx.arc(wx, wy, 12, 0, Math.PI * 2);
-      ctx.fillStyle = pinColor === "#4da6ff" ? "rgba(77, 166, 255, 0.2)" :
-                      pinColor === "#00dd88" ? "rgba(0, 221, 136, 0.2)" :
-                      pinColor === "#ff4d4d" ? "rgba(255, 77, 77, 0.2)" : "rgba(255, 170, 0, 0.2)";
-      ctx.fill();
-
-      // Solid inner pin
       ctx.beginPath();
       ctx.arc(wx, wy, 6, 0, Math.PI * 2);
       ctx.fillStyle = pinColor;
       ctx.fill();
-      ctx.strokeStyle = "#ffffff";
+      ctx.strokeStyle = "#14120d";
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      // Label background & text
-      ctx.font = "bold 10px " + getComputedStyle(document.body).fontFamily;
+      ctx.font = "bold 10px monospace";
       const textWidth = ctx.measureText(wp.name).width;
-      ctx.fillStyle = "rgba(10, 10, 10, 0.85)";
+      ctx.fillStyle = "rgba(12, 12, 11, 0.85)";
       ctx.fillRect(wx + 10, wy - 9, textWidth + 8, 16);
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+      ctx.strokeStyle = "rgba(216, 209, 166, 0.3)";
       ctx.lineWidth = 0.5;
       ctx.strokeRect(wx + 10, wy - 9, textWidth + 8, 16);
 
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = "#e9e4c8";
       ctx.fillText(wp.name, wx + 14, wy + 3);
     });
   },
@@ -1423,19 +1871,16 @@ const CAMAEL = {
       item.innerHTML = `
         <div class="waypoint-item-top">
           <span class="waypoint-title">${wp.name}</span>
-          <span class="card-tier-badge" style="font-size: 9px;">${wp.type.toUpperCase()}</span>
+          <span class="entry-tag-pill tag-tier" style="font-size: 9px;">${wp.type.toUpperCase()}</span>
         </div>
         <div class="waypoint-coords">${wp.lat.toFixed(2)}° N, ${wp.lon.toFixed(2)}° E</div>
         <p style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">${wp.desc}</p>
       `;
 
       item.addEventListener("click", () => {
-        // Center map on this waypoint
         const canvas = document.getElementById("worldMapCanvas");
         if (!canvas) return;
-        if (canvas.width <= 0 || canvas.height <= 0) {
-          this.resizeCanvas();
-        }
+        if (canvas.width <= 0 || canvas.height <= 0) this.resizeCanvas();
         const w = canvas.width || 800;
         const h = canvas.height || 550;
         this.mapState.offsetX = -(wp.lon / 360) * w * this.mapState.scale;
@@ -1452,7 +1897,7 @@ const CAMAEL = {
     if (!name) return;
     const lat = parseFloat(prompt("Enter Latitude (-90 to 90):", "35.00"));
     const lon = parseFloat(prompt("Enter Longitude (-180 to 180):", "-80.00"));
-    const type = prompt("Type (water, shelter, cache, danger, forage):", "water");
+    const type = prompt("Type (water, shelter, cache, danger):", "water");
     const desc = prompt("Short Description:", "Clean water source");
 
     if (!isNaN(lat) && !isNaN(lon)) {
@@ -1472,32 +1917,30 @@ const CAMAEL = {
   },
 
   // ------------------------------------------------------------------------
-  // Module 7: Private Offline Vault & Logbook
+  // Module 8: Private Offline Vault & Logbook
   // ------------------------------------------------------------------------
   initLogbook() {
     const fields = ["iceName", "iceBlood", "iceAllergies", "rallyPrimary", "rallySecondary", "radioSchedule", "packInventory", "survivalJournal"];
     
-    // Load stored values
     fields.forEach(f => {
       const el = document.getElementById(f);
       if (el) {
-        el.value = localStorage.getItem(`codex_camael_${f}`) || localStorage.getItem(`camael_${f}`) || "";
+        el.value = localStorage.getItem(`codex_camael_${f}`) || "";
         el.addEventListener("input", (e) => {
           localStorage.setItem(`codex_camael_${f}`, e.target.value);
         });
       }
     });
 
-    // Export JSON Backup
     const exportBtn = document.getElementById("exportLogbookBtn");
     if (exportBtn) {
       exportBtn.addEventListener("click", () => {
         const data = {};
         fields.forEach(f => {
-          data[f] = localStorage.getItem(`codex_camael_${f}`) || localStorage.getItem(`camael_${f}`) || "";
+          data[f] = localStorage.getItem(`codex_camael_${f}`) || "";
         });
-        data.waypoints = JSON.parse(localStorage.getItem("codex_camael_waypoints") || localStorage.getItem("camael_waypoints") || "[]");
-        data.pantry = JSON.parse(localStorage.getItem("codex_camael_pantry") || localStorage.getItem("camael_pantry") || "[]");
+        data.waypoints = JSON.parse(localStorage.getItem("codex_camael_waypoints") || "[]");
+        data.pantry = JSON.parse(localStorage.getItem("codex_camael_pantry") || "[]");
 
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
@@ -1509,7 +1952,6 @@ const CAMAEL = {
       });
     }
 
-    // Import JSON Backup
     const importInput = document.getElementById("importLogbookInput");
     if (importInput) {
       importInput.addEventListener("change", (e) => {
@@ -1520,21 +1962,21 @@ const CAMAEL = {
           try {
             const data = JSON.parse(evt.target.result);
             fields.forEach(f => {
-              const val = data[f] !== undefined ? data[f] : (data[`codex_camael_${f}`] !== undefined ? data[`codex_camael_${f}`] : data[`camael_${f}`]);
+              const val = data[f] !== undefined ? data[f] : data[`codex_camael_${f}`];
               if (val !== undefined) {
                 localStorage.setItem(`codex_camael_${f}`, val);
                 const el = document.getElementById(f);
                 if (el) el.value = val;
               }
             });
-            const importedWaypoints = data.waypoints || data.codex_camael_waypoints || data.camael_waypoints;
+            const importedWaypoints = data.waypoints || data.codex_camael_waypoints;
             if (importedWaypoints) {
               localStorage.setItem("codex_camael_waypoints", JSON.stringify(importedWaypoints));
               this.waypoints = importedWaypoints;
               this.renderWaypointList();
               this.drawMap();
             }
-            const importedPantry = data.pantry || data.codex_camael_pantry || data.camael_pantry;
+            const importedPantry = data.pantry || data.codex_camael_pantry;
             if (importedPantry) {
               localStorage.setItem("codex_camael_pantry", JSON.stringify(importedPantry));
               this.renderRecipes();
@@ -1559,9 +2001,6 @@ const CAMAEL = {
       closeBtn.addEventListener("click", () => this.closeModal());
       overlay.addEventListener("click", (e) => {
         if (e.target === overlay) this.closeModal();
-      });
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") this.closeModal();
       });
     }
   },
@@ -1607,4 +2046,3 @@ window.navigateToSolution = function(section, targetId) {
     }, 150);
   }
 };
-

@@ -8,6 +8,8 @@
   <meta name="theme-color" content="#0c0c0b">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <!-- Self-Hosted Fonts & Offline Control Panel Stylesheets -->
+  <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="css/camael.css">
 </head>
 <body>
@@ -15,15 +17,56 @@
   <!-- Fullscreen Screen Strobe for Optical Morse Signalling -->
   <div id="morseStrobeScreen" class="morse-strobe-screen"></div>
 
-  <!-- Top Navigation Header (Minimalist Modernist Swiss Grid) -->
+  <!-- Top LCD Status Strip (Always Visible, Retro-Futuristic Telemetry) -->
+  <div id="lcdStatusStrip" class="lcd-status-strip">
+    <div class="lcd-group">
+      <div class="lcd-item" id="lcdOfflineStatus" title="Offline storage verification">
+        <span class="lcd-dot green" id="lcdOfflineDot"></span>
+        <span id="lcdOfflineText">100% OFFLINE</span>
+      </div>
+      <div class="lcd-item" id="lcdLocationStatus" title="Local device positioning">
+        <span class="lcd-dot" id="lcdLocationDot"></span>
+        <span id="lcdLocationText">LOCATION: OFF-GRID</span>
+      </div>
+      <div class="lcd-item" id="lcdBatteryItem" style="display: none;" title="Battery Status API readout">
+        <span class="lcd-dot green" id="lcdBatteryDot"></span>
+        <span id="lcdBatteryText">BATTERY: --%</span>
+      </div>
+    </div>
+
+    <div class="lcd-group">
+      <div class="lcd-item">
+        <span style="opacity: 0.7;">REGION:</span>
+        <div class="lcd-select-wrapper">
+          <select id="lcdRegionSelect" class="lcd-select" aria-label="Select Region">
+            <option value="india" selected>INDIA (NATIONAL)</option>
+            <option value="telangana">TELANGANA (HYDERABAD)</option>
+            <option value="kerala">KERALA (WESTERN GHATS)</option>
+            <option value="global">GLOBAL</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="lcd-item">
+        <span style="opacity: 0.7;">LANG:</span>
+        <div class="lcd-lang-switcher" role="group" aria-label="Language Selector">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="ml">മലയാളം</button>
+          <button class="lang-btn" data-lang="te">తెలుగు</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Navigation Header -->
   <header class="top-header">
     <div style="display: flex; align-items: center; gap: 16px;">
-      <button id="swissMenuBtn" class="pill-btn" style="padding: 6px 12px; font-weight: 700; font-family: var(--font-mono); letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 6px;">
-        ☰ Contents
+      <button id="swissMenuBtn" class="keycap-tile key-dark" style="min-height: 40px; padding: 6px 14px; font-weight: 700; font-family: var(--font-mono); letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 8px;">
+        <span style="font-size: 16px;">☰</span> Contents
       </button>
 
-      <div class="brand-wrapper">
-        <div class="brand-logo" style="border-color: var(--accent-tactical); color: var(--accent-tactical);">⚔️ CODEX CAMAEL</div>
+      <div class="brand-wrapper" id="brandHomeLink" title="Return to Home Console">
+        <div class="brand-logo">⚔️ CODEX CAMAEL</div>
         <div class="brand-text">
           <span class="brand-title">CODEX CAMAEL</span>
           <span class="brand-subtitle">A life-saving digital reference. 100% offline.</span>
@@ -31,29 +74,46 @@
       </div>
     </div>
 
-    <!-- Persistent SOS Cheat Sheet Header Trigger -->
+    <!-- Persistent SOS Trigger: Solid Orange Keycap Reachable in 1-Click From Every Screen -->
     <div style="display: flex; align-items: center; gap: 12px;">
-      <button id="sosCheatSheetBtn" class="pill-btn" style="background-color: var(--accent-alert); color: #fff; border-color: var(--accent-alert); font-weight: 800; font-family: var(--font-mono); font-size: 11px; padding: 8px 16px; letter-spacing: 0.06em; box-shadow: 0 0 15px rgba(255,59,48,0.3);">
-        ⚡ SOS // CHEAT SHEET
+      <button id="sosCheatSheetBtn" class="keycap-tile key-orange" style="font-weight: 800; font-family: var(--font-mono); font-size: 12px; padding: 10px 18px; letter-spacing: 0.06em;">
+        ⚡ SOS / EMERGENCY SHEET
       </button>
     </div>
   </header>
+
+  <!-- Visible Full-Width LCD Inset Search Field (Always Shown) -->
+  <div class="console-search-container">
+    <div class="search-input-wrapper-lcd">
+      <span class="search-icon-lcd">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      </span>
+      <input type="text" id="consoleSearchInput" class="search-input-lcd" placeholder="Search chapters, entries, scientific names, formulas, tags (e.g. NaCl, Bleach, CPR, ORS)..." autocomplete="off" aria-label="Search offline database">
+      <span class="search-shortcut-badge">PRESS / TO FOCUS</span>
+    </div>
+    <!-- Live Search Results Dropdown Overlay -->
+    <div id="liveSearchOverlay" class="live-search-overlay" style="display: none;"></div>
+  </div>
 
   <!-- Swiss Index Slide-Out Navigation Drawer -->
   <div id="swissDrawerOverlay" class="swiss-drawer-overlay">
     <div class="swiss-drawer-panel">
       <div class="swiss-drawer-header">
-        <span class="swiss-drawer-title">SYSTEM DIRECTORY // 07 MODULES</span>
+        <span class="swiss-drawer-title">SYSTEM DIRECTORY // 08 MODULES</span>
         <button id="swissDrawerCloseBtn" class="modal-close-btn">&times;</button>
       </div>
       <div class="swiss-drawer-nav">
-        <button class="swiss-nav-item active" data-section="compendium">
+        <button class="swiss-nav-item active" data-section="home">
+          <span><span class="swiss-nav-index">00</span>MAIN CONTROL CONSOLE</span>
+          <span style="font-size: 10px; color: var(--text-secondary);">KEYCAP DASHBOARD</span>
+        </button>
+        <button class="swiss-nav-item" data-section="compendium">
           <span><span class="swiss-nav-index">01</span>SCAVENGER'S COMPENDIUM</span>
-          <span style="font-size: 10px; color: var(--text-secondary);">FORAGE & TAXONOMY</span>
+          <span style="font-size: 10px; color: var(--text-secondary);">FORAGE, FLORA & TAXONOMY</span>
         </button>
         <button class="swiss-nav-item" data-section="gear">
           <span><span class="swiss-nav-index">02</span>GEAR, VAULT & PLANNER</span>
-          <span style="font-size: 10px; color: var(--accent-tactical);">TELEMETRY & ALTS</span>
+          <span style="font-size: 10px; color: var(--tile-teal-bg);">TELEMETRY & ALTS</span>
         </button>
         <button class="swiss-nav-item" data-section="map">
           <span><span class="swiss-nav-index">03</span>OFFLINE FIELD CARTOGRAPHY</span>
@@ -69,7 +129,7 @@
         </button>
         <button class="swiss-nav-item" data-section="incaseof">
           <span><span class="swiss-nav-index">06</span>CRISIS PLAYBOOKS & TRIAGE</span>
-          <span style="font-size: 10px; color: var(--accent-alert);">IMMEDIATE 60s ACTION</span>
+          <span style="font-size: 10px; color: var(--tile-orange-bg);">IMMEDIATE 60s ACTION</span>
         </button>
         <button class="swiss-nav-item" data-section="radio">
           <span><span class="swiss-nav-index">07</span>EMERGENCY COMMS & MORSE</span>
@@ -87,11 +147,11 @@
   <div id="sosOverlay" class="sos-overlay">
     <div class="sos-header">
       <div class="sos-header-title">
-        <span style="color: var(--accent-alert);">⚡</span>
+        <span style="color: var(--tile-orange-bg);">⚡</span>
         <span>CRITICAL EMERGENCY CHEAT SHEET // ZERO FLUFF</span>
       </div>
       <div style="display: flex; gap: 10px; align-items: center;">
-        <button id="toggleUltraReserveBtn" class="pill-btn" style="border-color: #555; font-family: var(--font-mono); font-size: 10px; padding: 6px 12px;">
+        <button id="toggleUltraReserveBtn" class="keycap-tile key-dark" style="min-height: 36px; padding: 4px 12px; font-size: 11px;">
           🔋 ULTRA-RESERVE OLED: OFF
         </button>
         <button id="sosCloseBtn" class="modal-close-btn">&times;</button>
@@ -103,9 +163,9 @@
       <div class="sos-card" onclick="window.navigateToSolution('incaseof', 'crisis_cpr'); CAMAEL.closeSosOverlay();">
         <div class="sos-card-top">
           <div class="sos-card-title">🫀 CARDIAC ARREST / CPR</div>
-          <span class="card-tier-badge badge-danger">0-4 MINS</span>
+          <span class="entry-tag-pill tag-deadly">0-4 MINS</span>
         </div>
-        <p class="sos-card-desc">Hard flat ground. Center sternum push 2 to 2.4 inches. 100-120 BPM tempo without stopping.</p>
+        <p class="sos-card-desc">Call emergency services (112 in India). Hard flat ground. Center sternum push 2 to 2.4 inches. 100-120 BPM tempo without stopping.</p>
         <div class="sos-card-action">START CPR METRONOME & ACTION PLAN &rarr;</div>
       </div>
 
@@ -113,9 +173,9 @@
       <div class="sos-card" onclick="window.navigateToSolution('recipes', 'rec_charcoal_slurry'); CAMAEL.closeSosOverlay();">
         <div class="sos-card-top">
           <div class="sos-card-title">☠️ TOXIC POISONING / INGESTION</div>
-          <span class="card-tier-badge badge-danger">IMMEDIATE</span>
+          <span class="entry-tag-pill tag-deadly">IMMEDIATE</span>
         </div>
-        <p class="sos-card-desc">Universal gastrointestinal sponge. Slurry of fine hardwood charcoal and water binds plant/mushroom toxins.</p>
+        <p class="sos-card-desc">Step 1: Call poison control / emergency services. Slurry of fine pharmaceutical activated charcoal and water binds plant/mushroom toxins.</p>
         <div class="sos-card-action">VIEW CHARCOAL SLURRY DOSAGE &rarr;</div>
       </div>
 
@@ -123,9 +183,9 @@
       <div class="sos-card" onclick="window.navigateToSolution('incaseof', 'crisis_cpr'); CAMAEL.closeSosOverlay();">
         <div class="sos-card-top">
           <div class="sos-card-title">🩸 ARTERIAL BLEED / TOURNIQUET</div>
-          <span class="card-tier-badge badge-danger">CRITICAL</span>
+          <span class="entry-tag-pill tag-deadly">CRITICAL</span>
         </div>
-        <p class="sos-card-desc">Apply 2-inch band 2-3 inches above wound (never on joint). Twist windlass until pulsatile bleeding halts.</p>
+        <p class="sos-card-desc">Direct pressure and wound packing BEFORE tourniquet. Apply 2-3 inches above wound (never on joint). Note time applied, do not loosen, get to hospital.</p>
         <div class="sos-card-action">VIEW TRAUMA & SHOCK ACTION &rarr;</div>
       </div>
 
@@ -133,9 +193,9 @@
       <div class="sos-card" onclick="window.navigateToSolution('compendium', 'item_bleach'); CAMAEL.closeSosOverlay();">
         <div class="sos-card-top">
           <div class="sos-card-title">💧 INSTANT WATER PURIFICATION</div>
-          <span class="card-tier-badge tier-s">COLD BLEACH</span>
+          <span class="entry-tag-pill tag-tier-s">COLD BLEACH</span>
         </div>
-        <p class="sos-card-desc">Exactly 2 drops unscented household bleach (6-8.25%) per 1L clear water (4 drops if cloudy). Wait 30 mins.</p>
+        <p class="sos-card-desc">Exactly 2 drops unscented household bleach (6-8.25%) per 1L clear water (4 drops if cloudy). Wait 30 mins. (Boiling preferred when possible).</p>
         <div class="sos-card-action">VIEW CHEMICAL PURIFICATION MATRIX &rarr;</div>
       </div>
 
@@ -143,9 +203,9 @@
       <div class="sos-card" onclick="window.navigateToSolution('incaseof', 'crisis_nuclear'); CAMAEL.closeSosOverlay();">
         <div class="sos-card-top">
           <div class="sos-card-title">☢️ NUCLEAR DETONATION // 7-10 RULE</div>
-          <span class="card-tier-badge badge-danger">SHELTER</span>
+          <span class="entry-tag-pill tag-deadly">SHELTER</span>
         </div>
-        <p class="sos-card-desc">Every 7x increase in time reduces radiation dose rate by factor of 10. Stay deep inside masonry shelter.</p>
+        <p class="sos-card-desc">Every 7x increase in time reduces radiation dose rate by factor of 10 relative to 1 hour post-detonation. Stay deep inside masonry shelter.</p>
         <div class="sos-card-action">OPEN 7-10 DECAY CALCULATOR &rarr;</div>
       </div>
 
@@ -153,7 +213,7 @@
       <div class="sos-card" onclick="window.navigateToSolution('radio', 'radio_morse'); CAMAEL.closeSosOverlay();">
         <div class="sos-card-top">
           <div class="sos-card-title">📻 DISTRESS FREQUENCIES & SOS</div>
-          <span class="card-tier-badge tier-s">VHF / MORSE</span>
+          <span class="entry-tag-pill tag-tier-s">VHF / MORSE</span>
         </div>
         <p class="sos-card-desc">VHF Ch 16 (156.800 MHz) & Air Distress (121.500 MHz). Instant 1-touch optical and audio Morse SOS beacon.</p>
         <div class="sos-card-action">LAUNCH MORSE TRANSCEIVER & FREQS &rarr;</div>
@@ -161,24 +221,19 @@
     </div>
   </div>
 
-  <!-- Sub-Header Controls & Search Bar -->
-  <div class="sub-header">
+  <!-- Sub-Header Controls & Search Bar (Shown in chapter views) -->
+  <div class="sub-header" id="subHeaderBar" style="display: none;">
     <div class="sub-header-title">
+      <button id="subHeaderBackBtn" class="keycap-tile key-dark" style="min-height: 36px; padding: 4px 12px; font-size: 11px; margin-right: 12px;">
+        &larr; CONSOLE
+      </button>
       <span id="subHeaderTitle">Scavenger's Compendium</span>
-      <span id="subHeaderCount" class="badge-count">50 Items</span>
+      <span id="subHeaderCount" class="badge-count">15 Items</span>
     </div>
 
     <div class="sub-header-controls">
-      <div class="search-input-wrapper">
-        <svg class="search-icon" viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-          <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/>
-        </svg>
-        <input type="text" id="globalSearchInput" class="search-input" placeholder="Search directory, tags, treatments...">
-      </div>
-
-      <div id="filterPillsContainer" class="filter-pills">
-        <!-- Dynamic Filter Pills Injected via JS -->
+      <div id="filterPillsContainer" class="filter-key-group">
+        <!-- Dynamic Filter Keycaps Injected via JS -->
       </div>
     </div>
   </div>
@@ -186,9 +241,232 @@
   <!-- Main Viewport Container -->
   <main class="main-container">
 
-    <!-- 0. SECTION: GEAR, TELEMETRY & TRIP PLANNER -->
+    <!-- ==================================================================== -->
+    <!-- SECTION 0: MAIN RETRO-FUTURISTIC CONTROL PANEL CONSOLE (HOME)       -->
+    <!-- ==================================================================== -->
+    <section id="section-home" class="section-view active">
+      <div class="home-console-grid">
+
+        <!-- Row 1: Full-Width Tall Solid Orange SOS Tile -->
+        <button class="keycap-tile tile-orange tile-sos-hero" id="homeSosTile" aria-label="Open Emergency SOS Cheat Sheet">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <span style="font-size: 32px;">⚡</span>
+            <div>
+              <div style="font-size: 18px; font-weight: 800; letter-spacing: 0.06em;">SOS // CRITICAL EMERGENCY SHEET</div>
+              <div style="font-size: 12px; font-weight: 500; opacity: 0.9; margin-top: 2px;">Instant 1-Click Access • Cardiac CPR • Arterial Trauma • Poison • Nuclear 7-10</div>
+            </div>
+          </div>
+          <span class="entry-tag-pill tag-deadly" style="background: #14120d; color: #ff4a1c; font-size: 12px; padding: 6px 12px;">
+            KEYBOARD: PRESS 'S'
+          </span>
+        </button>
+
+        <!-- Row 2: Two Large Tiles: Medical (Teal) and Crisis Playbooks (Orange) -->
+        <button class="keycap-tile tile-teal tile-hero-half" id="homeMedicalTile" onclick="CAMAEL.switchSection('incaseof');">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span style="font-size: 28px;">🫀</span>
+            <div>
+              <div style="font-size: 16px; font-weight: 800; letter-spacing: 0.04em;">MEDICAL & CPR TRIAGE</div>
+              <div style="font-size: 11px; opacity: 0.85; margin-top: 2px;">AHA 110 BPM Metronome • Cardiac Arrest • Trauma</div>
+            </div>
+          </div>
+          <span class="chapter-tile-tag">TIER S</span>
+        </button>
+
+        <button class="keycap-tile tile-orange tile-hero-half" id="homeCrisisTile" onclick="CAMAEL.switchSection('incaseof');">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span style="font-size: 28px;">☢️</span>
+            <div>
+              <div style="font-size: 16px; font-weight: 800; letter-spacing: 0.04em;">CRISIS PLAYBOOKS (60s)</div>
+              <div style="font-size: 11px; opacity: 0.85; margin-top: 2px;">7-10 Nuclear Decay • Severe Storms • Snakebite</div>
+            </div>
+          </div>
+          <span class="chapter-tile-tag">ACTION</span>
+        </button>
+
+        <!-- Grouped Outlined Panel 1: SURVIVE -->
+        <div class="panel-grid-full console-panel">
+          <span class="console-panel-label">SURVIVE</span>
+          <div class="chapter-tile-grid">
+            <button class="keycap-tile key-cream chapter-tile" onclick="CAMAEL.switchSection('compendium');">
+              <div class="chapter-tile-top">
+                <span style="font-size: 24px;">🌿</span>
+                <span class="chapter-tile-tag">15 ENTRIES</span>
+              </div>
+              <div>
+                <div class="chapter-tile-name">Plants & Taxonomy</div>
+                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Forage, medicinal flora & toxic identification</div>
+              </div>
+            </button>
+
+            <button class="keycap-tile key-teal chapter-tile" onclick="window.navigateToSolution('compendium', 'item_bleach');">
+              <div class="chapter-tile-top">
+                <span style="font-size: 24px;">💧</span>
+                <span class="chapter-tile-tag">TIER S</span>
+              </div>
+              <div>
+                <div class="chapter-tile-name">Water & Purification</div>
+                <div style="font-size: 11px; color: var(--tile-teal-edge); margin-top: 4px;">Bleach cold dosage, bio-sand column, boiling</div>
+              </div>
+            </button>
+
+            <button class="keycap-tile key-cream chapter-tile" onclick="window.navigateToSolution('manual', 'guide_dakota_fire');">
+              <div class="chapter-tile-top">
+                <span style="font-size: 24px;">🔥</span>
+                <span class="chapter-tile-tag">FIRECRAFT</span>
+              </div>
+              <div>
+                <div class="chapter-tile-name">Fire & Heat Systems</div>
+                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Dakota hole, battery spark, tinder bundles</div>
+              </div>
+            </button>
+
+            <button class="keycap-tile key-cream chapter-tile" onclick="window.navigateToSolution('manual', 'guide_knots');">
+              <div class="chapter-tile-top">
+                <span style="font-size: 24px;">⛺</span>
+                <span class="chapter-tile-tag">SHELTER</span>
+              </div>
+              <div>
+                <div class="chapter-tile-name">Shelter & Knotcraft</div>
+                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Bowline, taut-line hitch, debris huts, tarps</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Grouped Outlined Panel 2: NAVIGATE -->
+        <div class="panel-grid-full console-panel">
+          <span class="console-panel-label">NAVIGATE</span>
+          <div class="chapter-tile-grid">
+            <button class="keycap-tile key-cream chapter-tile" onclick="CAMAEL.switchSection('map');">
+              <div class="chapter-tile-top">
+                <span style="font-size: 24px;">🗺️</span>
+                <span class="chapter-tile-tag">VECTOR TOPO</span>
+              </div>
+              <div>
+                <div class="chapter-tile-name">Offline Cartography</div>
+                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Interactive canvas, offline pins, lat/long inspection</div>
+              </div>
+            </button>
+
+            <button class="keycap-tile key-cream chapter-tile" onclick="window.navigateToSolution('manual', 'guide_four_fingers');">
+              <div class="chapter-tile-top">
+                <span style="font-size: 24px;">🧭</span>
+                <span class="chapter-tile-tag">CELESTIAL</span>
+              </div>
+              <div>
+                <div class="chapter-tile-name">Sun & Direction</div>
+                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Four-fingers sunset rule, azimuth, shadow-stick</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Grouped Outlined Panel 3: EQUIPMENT & COMMS -->
+        <div class="panel-grid-full console-panel">
+          <span class="console-panel-label">EQUIPMENT & COMMS</span>
+          <div class="chapter-tile-grid">
+            <button class="keycap-tile key-cream chapter-tile" onclick="CAMAEL.switchSection('recipes');">
+              <div class="chapter-tile-top">
+                <span style="font-size: 24px;">🍲</span>
+                <span class="chapter-tile-tag">11 RECIPES</span>
+              </div>
+              <div>
+                <div class="chapter-tile-name">Survival Kitchen & Rations</div>
+                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">WHO ORS, charcoal slurry, hardtack, pantry filter</div>
+              </div>
+            </button>
+
+            <button class="keycap-tile key-cream chapter-tile" onclick="CAMAEL.switchSection('gear');">
+              <div class="chapter-tile-top">
+                <span style="font-size: 24px;">🎒</span>
+                <span class="chapter-tile-tag">TELEMETRY</span>
+              </div>
+              <div>
+                <div class="chapter-tile-name">Gear & Loadout Planner</div>
+                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Biome x Duration generator, wildcraft substitutes</div>
+              </div>
+            </button>
+
+            <button class="keycap-tile key-cream chapter-tile" onclick="CAMAEL.switchSection('radio');">
+              <div class="chapter-tile-top">
+                <span style="font-size: 24px;">📻</span>
+                <span class="chapter-tile-tag">VHF / NATO</span>
+              </div>
+              <div>
+                <div class="chapter-tile-name">Emergency Comms & Morse</div>
+                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Distress frequencies, audio/optical Morse beacon</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Grouped Outlined Panel 4: DATA & IDENTITY -->
+        <div class="panel-grid-full console-panel">
+          <span class="console-panel-label">DATA & IDENTITY</span>
+          <div class="chapter-tile-grid">
+            <button class="keycap-tile key-cream chapter-tile" onclick="CAMAEL.switchSection('logbook');">
+              <div class="chapter-tile-top">
+                <span style="font-size: 24px;">🔐</span>
+                <span class="chapter-tile-tag">LOCAL VAULT</span>
+              </div>
+              <div>
+                <div class="chapter-tile-name">Encrypted ICE Manifest</div>
+                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Medical history, rally coords, JSON backup & restore</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Compact Bottom Utility Row (Dark Grey Keycaps) -->
+        <div class="utility-row-panel">
+          <button class="keycap-tile key-dark" id="btnOpenSettings" style="min-height: 44px; padding: 8px 16px; font-size: 12px;">
+            ⚙️ Settings & Shortcuts
+          </button>
+          <button class="keycap-tile key-dark" id="btnToggleRedLight" style="min-height: 44px; padding: 8px 16px; font-size: 12px;">
+            🚨 Red-Light Night Mode: OFF
+          </button>
+          <button class="keycap-tile key-dark" id="btnToggleOled" style="min-height: 44px; padding: 8px 16px; font-size: 12px;">
+            🔋 OLED Black: OFF
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- SECTION 1: COMPENDIUM & BARTER INDEX                                -->
+    <!-- ==================================================================== -->
+    <section id="section-compendium" class="section-view">
+      <div style="padding: 0 24px 20px 24px;">
+        <!-- Tier S/A/B Legend Panel defining each tier -->
+        <div class="tier-legend-panel">
+          <span style="font-weight: 800; letter-spacing: 0.05em; color: var(--text-primary);">TIER DEFINITIONS:</span>
+          <span class="legend-badge tier-s-badge">TIER S</span>
+          <span>Priceless Lifesaver (Indispensable biological or chemical need)</span>
+          <span class="legend-gap">•</span>
+          <span class="legend-badge tier-a-badge">TIER A</span>
+          <span>High Utility (Essential field tool or high-yield forage)</span>
+          <span class="legend-gap">•</span>
+          <span class="legend-badge tier-b-badge">TIER B</span>
+          <span>Resource / Sustenance (Secondary forage or building material)</span>
+          <span class="legend-gap">•</span>
+          <span class="legend-badge danger-badge">DEADLY: DO NOT EAT</span>
+          <span>Lethal Hazard / Extreme Poison</span>
+        </div>
+
+        <!-- Dynamic Entry Tiles Grid -->
+        <div id="compendiumGrid" class="entry-tiles-grid">
+          <!-- Dynamic Keycap Entry Tiles Injected via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- SECTION 2: GEAR, TELEMETRY & TRIP PLANNER                           -->
+    <!-- ==================================================================== -->
     <section id="section-gear" class="section-view">
-      <!-- 4-Gauge Survival Telemetry Row -->
+      <!-- 4-Gauge Survival Telemetry Row (LCD Style) -->
       <div class="telemetry-row">
         <div class="telemetry-card">
           <div class="telemetry-label">
@@ -229,7 +507,7 @@
 
       <!-- Trip Loadout Generator Controls -->
       <div class="gear-planner-box">
-        <div style="font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--accent-tactical); letter-spacing: 0.08em;">
+        <div style="font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--tile-cream-bg); letter-spacing: 0.08em;">
           TRIP LOADOUT GENERATOR // VECTORS: BIOME x LOCATION x DURATION x PARTY
         </div>
         <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
@@ -285,7 +563,9 @@
       </div>
     </section>
 
-    <!-- 1. SECTION: MAP (World Cartography & Waypoints) -->
+    <!-- ==================================================================== -->
+    <!-- SECTION 3: OFFLINE FIELD CARTOGRAPHY                                -->
+    <!-- ==================================================================== -->
     <section id="section-map" class="section-view">
       <div class="map-view-layout">
         <div class="map-canvas-container">
@@ -296,10 +576,10 @@
           </div>
 
           <div class="map-floating-controls">
-            <button id="mapZoomIn" class="map-btn">+ Zoom</button>
-            <button id="mapZoomOut" class="map-btn">- Zoom</button>
-            <button id="mapReset" class="map-btn">Center View</button>
-            <button id="addWaypointBtn" class="map-btn" style="background-color: #1a1a1a; font-weight: 700;">+ Add Waypoint Pin</button>
+            <button id="mapZoomIn" class="keycap-tile key-dark" style="min-height: 36px; padding: 4px 10px; font-size: 11px;">+ Zoom</button>
+            <button id="mapZoomOut" class="keycap-tile key-dark" style="min-height: 36px; padding: 4px 10px; font-size: 11px;">- Zoom</button>
+            <button id="mapReset" class="keycap-tile key-dark" style="min-height: 36px; padding: 4px 10px; font-size: 11px;">Center</button>
+            <button id="addWaypointBtn" class="keycap-tile key-cream" style="min-height: 36px; padding: 4px 12px; font-size: 11px; font-weight: 700;">+ Waypoint Pin</button>
           </div>
 
           <canvas id="worldMapCanvas"></canvas>
@@ -317,7 +597,9 @@
       </div>
     </section>
 
-    <!-- 2. SECTION: RECIPES & PANTRY MATCHER -->
+    <!-- ==================================================================== -->
+    <!-- SECTION 4: SURVIVAL KITCHEN & RATIONS                                -->
+    <!-- ==================================================================== -->
     <section id="section-recipes" class="section-view">
       <div class="recipes-layout">
         <aside class="pantry-sidebar">
@@ -328,7 +610,7 @@
           <div id="pantryIngredientsList" class="ingredient-tags-list">
             <!-- Dynamic Ingredients List -->
           </div>
-          <div id="pantryMatchNotice" style="font-size: 11px; color: #00dd88; display: none; padding: 10px; border: 1px solid #00dd88; background: rgba(0,221,136,0.05);">
+          <div id="pantryMatchNotice" style="font-size: 11px; color: var(--tile-teal-bg); display: none; padding: 10px; border: 1px solid var(--tile-teal-bg); background: rgba(34,184,184,0.08);">
             Showing matching recipes...
           </div>
         </aside>
@@ -347,14 +629,18 @@
       </div>
     </section>
 
-    <!-- 3. SECTION: COMPENDIUM & BARTER INDEX (Matches Reference Grid) -->
-    <section id="section-compendium" class="section-view active">
-      <div id="compendiumGrid" class="modern-grid">
-        <!-- Dynamic Cards: Flora, Fungi, Materials, Toxic Alerts, Barter Tiers -->
+    <!-- ==================================================================== -->
+    <!-- SECTION 5: FIELD MANUAL & VISUAL BLUEPRINTS                         -->
+    <!-- ==================================================================== -->
+    <section id="section-manual" class="section-view">
+      <div id="manualGrid" class="modern-grid" style="padding: 0 24px 32px 24px;">
+        <!-- Four Fingers Sunset, Hydration Scale, Sand-Charcoal Filter Column, Dakota Fire Hole, Knots -->
       </div>
     </section>
 
-    <!-- 4. SECTION: IN CASE OF... (Crisis Playbooks & Interactive Tools) -->
+    <!-- ==================================================================== -->
+    <!-- SECTION 6: CRISIS PLAYBOOKS & TRIAGE                                -->
+    <!-- ==================================================================== -->
     <section id="section-incaseof" class="section-view">
       <!-- Interactive Emergency Tools Banner -->
       <div class="tool-banner-card">
@@ -362,13 +648,13 @@
         <div class="interactive-box">
           <div class="interactive-box-title">
             <span>🫀 CPR RESCUE METRONOME</span>
-            <span class="card-tier-badge badge-danger">110 BPM</span>
+            <span class="entry-tag-pill tag-deadly">110 BPM</span>
           </div>
-          <p style="font-size: 12px; color: var(--text-secondary);">
-            Administer continuous chest compressions directly on center sternum to this exact audio-visual tempo.
+          <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
+            Call 112 first. Administer continuous chest compressions directly on center sternum to this exact audio-visual tempo.
           </p>
           <div id="cprPulseBox" class="cpr-visual-pulse">PUSH ON BEAT</div>
-          <button id="cprStartBtn" class="pill-btn" style="padding: 10px; font-weight: 700; background-color: var(--text-primary); color: #000;">
+          <button id="cprStartBtn" class="keycap-tile key-teal" style="width: 100%; font-weight: 800; font-family: var(--font-mono); margin-top: 10px;">
             START CPR METRONOME (110 BPM)
           </button>
         </div>
@@ -377,8 +663,11 @@
         <div class="interactive-box">
           <div class="interactive-box-title">
             <span>☢️ 7-10 NUCLEAR FALLOUT CALCULATOR</span>
-            <span class="card-tier-badge tier-a">7x Time = 10x Less Dose</span>
+            <span class="entry-tag-pill tag-tier-s">7x Time = 10x Less Dose</span>
           </div>
+          <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
+            Relative to dose rate at 1 hour after detonation (R0). Minimum slider: 1 Hour.
+          </p>
           <div class="calc-slider-group">
             <div style="display: flex; justify-content: space-between; font-size: 11px;">
               <span>TIME ELAPSED SINCE DETONATION:</span>
@@ -393,38 +682,35 @@
       </div>
 
       <!-- Scenarios Grid -->
-      <div id="crisisGrid" class="modern-grid">
+      <div id="crisisGrid" class="modern-grid" style="padding: 0 24px 32px 24px;">
         <!-- Thunderstorm, Nuclear, Wildfire, Flash Flood, Blizzard, Snakebite -->
       </div>
     </section>
 
-    <!-- 5. SECTION: FIELD MANUAL & VISUAL DIAGRAMS -->
-    <section id="section-manual" class="section-view">
-      <div id="manualGrid" class="modern-grid">
-        <!-- Four Fingers Sunset, Hydration Scale, Sand-Charcoal Filter Column, Dakota Fire Hole, Knots -->
-      </div>
-    </section>
-
-    <!-- 6. SECTION: RADIO & COMMS -->
+    <!-- ==================================================================== -->
+    <!-- SECTION 7: EMERGENCY COMMS & MORSE                                  -->
+    <!-- ==================================================================== -->
     <section id="section-radio" class="section-view">
-      <div style="padding: 24px; border-bottom: 1px solid var(--border-color);">
+      <div style="padding: 24px;">
         <!-- Morse Transceiver -->
         <div class="morse-console">
           <div class="interactive-box-title">
             <span>📻 OPTICAL & AUDIO MORSE CODE TRANSCEIVER</span>
-            <button id="emergencySosBtn" class="pill-btn" style="background-color: var(--accent-alert); color: #fff; border-color: var(--accent-alert); font-weight: bold;">
+            <button id="emergencySosBtn" class="keycap-tile key-orange" style="min-height: 36px; padding: 4px 12px; font-weight: 800; font-size: 11px;">
               🚨 1-TOUCH DISTRESS SOS (... --- ...)
             </button>
           </div>
           <input type="text" id="morseTextInput" class="morse-input" placeholder="Type text to convert to Morse code (e.g. SOS NEED WATER)..." value="SOS">
           <div id="morseOutputDisplay" class="morse-output-display">... --- ...</div>
           <div style="display: flex; gap: 8px;">
-            <button id="playMorseAudioBtn" class="map-btn">🔊 Play Audio Tones (Web Audio)</button>
+            <button id="playMorseAudioBtn" class="keycap-tile key-dark" style="min-height: 40px; padding: 6px 14px; font-size: 12px;">
+              🔊 Play Audio Tones (Web Audio)
+            </button>
           </div>
         </div>
 
         <!-- Emergency Radio Directory Header -->
-        <div style="font-size: 14px; font-weight: 700; margin-bottom: 14px; letter-spacing: -0.01em;">
+        <div style="font-size: 14px; font-weight: 700; margin-bottom: 14px; font-family: var(--font-mono); color: var(--tile-cream-bg);">
           GRID-DOWN EMERGENCY FREQUENCIES DIRECTORY
         </div>
         <div id="radioFreqList" class="modern-grid" style="border-bottom: 1px solid var(--border-color); margin-bottom: 24px;">
@@ -432,7 +718,7 @@
         </div>
 
         <!-- NATO Phonetic Alphabet -->
-        <div style="font-size: 14px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.01em;">
+        <div style="font-size: 14px; font-weight: 700; margin-bottom: 12px; font-family: var(--font-mono); color: var(--tile-cream-bg);">
           NATO PHONETIC ALPHABET REFERENCE
         </div>
         <div id="natoAlphabetGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 6px;">
@@ -441,20 +727,22 @@
       </div>
     </section>
 
-    <!-- 7. SECTION: LOGBOOK & PRIVATE VAULT -->
+    <!-- ==================================================================== -->
+    <!-- SECTION 8: LOGBOOK & PRIVATE ENCRYPTED VAULT                        -->
+    <!-- ==================================================================== -->
     <section id="section-logbook" class="section-view">
       <div style="padding: 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
         <div>
-          <h2 style="font-size: 16px; font-weight: 700;">ENCRYPTED LOCAL STORAGE MANIFEST</h2>
+          <h2 style="font-size: 16px; font-weight: 700; font-family: var(--font-mono);">ENCRYPTED LOCAL STORAGE MANIFEST</h2>
           <p style="font-size: 12px; color: var(--text-secondary);">
             All data entered below is stored locally on this machine/phone. No cloud, no internet transmission.
           </p>
         </div>
         <div style="display: flex; gap: 8px;">
-          <button id="exportLogbookBtn" class="pill-btn" style="background-color: var(--text-primary); color: #000; font-weight: 700;">
+          <button id="exportLogbookBtn" class="keycap-tile key-cream" style="min-height: 40px; padding: 6px 14px; font-weight: 700; font-size: 12px;">
             ⬇️ Download Backup JSON
           </button>
-          <label class="pill-btn" style="cursor: pointer;">
+          <label class="keycap-tile key-dark" style="min-height: 40px; padding: 6px 14px; font-weight: 700; font-size: 12px; cursor: pointer;">
             ⬆️ Restore Backup
             <input type="file" id="importLogbookInput" accept=".json" style="display: none;">
           </label>
@@ -476,7 +764,7 @@
         </div>
         <div class="form-field">
           <label class="form-label">Primary Family Rendezvous Coordinates</label>
-          <input type="text" id="rallyPrimary" class="form-input" placeholder="e.g. 35.68 N, -81.20 W (Cabin at Pine Ridge)">
+          <input type="text" id="rallyPrimary" class="form-input" placeholder="e.g. 17.3850 N, 78.4867 E (Hyderabad)">
         </div>
         <div class="form-field">
           <label class="form-label">Secondary / Backup Rally Point</label>
@@ -499,11 +787,17 @@
 
   </main>
 
-  <!-- Inspection Modal Drawer -->
+  <!-- Inspection Modal Drawer (Entry Detail & Settings) -->
   <div id="modalOverlay" class="modal-overlay">
     <div class="modal-sheet">
       <div class="modal-header">
-        <h3 id="modalTitle" class="modal-title">Item Details</h3>
+        <div class="modal-header-info">
+          <div id="modalIconContainer" class="modal-icon-key"></div>
+          <div>
+            <h3 id="modalTitle" class="modal-title">Item Details</h3>
+            <div id="modalSubtitle" style="font-size: 12px; font-style: italic; color: var(--text-secondary);"></div>
+          </div>
+        </div>
         <button id="modalCloseBtn" class="modal-close-btn">&times;</button>
       </div>
       <div id="modalBody" class="modal-body">
@@ -512,7 +806,82 @@
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- Settings & Keyboard Shortcuts Modal -->
+  <div id="settingsModalOverlay" class="modal-overlay">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <div class="modal-icon-key">⚙️</div>
+          <h3 class="modal-title">System Settings & Keyboard Legend</h3>
+        </div>
+        <button id="settingsCloseBtn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--tile-cream-bg); margin-bottom: 12px; letter-spacing: 0.08em;">
+          KEYBOARD SHORTCUTS (LAPTOP COMMANDS)
+        </div>
+        <div class="step-tiles-list" style="margin-bottom: 24px;">
+          <div class="step-tile">
+            <span class="step-number-badge">/</span>
+            <div>
+              <strong>Focus Global Search</strong>
+              <div style="font-size: 12px; color: var(--text-secondary);">Instantly highlights search input from anywhere in the application.</div>
+            </div>
+          </div>
+          <div class="step-tile">
+            <span class="step-number-badge">S</span>
+            <div>
+              <strong>Emergency SOS Cheat Sheet</strong>
+              <div style="font-size: 12px; color: var(--text-secondary);">Triggers the critical 1-click life-saving sheet.</div>
+            </div>
+          </div>
+          <div class="step-tile">
+            <span class="step-number-badge">Esc</span>
+            <div>
+              <strong>Back to Console / Close Overlays</strong>
+              <div style="font-size: 12px; color: var(--text-secondary);">Dismisses search results, modals, or returns to main console.</div>
+            </div>
+          </div>
+          <div class="step-tile">
+            <span class="step-number-badge">&uarr;&darr;&larr;&rarr;</span>
+            <div>
+              <strong>Arrow Navigation</strong>
+              <div style="font-size: 12px; color: var(--text-secondary);">Move focus indicator between interactive keycap tiles.</div>
+            </div>
+          </div>
+          <div class="step-tile">
+            <span class="step-number-badge">&crarr;</span>
+            <div>
+              <strong>Enter</strong>
+              <div style="font-size: 12px; color: var(--text-secondary);">Activates the currently focused keycap tile.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--tile-cream-bg); margin-bottom: 12px; letter-spacing: 0.08em;">
+          DISPLAY & NIGHT VISION CONTROLS
+        </div>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px;">
+          <button id="settingsToggleRedLight" class="keycap-tile key-dark">
+            🚨 Toggle Red-Light Night Vision
+          </button>
+          <button id="settingsToggleOled" class="keycap-tile key-dark">
+            🔋 Toggle Ultra-Reserve OLED Black
+          </button>
+        </div>
+
+        <div style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--tile-cream-bg); margin-bottom: 8px; letter-spacing: 0.08em;">
+          OFFLINE CACHE & STORAGE STATUS
+        </div>
+        <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+          All assets, typography, and data are 100% self-hosted on this local machine. No external CDNs are contacted. All local edits are persisted in encrypted browser localStorage.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts (Self-Hosted, Order-Preserving) -->
+  <script src="js/icons.js"></script>
   <script src="js/data/world-geo.js"></script>
   <script src="js/data/recipes-data.js"></script>
   <script src="js/data/items-data.js"></script>
