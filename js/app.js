@@ -43,6 +43,8 @@ const CAMAEL = {
     this.initGlobalSearch();
     this.initKeyboardShortcuts();
     this.initSettingsModal();
+    this.initBookmarks();
+    this.initDisclaimer();
     this.renderCompendium();
     this.renderGearPlanner();
     this.renderRecipes();
@@ -97,9 +99,26 @@ const CAMAEL = {
   },
 
   // ------------------------------------------------------------------------
-  // Theme & Night Vision Modes (Red-Light Mode & Ultra-Reserve OLED)
+  // Theme & Night Vision Modes (Light/Dark Theme, Red-Light Mode & Ultra-Reserve OLED)
   // ------------------------------------------------------------------------
   initThemeAndDisplay() {
+    // Theme Mode (Dark by default, or Light)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlTheme = urlParams.get("theme");
+    const savedTheme = urlTheme || localStorage.getItem("codex_camael_theme") || "dark";
+    if (savedTheme === "light") {
+      document.body.classList.add("theme-light");
+      document.documentElement.classList.add("theme-light");
+      this.updateThemeButtonState(true);
+    } else {
+      document.body.classList.remove("theme-light");
+      document.documentElement.classList.remove("theme-light");
+      this.updateThemeButtonState(false);
+    }
+
+    const btnTheme = document.getElementById("btnToggleTheme");
+    if (btnTheme) btnTheme.addEventListener("click", () => this.toggleTheme());
+
     // Red-Light Mode
     const savedRedLight = localStorage.getItem("codex_camael_night_mode") === "true";
     if (savedRedLight) {
@@ -125,10 +144,23 @@ const CAMAEL = {
     if (settingsOled) settingsOled.addEventListener("click", () => this.toggleOled());
   },
 
-  toggleRedLight() {
-    const isRed = document.body.classList.toggle("red-light-mode");
-    localStorage.setItem("codex_camael_night_mode", isRed ? "true" : "false");
-    this.updateRedLightButtonState(isRed);
+  toggleTheme() {
+    const isLight = document.body.classList.toggle("theme-light");
+    document.documentElement.classList.toggle("theme-light", isLight);
+    localStorage.setItem("codex_camael_theme", isLight ? "light" : "dark");
+    this.updateThemeButtonState(isLight);
+  },
+
+  updateThemeButtonState(isLight) {
+    const btn = document.getElementById("btnToggleTheme");
+    if (btn) {
+      btn.textContent = isLight ? "☀️ THEME: LIGHT" : "🌙 THEME: DARK";
+      if (isLight) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    }
   },
 
   updateRedLightButtonState(isActive) {
@@ -258,7 +290,9 @@ const CAMAEL = {
 
     // 5. Language Switcher (EN / മലയാളം / తెలుగు)
     const langBtns = document.querySelectorAll(".lcd-lang-switcher .lang-btn");
-    const savedLang = localStorage.getItem("codex_camael_lang") || "en";
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLang = urlParams.get("screenshotLang") || urlParams.get("lang");
+    const savedLang = urlLang || localStorage.getItem("codex_camael_lang") || "en";
     this.setLanguage(savedLang);
 
     langBtns.forEach(btn => {
@@ -277,6 +311,155 @@ const CAMAEL = {
 
     document.querySelectorAll(".lcd-lang-switcher .lang-btn").forEach(btn => {
       btn.classList.toggle("active", btn.dataset.lang === lang);
+    });
+
+    // Translate Home Console Tiles
+    const homeTranslations = {
+      en: {
+        sosTitle: "SOS // CRITICAL EMERGENCY SHEET",
+        sosSub: "Instant 1-Click Access • Cardiac CPR • Arterial Trauma • Poison • Nuclear 7-10",
+        sosTag: "6 CARDS",
+        medTitle: "MEDICAL & CPR TRIAGE",
+        medSub: "AHA 110 BPM Metronome • Cardiac Arrest • Trauma",
+        medTag: "110 BPM",
+        crisisTitle: "CRISIS PLAYBOOKS (60s)",
+        crisisSub: "7-10 Nuclear Decay • Severe Storms • Snakebite",
+        crisisTag: "8 SCENARIOS",
+        plants: "Plants & Taxonomy",
+        plantsTag: "15 ENTRIES",
+        water: "Water & Purification",
+        waterTag: "4 METHODS",
+        fire: "Fire & Heat Systems",
+        fireTag: "3 SYSTEMS",
+        shelter: "Shelter & Knotcraft",
+        shelterTag: "5 GUIDES",
+        map: "Offline Cartography",
+        mapTag: "4 WAYPOINTS",
+        sun: "Sun & Direction",
+        sunTag: "3 METHODS",
+        kitchen: "Survival Kitchen",
+        kitchenTag: "11 RECIPES",
+        gear: "Gear & Loadouts",
+        gearTag: "6 LOADOUTS",
+        comms: "Comms & Morse",
+        commsTag: "7 FREQS",
+        vault: "Emergency ICE Vault",
+        vaultTag: "LOCAL ONLY"
+      },
+      ml: {
+        sosTitle: "SOS // അടിയന്തര സഹായ ഷീറ്റ്",
+        sosSub: "ഉടൻ പ്രവേശനം • കാർഡിയാക് CPR • ആർട്ടീരിയൽ ട്രോമ • വിഷബാധ • ന്യൂക്ലിയർ 7-10",
+        sosTag: "6 കാർഡുകൾ",
+        medTitle: "മെഡിക്കൽ & CPR ട്രയേജ്",
+        medSub: "AHA 110 BPM മെട്രോണോം • ഹൃദയാഘാതം • ട്രോമ",
+        medTag: "110 BPM",
+        crisisTitle: "ക്രൈസിസ് പ്ലേബുക്ക് (60s)",
+        crisisSub: "7-10 ന്യൂക്ലിയർ ശോഷണം • ചുഴലിക്കാറ്റ് • പാമ്പുകടി",
+        crisisTag: "8 രംഗങ്ങൾ",
+        plants: "സസ്യങ്ങളും ടാക്സോണമിയും",
+        plantsTag: "15 ഇനങ്ങൾ",
+        water: "ജലശുദ്ധീകരണം",
+        waterTag: "4 രീതികൾ",
+        fire: "തീയും താപ സംവിധാനങ്ങളും",
+        fireTag: "3 സംവിധാനങ്ങൾ",
+        shelter: "അഭയവും കെട്ടുകളും",
+        shelterTag: "5 വഴികാട്ടികൾ",
+        map: "ഓഫ്‌ലൈൻ ഭൂപടം",
+        mapTag: "4 പോയിന്റുകൾ",
+        sun: "സൂര്യനും ദിശയും",
+        sunTag: "3 രീതികൾ",
+        kitchen: "മനുഗഡ അടുക്കള",
+        kitchenTag: "11 വിഭവങ്ങൾ",
+        gear: "ഗിയർ & ലോഡുകൾ",
+        gearTag: "6 ലോഡുകൾ",
+        comms: "വാർത്താവിനിമയം",
+        commsTag: "7 ഫ്രീക്വൻസി",
+        vault: "അടിയന്തര ICE നിലവറ",
+        vaultTag: "ലോക്കൽ മാത്രം"
+      },
+      te: {
+        sosTitle: "SOS // అత్యవసర సహాయ షీట్",
+        sosSub: "తక్షణ యాక్సెస్ • కార్డియాక్ CPR • తీవ్ర రక్తస్రావం • విషప్రభావం • న్యూక్లియర్ 7-10",
+        sosTag: "6 కార్డులు",
+        medTitle: "వైద్య & CPR ట్రయాజ్",
+        medSub: "AHA 110 BPM మెట్రోనొమ్ • గుండెపోటు • అత్యవసర గాయాలు",
+        medTag: "110 BPM",
+        crisisTitle: "సంక్షోభ ప్లేబుక్స్ (60s)",
+        crisisSub: "7-10 రేడియేషన్ క్షయం • భయంకర తుఫానులు • పాముకాటు",
+        crisisTag: "8 దృశ్యాలు",
+        plants: "మొక్కలు & వర్గీకరణ",
+        plantsTag: "15 ఎంట్రీలు",
+        water: "నీటి శుద్ధి పద్ధతులు",
+        waterTag: "4 పద్ధతులు",
+        fire: "నిప్పు & ఉష్ణ వ్యవస్థలు",
+        fireTag: "3 వ్యవస్థలు",
+        shelter: "ఆశ్రయం & ముడులు",
+        shelterTag: "5 గైడ్‌లు",
+        map: "ఆఫ్‌లైన్ పటాలు",
+        mapTag: "4 వేపాయింట్లు",
+        sun: "సూర్యుడు & దిశ",
+        sunTag: "3 పద్ధతులు",
+        kitchen: "మనుగడ వంటశాల",
+        kitchenTag: "11 వంటకాలు",
+        gear: "పరికరాలు & లోడౌట్లు",
+        gearTag: "6 లోడౌట్లు",
+        comms: "సమాచార మార్పిడి & మోర్స్",
+        commsTag: "7 ఫ్రీక్వెన్సీలు",
+        vault: "అత్యవసర ICE వాల్ట్",
+        vaultTag: "స్థానికం మాత్రమే"
+      }
+    };
+
+    const t = homeTranslations[lang] || homeTranslations.en;
+    const sosTile = document.getElementById("homeSosTile");
+    if (sosTile) {
+      const title = sosTile.querySelector(".tile-title");
+      const sub = sosTile.querySelector(".tile-subline");
+      const tag = sosTile.querySelector(".chapter-tile-tag");
+      if (title) title.textContent = t.sosTitle;
+      if (sub) sub.textContent = t.sosSub;
+      if (tag) tag.textContent = t.sosTag;
+    }
+    const medTile = document.getElementById("homeMedicalTile");
+    if (medTile) {
+      const title = medTile.querySelector(".tile-title");
+      const sub = medTile.querySelector(".tile-subline");
+      const tag = medTile.querySelector(".chapter-tile-tag");
+      if (title) title.textContent = t.medTitle;
+      if (sub) sub.textContent = t.medSub;
+      if (tag) tag.textContent = t.medTag;
+    }
+    const crisisTile = document.getElementById("homeCrisisTile");
+    if (crisisTile) {
+      const title = crisisTile.querySelector(".tile-title");
+      const sub = crisisTile.querySelector(".tile-subline");
+      const tag = crisisTile.querySelector(".chapter-tile-tag");
+      if (title) title.textContent = t.crisisTitle;
+      if (sub) sub.textContent = t.crisisSub;
+      if (tag) tag.textContent = t.crisisTag;
+    }
+
+    const mapping = [
+      { sel: ".console-panel:nth-of-type(1) .chapter-tile:nth-of-type(1)", key: "plants", tagKey: "plantsTag" },
+      { sel: ".console-panel:nth-of-type(1) .chapter-tile:nth-of-type(2)", key: "water", tagKey: "waterTag" },
+      { sel: ".console-panel:nth-of-type(1) .chapter-tile:nth-of-type(3)", key: "fire", tagKey: "fireTag" },
+      { sel: ".console-panel:nth-of-type(1) .chapter-tile:nth-of-type(4)", key: "shelter", tagKey: "shelterTag" },
+      { sel: ".console-panel:nth-of-type(2) .chapter-tile:nth-of-type(1)", key: "map", tagKey: "mapTag" },
+      { sel: ".console-panel:nth-of-type(2) .chapter-tile:nth-of-type(2)", key: "sun", tagKey: "sunTag" },
+      { sel: ".console-panel:nth-of-type(3) .chapter-tile:nth-of-type(1)", key: "kitchen", tagKey: "kitchenTag" },
+      { sel: ".console-panel:nth-of-type(3) .chapter-tile:nth-of-type(2)", key: "gear", tagKey: "gearTag" },
+      { sel: ".console-panel:nth-of-type(3) .chapter-tile:nth-of-type(3)", key: "comms", tagKey: "commsTag" },
+      { sel: ".console-panel:nth-of-type(4) .chapter-tile", key: "vault", tagKey: "vaultTag" }
+    ];
+
+    mapping.forEach(m => {
+      const btn = document.querySelector(m.sel);
+      if (btn) {
+        const titleEl = btn.querySelector(".tile-title");
+        const tagEl = btn.querySelector(".chapter-tile-tag");
+        if (titleEl && t[m.key]) titleEl.textContent = t[m.key];
+        if (tagEl && t[m.tagKey]) tagEl.textContent = t[m.tagKey];
+      }
     });
   },
 
@@ -306,7 +489,19 @@ const CAMAEL = {
 
     // Check hash if present
     const hash = window.location.hash.replace("#", "");
-    if (hash && document.getElementById(`section-${hash}`)) {
+    if (hash === "sos") {
+      this.switchSection("home");
+      this.openSosOverlay();
+    } else if (hash.startsWith("entry-")) {
+      const itemId = hash.replace("entry-", "");
+      this.switchSection("compendium");
+      setTimeout(() => {
+        if (window.CAMAEL_ITEMS) {
+          const targetItem = window.CAMAEL_ITEMS.find(i => i.id === itemId);
+          if (targetItem) this.showItemDetail(targetItem);
+        }
+      }, 50);
+    } else if (hash && document.getElementById(`section-${hash}`)) {
       this.switchSection(hash);
     } else {
       this.switchSection("home");
@@ -401,6 +596,18 @@ const CAMAEL = {
           return;
         }
 
+        const disclaimerModal = document.getElementById("disclaimerModalOverlay");
+        if (disclaimerModal && disclaimerModal.classList.contains("active")) {
+          // Disclaimer cannot be dismissed with Esc until acknowledged
+          return;
+        }
+
+        const bookmarksModal = document.getElementById("bookmarksModalOverlay");
+        if (bookmarksModal && bookmarksModal.classList.contains("active")) {
+          this.closeBookmarksModal();
+          return;
+        }
+
         const sosOverlay = document.getElementById("sosOverlay");
         if (sosOverlay && sosOverlay.classList.contains("active")) {
           this.closeSosOverlay();
@@ -456,6 +663,156 @@ const CAMAEL = {
         }
       }
     });
+  },
+
+  // ------------------------------------------------------------------------
+  // Bookmarks: Save / Remove / List / Badge Count
+  // ------------------------------------------------------------------------
+  initBookmarks() {
+    const openBtn = document.getElementById("btnOpenBookmarks");
+    const closeBtn = document.getElementById("bookmarksCloseBtn");
+    const overlay = document.getElementById("bookmarksModalOverlay");
+
+    if (openBtn) openBtn.addEventListener("click", () => this.openBookmarksModal());
+    if (closeBtn) closeBtn.addEventListener("click", () => this.closeBookmarksModal());
+    if (overlay) {
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) this.closeBookmarksModal();
+      });
+    }
+
+    this.updateBookmarkBadge();
+  },
+
+  getBookmarks() {
+    try {
+      return JSON.parse(localStorage.getItem("codex_camael_bookmarks") || "[]");
+    } catch {
+      return [];
+    }
+  },
+
+  saveBookmarks(list) {
+    localStorage.setItem("codex_camael_bookmarks", JSON.stringify(list));
+    this.updateBookmarkBadge();
+  },
+
+  isBookmarked(id) {
+    return this.getBookmarks().some(b => b.id === id);
+  },
+
+  toggleBookmark(entry) {
+    let list = this.getBookmarks();
+    const idx = list.findIndex(b => b.id === entry.id);
+    if (idx >= 0) {
+      list.splice(idx, 1);
+    } else {
+      list.push({
+        id: entry.id,
+        title: entry.commonName || entry.name || entry.title,
+        chapter: entry._chapter || "COMPENDIUM"
+      });
+    }
+    this.saveBookmarks(list);
+    return idx < 0; // true = just bookmarked
+  },
+
+  updateBookmarkBadge() {
+    const badge = document.getElementById("bookmarkCount");
+    if (badge) {
+      const count = this.getBookmarks().length;
+      badge.textContent = count > 0 ? count : "";
+      badge.style.display = count > 0 ? "inline-block" : "none";
+    }
+  },
+
+  openBookmarksModal() {
+    const overlay = document.getElementById("bookmarksModalOverlay");
+    if (overlay) {
+      overlay.classList.add("active");
+      this.renderBookmarksList();
+    }
+  },
+
+  closeBookmarksModal() {
+    const overlay = document.getElementById("bookmarksModalOverlay");
+    if (overlay) overlay.classList.remove("active");
+  },
+
+  renderBookmarksList() {
+    const container = document.getElementById("bookmarksListContainer");
+    if (!container) return;
+    const list = this.getBookmarks();
+
+    if (list.length === 0) {
+      container.innerHTML = `<div style="padding: 24px; color: var(--text-secondary); text-align: center; font-family: var(--font-mono); font-size: 13px;">NO BOOKMARKS SAVED<br><span style="font-size: 11px; opacity: 0.7;">Open any entry and tap the Bookmark key to save it here.</span></div>`;
+      return;
+    }
+
+    container.innerHTML = list.map((b, idx) => `
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 8px;">
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-weight: 700; color: var(--text-primary); font-size: 14px; word-break: break-word;">${b.title}</div>
+          <span class="entry-tag-pill tag-tier" style="font-size: 10px; margin-top: 4px; display: inline-block;">${b.chapter}</span>
+        </div>
+        <div style="display: flex; gap: 8px; flex-shrink: 0;">
+          <button class="keycap-tile key-teal" style="min-height: 34px; padding: 4px 10px; font-size: 11px;"
+            onclick="CAMAEL.openBookmarkedEntry('${b.id}', '${b.chapter}')">VIEW</button>
+          <button class="keycap-tile key-dark" style="min-height: 34px; padding: 4px 10px; font-size: 11px;"
+            onclick="CAMAEL.removeBookmarkById('${b.id}')">REMOVE</button>
+        </div>
+      </div>
+    `).join("");
+  },
+
+  openBookmarkedEntry(id, chapter) {
+    this.closeBookmarksModal();
+    const chapterMap = {
+      "COMPENDIUM": { data: window.CAMAEL_ITEMS, fn: "showItemDetail" },
+      "RECIPES": { data: window.CAMAEL_RECIPES, fn: "showRecipeDetail" },
+      "CRISIS PLAYBOOKS": { data: window.CAMAEL_CRISIS, fn: "showCrisisDetail" },
+      "MANUAL": { data: window.CAMAEL_MANUAL, fn: "showManualDetail" }
+    };
+    const ch = chapterMap[chapter];
+    if (ch && ch.data) {
+      const entry = ch.data.find(e => e.id === id);
+      if (entry) this[ch.fn](entry);
+    }
+  },
+
+  removeBookmarkById(id) {
+    let list = this.getBookmarks().filter(b => b.id !== id);
+    this.saveBookmarks(list);
+    this.renderBookmarksList();
+  },
+
+  // ------------------------------------------------------------------------
+  // First-Launch Disclaimer
+  // ------------------------------------------------------------------------
+  initDisclaimer() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const bypassDisclaimer = urlParams.get("screenshotDisclaimer") === "1" || urlParams.get("bypassDisclaimer") === "1";
+    const accepted = bypassDisclaimer || localStorage.getItem("codex_camael_disclaimer_accepted") === "true";
+    const overlay = document.getElementById("disclaimerModalOverlay");
+    const ackBtn = document.getElementById("btnAcknowledgeDisclaimer");
+    const showBtn = document.getElementById("btnShowDisclaimer");
+
+    if (!accepted && overlay) {
+      overlay.classList.add("active");
+    }
+
+    if (ackBtn) {
+      ackBtn.addEventListener("click", () => {
+        localStorage.setItem("codex_camael_disclaimer_accepted", "true");
+        if (overlay) overlay.classList.remove("active");
+      });
+    }
+
+    if (showBtn) {
+      showBtn.addEventListener("click", () => {
+        if (overlay) overlay.classList.add("active");
+      });
+    }
   },
 
   // ------------------------------------------------------------------------
@@ -823,7 +1180,7 @@ const CAMAEL = {
             ${res.secondary ? `<span style="font-size: 12px; font-style: italic; opacity: 0.8; margin-left: 8px;">${res.secondary}</span>` : ''}
           </div>
           <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">
-            ${res.snippet.substring(0, 120)}
+            ${res.snippet}
           </div>
         </div>
         <span class="entry-tag-pill tag-tier" style="font-size: 10px; margin-left: 12px;">${res.chapter}</span>
@@ -976,16 +1333,19 @@ const CAMAEL = {
       </div>
     `;
 
-    // 3. Translation Status Badge
+    // 3. Translation & Review Status Badge
+    const reviewStatus = item.reviewStatus || "Not yet reviewed";
+    const sourceStatus = item.sourceStatus || "Source: unverified";
     const translationBadge = `
       <span class="entry-tag-pill" style="background: #14120d; color: #c2bc9d; border: 1px solid #444;">
-        Translation: Original EN (Verified)
+        Status: ${reviewStatus}
       </span>
     `;
 
-    // 4. Sources & Last Reviewed
-    const sourcesList = item.sources ? item.sources.join(" • ") : "World Health Organization Guidelines • US Army FM 21-76";
-    const lastReviewedDate = item.lastReviewed || "2026-10-15";
+    // 4. Sources panel — show unverified flag, never show hardcoded dates
+    const sourcesList = item.sources && item.sources.length > 0
+      ? item.sources.map(s => `<span>${s}</span>`).join(" &bull; ")
+      : sourceStatus;
 
     // 5. Previous / Next Compendium Items Navigation
     const currentIndex = window.CAMAEL_ITEMS.findIndex(i => i.id === item.id);
@@ -1003,6 +1363,7 @@ const CAMAEL = {
       </div>
     `;
 
+    const itemWithChapter = { ...item, _chapter: "COMPENDIUM" };
     this.openModal({
       title: item.commonName || item.name,
       content: `
@@ -1012,6 +1373,10 @@ const CAMAEL = {
           </span>
           <span class="entry-tag-pill tag-tier">${item.edibility}</span>
           ${translationBadge}
+          <button class="keycap-tile key-dark" id="bmkBtn_${item.id}" style="min-height: 30px; padding: 3px 10px; font-size: 11px; margin-left: auto;"
+            onclick="CAMAEL.toggleBookmark(${JSON.stringify(itemWithChapter).replace(/"/g, '&quot;')}); document.getElementById('bmkBtn_${item.id}').textContent = CAMAEL.isBookmarked('${item.id}') ? '★ BOOKMARKED' : '☆ BOOKMARK';">
+            ${this.isBookmarked(item.id) ? '★ BOOKMARKED' : '☆ BOOKMARK'}
+          </button>
         </div>
 
         ${warningBoxHtml}
@@ -1031,10 +1396,10 @@ const CAMAEL = {
         </div>
 
         <div class="console-panel" style="margin-top: 24px; padding: 14px 18px; margin-bottom: 12px;">
-          <span class="console-panel-label" style="font-size: 10px;">VERIFIED CITATIONS</span>
+          <span class="console-panel-label" style="font-size: 10px;">SOURCES &amp; REVIEW STATUS</span>
           <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.5;">
             <div><strong>SOURCES:</strong> ${sourcesList}</div>
-            <div style="margin-top: 4px;"><strong>LAST CLINICALLY REVIEWED:</strong> ${lastReviewedDate}</div>
+            <div style="margin-top: 4px;"><strong>REVIEW:</strong> ${reviewStatus}</div>
           </div>
         </div>
 
@@ -1301,13 +1666,18 @@ const CAMAEL = {
       </div>
     `).join("");
 
+    const recipeWithChapter = { ...recipe, _chapter: "RECIPES" };
     this.openModal({
       title: recipe.name,
       content: `
-        <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+        <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center;">
           <span class="entry-tag-pill ${recipe.category === 'lifesavers' ? 'tag-tier-s' : 'tag-tier'}">${recipe.prepTime}</span>
           <span class="entry-tag-pill tag-tier">${recipe.calories}</span>
           <span class="entry-tag-pill tag-tier">${recipe.smokeRisk}</span>
+          <button class="keycap-tile key-dark" id="bmkBtn_${recipe.id}" style="min-height: 30px; padding: 3px 10px; font-size: 11px; margin-left: auto;"
+            onclick="CAMAEL.toggleBookmark(${JSON.stringify(recipeWithChapter).replace(/"/g, '&quot;')}); document.getElementById('bmkBtn_${recipe.id}').textContent = CAMAEL.isBookmarked('${recipe.id}') ? '★ BOOKMARKED' : '☆ BOOKMARK';">
+            ${this.isBookmarked(recipe.id) ? '★ BOOKMARKED' : '☆ BOOKMARK'}
+          </button>
         </div>
         <div style="margin-bottom: 16px;">
           <h4 style="font-size: 12px; font-weight: 700; font-family: var(--font-mono); color: var(--tile-cream-bg); margin-bottom: 6px;">REQUIRED INGREDIENTS</h4>
@@ -1371,9 +1741,19 @@ const CAMAEL = {
   },
 
   showCrisisDetail(item) {
+    const crisisWithChapter = { ...item, _chapter: "CRISIS PLAYBOOKS" };
     this.openModal({
       title: item.title,
       content: `
+        <div style="display: flex; gap: 8px; margin-bottom: 12px; align-items: center; flex-wrap: wrap;">
+          <span class="entry-tag-pill tag-deadly">${item.urgency.split(' ')[0]}</span>
+          <span class="entry-tag-pill tag-tier">${item.category.toUpperCase()}</span>
+          <button class="keycap-tile key-dark" id="bmkBtn_${item.id}" style="min-height: 30px; padding: 3px 10px; font-size: 11px; margin-left: auto;"
+            onclick="CAMAEL.toggleBookmark(${JSON.stringify(crisisWithChapter).replace(/"/g, '&quot;')}); document.getElementById('bmkBtn_${item.id}').textContent = CAMAEL.isBookmarked('${item.id}') ? '★ BOOKMARKED' : '☆ BOOKMARK';">
+            ${this.isBookmarked(item.id) ? '★ BOOKMARKED' : '☆ BOOKMARK'}
+          </button>
+        </div>
+
         <div class="warning-panel-box">
           <div class="warning-panel-title">URGENCY TIMEFRAME: ${item.urgency}</div>
           <p style="font-size: 13px; line-height: 1.5;">${item.summary}</p>
@@ -1604,7 +1984,7 @@ const CAMAEL = {
         }
 
         resultBox.innerHTML = `
-          <div><strong>RADIATION DECAY:</strong> ${reductionPct}% Neutralized (${remainingPct}% of R0 remains)</div>
+          <div><strong>DOSE RATE RELATIVE TO 1-HR RATE (R0):</strong> ${remainingPct}% of R0 remaining (${reductionPct}% reduction from 1-hr baseline)</div>
           <div style="margin-top: 6px; color: ${color};"><strong>STATUS:</strong> ${safetyMsg}</div>
         `;
       };

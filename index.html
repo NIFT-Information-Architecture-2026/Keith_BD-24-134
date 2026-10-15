@@ -14,7 +14,7 @@
 </head>
 <body>
 
-  <!-- Fullscreen Screen Strobe for Optical Morse Signalling -->
+  <!-- Fullscreen Screen Strobe for Optical Morse Signalling (Functional Visual Beacon) -->
   <div id="morseStrobeScreen" class="morse-strobe-screen"></div>
 
   <!-- Top LCD Status Strip (Always Visible, Retro-Futuristic Telemetry) -->
@@ -35,32 +35,28 @@
     </div>
 
     <div class="lcd-group">
-      <div class="lcd-item">
-        <span style="opacity: 0.7;">REGION:</span>
-        <div class="lcd-select-wrapper">
-          <select id="lcdRegionSelect" class="lcd-select" aria-label="Select Region">
-            <option value="india" selected>INDIA (NATIONAL)</option>
-            <option value="telangana">TELANGANA (HYDERABAD)</option>
-            <option value="kerala">KERALA (WESTERN GHATS)</option>
-            <option value="global">GLOBAL</option>
-          </select>
-        </div>
+      <div class="region-keycap-btn" title="Select Operational Region">
+        <span style="opacity: 0.7; font-size: 10px;">REGION:</span>
+        <select id="lcdRegionSelect" class="region-select-styled" aria-label="Select Region">
+          <option value="india" selected>INDIA (NATIONAL)</option>
+          <option value="telangana">TELANGANA (HYDERABAD)</option>
+          <option value="kerala">KERALA (WESTERN GHATS)</option>
+          <option value="global">GLOBAL</option>
+        </select>
+        <span class="region-dropdown-caret">▼</span>
       </div>
 
-      <div class="lcd-item">
-        <span style="opacity: 0.7;">LANG:</span>
-        <div class="lcd-lang-switcher" role="group" aria-label="Language Selector">
-          <button class="lang-btn active" data-lang="en">EN</button>
-          <button class="lang-btn" data-lang="ml">മലയാളം</button>
-          <button class="lang-btn" data-lang="te">తెలుగు</button>
-        </div>
+      <div class="lcd-lang-switcher" role="group" aria-label="Language Selector">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="ml">മലയാളം</button>
+        <button class="lang-btn" data-lang="te">తెలుగు</button>
       </div>
     </div>
   </div>
 
   <!-- Top Navigation Header -->
   <header class="top-header">
-    <div style="display: flex; align-items: center; gap: 16px;">
+    <div class="header-left-col">
       <button id="swissMenuBtn" class="keycap-tile key-dark" style="min-height: 40px; padding: 6px 14px; font-weight: 700; font-family: var(--font-mono); letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 8px;">
         <span style="font-size: 16px;">☰</span> Contents
       </button>
@@ -75,7 +71,7 @@
     </div>
 
     <!-- Persistent SOS Trigger: Solid Orange Keycap Reachable in 1-Click From Every Screen -->
-    <div style="display: flex; align-items: center; gap: 12px;">
+    <div class="header-right-col">
       <button id="sosCheatSheetBtn" class="keycap-tile key-orange" style="font-weight: 800; font-family: var(--font-mono); font-size: 12px; padding: 10px 18px; letter-spacing: 0.06em;">
         ⚡ SOS / EMERGENCY SHEET
       </button>
@@ -88,7 +84,7 @@
       <span class="search-icon-lcd">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
       </span>
-      <input type="text" id="consoleSearchInput" class="search-input-lcd" placeholder="Search chapters, entries, scientific names, formulas, tags (e.g. NaCl, Bleach, CPR, ORS)..." autocomplete="off" aria-label="Search offline database">
+      <input type="text" id="consoleSearchInput" class="search-input-lcd" placeholder="Search chapters, entries, scientific formulas, tags (e.g. NaCl, Bleach, CPR, ORS)..." autocomplete="off" aria-label="Search offline database">
       <span class="search-shortcut-badge">PRESS / TO FOCUS</span>
     </div>
     <!-- Live Search Results Dropdown Overlay -->
@@ -165,7 +161,7 @@
           <div class="sos-card-title">🫀 CARDIAC ARREST / CPR</div>
           <span class="entry-tag-pill tag-deadly">0-4 MINS</span>
         </div>
-        <p class="sos-card-desc">Call emergency services (112 in India). Hard flat ground. Center sternum push 2 to 2.4 inches. 100-120 BPM tempo without stopping.</p>
+        <p class="sos-card-desc">Call emergency services first (112 in India). Send for AED. Hard flat ground. Center sternum push 2 to 2.4 inches. 100-120 BPM tempo without stopping.</p>
         <div class="sos-card-action">START CPR METRONOME & ACTION PLAN &rarr;</div>
       </div>
 
@@ -175,18 +171,18 @@
           <div class="sos-card-title">☠️ TOXIC POISONING / INGESTION</div>
           <span class="entry-tag-pill tag-deadly">IMMEDIATE</span>
         </div>
-        <p class="sos-card-desc">Step 1: Call poison control / emergency services. Slurry of fine pharmaceutical activated charcoal and water binds plant/mushroom toxins.</p>
+        <p class="sos-card-desc">Step 1: Call poison control / emergency services (112) and transport to hospital. Pharmacy-grade activated charcoal only (contraindicated if unconscious, caustic, or petroleum ingestion). No field cure for Death Cap.</p>
         <div class="sos-card-action">VIEW CHARCOAL SLURRY DOSAGE &rarr;</div>
       </div>
 
       <!-- 3. Severe Bleeding / Trauma Card -->
-      <div class="sos-card" onclick="window.navigateToSolution('incaseof', 'crisis_cpr'); CAMAEL.closeSosOverlay();">
+      <div class="sos-card" onclick="window.navigateToSolution('incaseof', 'crisis_bleeding'); CAMAEL.closeSosOverlay();">
         <div class="sos-card-top">
           <div class="sos-card-title">🩸 ARTERIAL BLEED / TOURNIQUET</div>
           <span class="entry-tag-pill tag-deadly">CRITICAL</span>
         </div>
-        <p class="sos-card-desc">Direct pressure and wound packing BEFORE tourniquet. Apply 2-3 inches above wound (never on joint). Note time applied, do not loosen, get to hospital.</p>
-        <div class="sos-card-action">VIEW TRAUMA & SHOCK ACTION &rarr;</div>
+        <p class="sos-card-desc">Direct pressure and wound packing BEFORE tourniquet. Apply 2-3 inches above wound (never on joint). Record application time. NEVER loosen or remove once placed. Urgent hospital evacuation.</p>
+        <div class="sos-card-action">VIEW TRAUMA & TOURNIQUET ACTION &rarr;</div>
       </div>
 
       <!-- 4. Water Disinfection Card -->
@@ -195,7 +191,7 @@
           <div class="sos-card-title">💧 INSTANT WATER PURIFICATION</div>
           <span class="entry-tag-pill tag-tier-s">COLD BLEACH</span>
         </div>
-        <p class="sos-card-desc">Exactly 2 drops unscented household bleach (6-8.25%) per 1L clear water (4 drops if cloudy). Wait 30 mins. (Boiling preferred when possible).</p>
+        <p class="sos-card-desc">Exactly 2 drops unscented household bleach (6-8.25%) per 1L clear water (4 drops if cloudy). Wait 30 mins. Note: Does NOT reliably kill Cryptosporidium; boiling for 1 min is preferred when possible.</p>
         <div class="sos-card-action">VIEW CHEMICAL PURIFICATION MATRIX &rarr;</div>
       </div>
 
@@ -205,7 +201,7 @@
           <div class="sos-card-title">☢️ NUCLEAR DETONATION // 7-10 RULE</div>
           <span class="entry-tag-pill tag-deadly">SHELTER</span>
         </div>
-        <p class="sos-card-desc">Every 7x increase in time reduces radiation dose rate by factor of 10 relative to 1 hour post-detonation. Stay deep inside masonry shelter.</p>
+        <p class="sos-card-desc">Relative to dose rate at 1 hour post-detonation (R0). Every 7x increase in time post-detonation reduces radiation dose rate by a factor of 10. Stay deep inside masonry shelter for at least 48-72 hours.</p>
         <div class="sos-card-action">OPEN 7-10 DECAY CALCULATOR &rarr;</div>
       </div>
 
@@ -221,14 +217,14 @@
     </div>
   </div>
 
-  <!-- Sub-Header Controls & Search Bar (Shown in chapter views) -->
+  <!-- Sub-Header Controls (Shown in chapter views) -->
   <div class="sub-header" id="subHeaderBar" style="display: none;">
     <div class="sub-header-title">
       <button id="subHeaderBackBtn" class="keycap-tile key-dark" style="min-height: 36px; padding: 4px 12px; font-size: 11px; margin-right: 12px;">
         &larr; CONSOLE
       </button>
       <span id="subHeaderTitle">Scavenger's Compendium</span>
-      <span id="subHeaderCount" class="badge-count">15 Items</span>
+      <span id="subHeaderCount" class="badge-count">15 Entries</span>
     </div>
 
     <div class="sub-header-controls">
@@ -247,88 +243,107 @@
     <section id="section-home" class="section-view active">
       <div class="home-console-grid">
 
-        <!-- Row 1: Full-Width Tall Solid Orange SOS Tile -->
+        <!-- Row 1: Full-Width Tall Solid Orange SOS Hero Tile (128px tall, icon 72px, title ~36px, sub-line ~20px) -->
         <button class="keycap-tile tile-orange tile-sos-hero" id="homeSosTile" aria-label="Open Emergency SOS Cheat Sheet">
-          <div style="display: flex; align-items: center; gap: 16px;">
-            <span style="font-size: 32px;">⚡</span>
-            <div>
-              <div style="font-size: 18px; font-weight: 800; letter-spacing: 0.06em;">SOS // CRITICAL EMERGENCY SHEET</div>
-              <div style="font-size: 12px; font-weight: 500; opacity: 0.9; margin-top: 2px;">Instant 1-Click Access • Cardiac CPR • Arterial Trauma • Poison • Nuclear 7-10</div>
+          <span class="chapter-tile-tag">6 CARDS</span>
+          <div class="tile-content-row">
+            <div class="tile-icon-col">
+              <svg viewBox="0 0 24 24" width="72" height="72" fill="currentColor"><path d="M11 21h-1l1.2-7H7.5c-.6 0-.7-.35-.5-.7L13.5 3h1l-1.2 7h3.7c.6 0 .7.35.5.7L11 21z"/></svg>
+            </div>
+            <div class="tile-divider"></div>
+            <div class="tile-title-col">
+              <div class="tile-title">SOS // CRITICAL EMERGENCY SHEET</div>
+              <div class="tile-subline">Instant 1-Click Access • Cardiac CPR • Arterial Trauma • Poison • Nuclear 7-10</div>
             </div>
           </div>
-          <span class="entry-tag-pill tag-deadly" style="background: #14120d; color: #ff4a1c; font-size: 12px; padding: 6px 12px;">
-            KEYBOARD: PRESS 'S'
-          </span>
         </button>
 
-        <!-- Row 2: Two Large Tiles: Medical (Teal) and Crisis Playbooks (Orange) -->
+        <!-- Row 2: Two Large Hero Tiles: Medical (Teal) and Crisis Playbooks (Orange) (112px tall, icon 56px, title ~32px) -->
         <button class="keycap-tile tile-teal tile-hero-half" id="homeMedicalTile" onclick="CAMAEL.switchSection('incaseof');">
-          <div style="display: flex; align-items: center; gap: 14px;">
-            <span style="font-size: 28px;">🫀</span>
-            <div>
-              <div style="font-size: 16px; font-weight: 800; letter-spacing: 0.04em;">MEDICAL & CPR TRIAGE</div>
-              <div style="font-size: 11px; opacity: 0.85; margin-top: 2px;">AHA 110 BPM Metronome • Cardiac Arrest • Trauma</div>
+          <span class="chapter-tile-tag">110 BPM</span>
+          <div class="tile-content-row">
+            <div class="tile-icon-col">
+              <svg viewBox="0 0 24 24" width="56" height="56" fill="currentColor"><path fill-rule="evenodd" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35zm-1.5-12.85v2.5H8v2h2.5V16h2v-2.5H15v-2h-2.5V8.5h-2z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="tile-divider"></div>
+            <div class="tile-title-col">
+              <div class="tile-title">MEDICAL & CPR TRIAGE</div>
+              <div class="tile-subline">AHA 110 BPM Metronome • Cardiac Arrest • Trauma</div>
             </div>
           </div>
-          <span class="chapter-tile-tag">TIER S</span>
         </button>
 
         <button class="keycap-tile tile-orange tile-hero-half" id="homeCrisisTile" onclick="CAMAEL.switchSection('incaseof');">
-          <div style="display: flex; align-items: center; gap: 14px;">
-            <span style="font-size: 28px;">☢️</span>
-            <div>
-              <div style="font-size: 16px; font-weight: 800; letter-spacing: 0.04em;">CRISIS PLAYBOOKS (60s)</div>
-              <div style="font-size: 11px; opacity: 0.85; margin-top: 2px;">7-10 Nuclear Decay • Severe Storms • Snakebite</div>
+          <span class="chapter-tile-tag">8 SCENARIOS</span>
+          <div class="tile-content-row">
+            <div class="tile-icon-col">
+              <svg viewBox="0 0 24 24" width="56" height="56" fill="currentColor"><path fill-rule="evenodd" d="M10.74 3.76a1.45 1.45 0 0 1 2.52 0l9.38 16.25A1.45 1.45 0 0 1 21.38 22H2.62a1.45 1.45 0 0 1-1.26-2l9.38-16.24zM11 9.5v5.5h2V9.5h-2zm0 7.5v2h2v-2h-2z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="tile-divider"></div>
+            <div class="tile-title-col">
+              <div class="tile-title">CRISIS PLAYBOOKS (60s)</div>
+              <div class="tile-subline">7-10 Nuclear Decay • Severe Storms • Snakebite</div>
             </div>
           </div>
-          <span class="chapter-tile-tag">ACTION</span>
         </button>
 
         <!-- Grouped Outlined Panel 1: SURVIVE -->
         <div class="panel-grid-full console-panel">
           <span class="console-panel-label">SURVIVE</span>
           <div class="chapter-tile-grid">
+            <!-- Plants -->
             <button class="keycap-tile key-cream chapter-tile" onclick="CAMAEL.switchSection('compendium');">
-              <div class="chapter-tile-top">
-                <span style="font-size: 24px;">🌿</span>
-                <span class="chapter-tile-tag">15 ENTRIES</span>
-              </div>
-              <div>
-                <div class="chapter-tile-name">Plants & Taxonomy</div>
-                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Forage, medicinal flora & toxic identification</div>
+              <span class="chapter-tile-tag">15 ENTRIES</span>
+              <div class="tile-content-row">
+                <div class="tile-icon-col">
+                  <svg viewBox="0 0 24 24" width="44" height="44" fill="currentColor"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25V9l5-1v2l-5 1.5V15l3-1v2l-3 1.5c1.86.13 6.09-.85 10-6.5V8z"/></svg>
+                </div>
+                <div class="tile-divider"></div>
+                <div class="tile-title-col">
+                  <div class="tile-title">Plants & Taxonomy</div>
+                </div>
               </div>
             </button>
 
+            <!-- Water -->
             <button class="keycap-tile key-teal chapter-tile" onclick="window.navigateToSolution('compendium', 'item_bleach');">
-              <div class="chapter-tile-top">
-                <span style="font-size: 24px;">💧</span>
-                <span class="chapter-tile-tag">TIER S</span>
-              </div>
-              <div>
-                <div class="chapter-tile-name">Water & Purification</div>
-                <div style="font-size: 11px; color: var(--tile-teal-edge); margin-top: 4px;">Bleach cold dosage, bio-sand column, boiling</div>
+              <span class="chapter-tile-tag">4 METHODS</span>
+              <div class="tile-content-row">
+                <div class="tile-icon-col">
+                  <svg viewBox="0 0 24 24" width="44" height="44" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                </div>
+                <div class="tile-divider"></div>
+                <div class="tile-title-col">
+                  <div class="tile-title">Water & Purification</div>
+                </div>
               </div>
             </button>
 
+            <!-- Fire -->
             <button class="keycap-tile key-cream chapter-tile" onclick="window.navigateToSolution('manual', 'guide_dakota_fire');">
-              <div class="chapter-tile-top">
-                <span style="font-size: 24px;">🔥</span>
-                <span class="chapter-tile-tag">FIRECRAFT</span>
-              </div>
-              <div>
-                <div class="chapter-tile-name">Fire & Heat Systems</div>
-                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Dakota hole, battery spark, tinder bundles</div>
+              <span class="chapter-tile-tag">3 SYSTEMS</span>
+              <div class="tile-content-row">
+                <div class="tile-icon-col">
+                  <svg viewBox="0 0 24 24" width="44" height="44" fill="currentColor"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/></svg>
+                </div>
+                <div class="tile-divider"></div>
+                <div class="tile-title-col">
+                  <div class="tile-title">Fire & Heat Systems</div>
+                </div>
               </div>
             </button>
 
+            <!-- Shelter (Tent with visible door opening) -->
             <button class="keycap-tile key-cream chapter-tile" onclick="window.navigateToSolution('manual', 'guide_knots');">
-              <div class="chapter-tile-top">
-                <span style="font-size: 24px;">⛺</span>
-                <span class="chapter-tile-tag">SHELTER</span>
-              </div>
-              <div>
-                <div class="chapter-tile-name">Shelter & Knotcraft</div>
-                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Bowline, taut-line hitch, debris huts, tarps</div>
+              <span class="chapter-tile-tag">5 GUIDES</span>
+              <div class="tile-content-row">
+                <div class="tile-icon-col">
+                  <svg viewBox="0 0 24 24" width="44" height="44" fill="currentColor"><path fill-rule="evenodd" d="M12 2.5a1.2 1.2 0 0 0-1.05.62L1.18 19.34A1.2 1.2 0 0 0 2.23 21h19.54a1.2 1.2 0 0 0 1.05-1.66L13.05 3.12A1.2 1.2 0 0 0 12 2.5zm0 8.5l-4.5 8h9l-4.5-8z" clip-rule="evenodd"/></svg>
+                </div>
+                <div class="tile-divider"></div>
+                <div class="tile-title-col">
+                  <div class="tile-title">Shelter & Knotcraft</div>
+                </div>
               </div>
             </button>
           </div>
@@ -338,25 +353,31 @@
         <div class="panel-grid-full console-panel">
           <span class="console-panel-label">NAVIGATE</span>
           <div class="chapter-tile-grid">
+            <!-- Offline Cartography -->
             <button class="keycap-tile key-cream chapter-tile" onclick="CAMAEL.switchSection('map');">
-              <div class="chapter-tile-top">
-                <span style="font-size: 24px;">🗺️</span>
-                <span class="chapter-tile-tag">VECTOR TOPO</span>
-              </div>
-              <div>
-                <div class="chapter-tile-name">Offline Cartography</div>
-                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Interactive canvas, offline pins, lat/long inspection</div>
+              <span class="chapter-tile-tag">4 WAYPOINTS</span>
+              <div class="tile-content-row">
+                <div class="tile-icon-col">
+                  <svg viewBox="0 0 24 24" width="44" height="44" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+                </div>
+                <div class="tile-divider"></div>
+                <div class="tile-title-col">
+                  <div class="tile-title">Offline Cartography</div>
+                </div>
               </div>
             </button>
 
+            <!-- Sun & Direction -->
             <button class="keycap-tile key-cream chapter-tile" onclick="window.navigateToSolution('manual', 'guide_four_fingers');">
-              <div class="chapter-tile-top">
-                <span style="font-size: 24px;">🧭</span>
-                <span class="chapter-tile-tag">CELESTIAL</span>
-              </div>
-              <div>
-                <div class="chapter-tile-name">Sun & Direction</div>
-                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Four-fingers sunset rule, azimuth, shadow-stick</div>
+              <span class="chapter-tile-tag">3 METHODS</span>
+              <div class="tile-content-row">
+                <div class="tile-icon-col">
+                  <svg viewBox="0 0 24 24" width="44" height="44" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm2.5-12.5l-6 2.5 2.5 6 6-2.5-2.5-6zm-1.5 5.25c-.41 0-.75-.34-.75-.75s.34-.75.75-.75.75.34.75.75-.34.75-.75.75z"/></svg>
+                </div>
+                <div class="tile-divider"></div>
+                <div class="tile-title-col">
+                  <div class="tile-title">Sun & Direction</div>
+                </div>
               </div>
             </button>
           </div>
@@ -366,53 +387,65 @@
         <div class="panel-grid-full console-panel">
           <span class="console-panel-label">EQUIPMENT & COMMS</span>
           <div class="chapter-tile-grid">
+            <!-- Kitchen -->
             <button class="keycap-tile key-cream chapter-tile" onclick="CAMAEL.switchSection('recipes');">
-              <div class="chapter-tile-top">
-                <span style="font-size: 24px;">🍲</span>
-                <span class="chapter-tile-tag">11 RECIPES</span>
-              </div>
-              <div>
-                <div class="chapter-tile-name">Survival Kitchen & Rations</div>
-                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">WHO ORS, charcoal slurry, hardtack, pantry filter</div>
+              <span class="chapter-tile-tag">11 RECIPES</span>
+              <div class="tile-content-row">
+                <div class="tile-icon-col">
+                  <svg viewBox="0 0 24 24" width="44" height="44" fill="currentColor"><path d="M19 8V6H5v2H2v3h2v7c0 1.66 1.34 3 3 3h10c1.66 0 3-1.34 3-3v-7h2V8h-3zm-2 9c0 .55-.45 1-1 1H8c-.55 0-1-.45-1-1v-6h10v6zM9 2h2v3H9V2zm4 0h2v3h-2V2z"/></svg>
+                </div>
+                <div class="tile-divider"></div>
+                <div class="tile-title-col">
+                  <div class="tile-title">Survival Kitchen</div>
+                </div>
               </div>
             </button>
 
+            <!-- Gear -->
             <button class="keycap-tile key-cream chapter-tile" onclick="CAMAEL.switchSection('gear');">
-              <div class="chapter-tile-top">
-                <span style="font-size: 24px;">🎒</span>
-                <span class="chapter-tile-tag">TELEMETRY</span>
-              </div>
-              <div>
-                <div class="chapter-tile-name">Gear & Loadout Planner</div>
-                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Biome x Duration generator, wildcraft substitutes</div>
+              <span class="chapter-tile-tag">6 LOADOUTS</span>
+              <div class="tile-content-row">
+                <div class="tile-icon-col">
+                  <svg viewBox="0 0 24 24" width="44" height="44" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.6C.5 7 .9 10 2.9 12c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.3z"/></svg>
+                </div>
+                <div class="tile-divider"></div>
+                <div class="tile-title-col">
+                  <div class="tile-title">Gear & Loadouts</div>
+                </div>
               </div>
             </button>
 
+            <!-- Radio Comms -->
             <button class="keycap-tile key-cream chapter-tile" onclick="CAMAEL.switchSection('radio');">
-              <div class="chapter-tile-top">
-                <span style="font-size: 24px;">📻</span>
-                <span class="chapter-tile-tag">VHF / NATO</span>
-              </div>
-              <div>
-                <div class="chapter-tile-name">Emergency Comms & Morse</div>
-                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Distress frequencies, audio/optical Morse beacon</div>
+              <span class="chapter-tile-tag">7 FREQS</span>
+              <div class="tile-content-row">
+                <div class="tile-icon-col">
+                  <svg viewBox="0 0 24 24" width="44" height="44" fill="currentColor"><path d="M3.24 6.15C2.51 6.88 2 7.89 2 9v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.11-.51-2.12-1.24-2.85l-7.79-4.8c-.59-.36-1.35-.36-1.94 0L3.24 6.15zM7 17c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm11-1h-6v-2h6v2zm0-4h-6v-2h6v2z"/></svg>
+                </div>
+                <div class="tile-divider"></div>
+                <div class="tile-title-col">
+                  <div class="tile-title">Comms & Morse</div>
+                </div>
               </div>
             </button>
           </div>
         </div>
 
-        <!-- Grouped Outlined Panel 4: DATA & IDENTITY -->
+        <!-- Grouped Outlined Panel 4: DATA & IDENTITY (Vault: Dark-Grey Utility Tile, Cream Ink, ID Badge Icon) -->
         <div class="panel-grid-full console-panel">
           <span class="console-panel-label">DATA & IDENTITY</span>
           <div class="chapter-tile-grid">
-            <button class="keycap-tile key-cream chapter-tile" onclick="CAMAEL.switchSection('logbook');">
-              <div class="chapter-tile-top">
-                <span style="font-size: 24px;">🔐</span>
-                <span class="chapter-tile-tag">LOCAL VAULT</span>
-              </div>
-              <div>
-                <div class="chapter-tile-name">Encrypted ICE Manifest</div>
-                <div style="font-size: 11px; color: var(--tile-cream-edge); margin-top: 4px;">Medical history, rally coords, JSON backup & restore</div>
+            <button class="keycap-tile tile-vault-utility chapter-tile" onclick="CAMAEL.switchSection('logbook');">
+              <span class="chapter-tile-tag">LOCAL ONLY</span>
+              <div class="tile-content-row">
+                <div class="tile-icon-col">
+                  <!-- ID-card / Emergency-info badge icon (not a shield, not a padlock) -->
+                  <svg viewBox="0 0 24 24" width="44" height="44" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4zm6 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-4zm-3 6a2.5 2.5 0 1 1 5 0 2.5 2.5 0 0 1-5 0zm6.5 1.5h3.5v1.5h-3.5V12.5zm0 3.5h3.5v1.5h-3.5V16zm-7.5 3a3.5 3.5 0 0 1 7 0v.5H6v-.5z" clip-rule="evenodd"/></svg>
+                </div>
+                <div class="tile-divider"></div>
+                <div class="tile-title-col">
+                  <div class="tile-title">Emergency ICE Vault</div>
+                </div>
               </div>
             </button>
           </div>
@@ -420,6 +453,12 @@
 
         <!-- Compact Bottom Utility Row (Dark Grey Keycaps) -->
         <div class="utility-row-panel">
+          <button class="keycap-tile key-dark" id="btnToggleTheme" style="min-height: 44px; padding: 8px 16px; font-size: 12px;">
+            ☀️ / 🌙 THEME: DARK
+          </button>
+          <button class="keycap-tile key-dark" id="btnOpenBookmarks" style="min-height: 44px; padding: 8px 16px; font-size: 12px;">
+            🔖 Bookmarks (<span id="bookmarkCount">0</span>)
+          </button>
           <button class="keycap-tile key-dark" id="btnOpenSettings" style="min-height: 44px; padding: 8px 16px; font-size: 12px;">
             ⚙️ Settings & Shortcuts
           </button>
@@ -443,16 +482,16 @@
         <div class="tier-legend-panel">
           <span style="font-weight: 800; letter-spacing: 0.05em; color: var(--text-primary);">TIER DEFINITIONS:</span>
           <span class="legend-badge tier-s-badge">TIER S</span>
-          <span>Priceless Lifesaver (Indispensable biological or chemical need)</span>
+          <span>Priceless Lifesaver (Immediate critical survival or biological need)</span>
           <span class="legend-gap">•</span>
           <span class="legend-badge tier-a-badge">TIER A</span>
-          <span>High Utility (Essential field tool or high-yield forage)</span>
+          <span>High Utility (Essential field tool, high-yield nutrition or primary skill)</span>
           <span class="legend-gap">•</span>
           <span class="legend-badge tier-b-badge">TIER B</span>
-          <span>Resource / Sustenance (Secondary forage or building material)</span>
+          <span>Resource / Sustenance (Secondary forage, improvised crafting or shelter)</span>
           <span class="legend-gap">•</span>
           <span class="legend-badge danger-badge">DEADLY: DO NOT EAT</span>
-          <span>Lethal Hazard / Extreme Poison</span>
+          <span>Lethal Hazard / Extreme Field Danger</span>
         </div>
 
         <!-- Dynamic Entry Tiles Grid -->
@@ -466,42 +505,57 @@
     <!-- SECTION 2: GEAR, TELEMETRY & TRIP PLANNER                           -->
     <!-- ==================================================================== -->
     <section id="section-gear" class="section-view">
-      <!-- 4-Gauge Survival Telemetry Row (LCD Style) -->
+      <div style="padding: 0 24px 10px 24px;">
+        <!-- Tier S/A/B Legend Panel defining each tier -->
+        <div class="tier-legend-panel">
+          <span style="font-weight: 800; letter-spacing: 0.05em; color: var(--text-primary);">TIER DEFINITIONS:</span>
+          <span class="legend-badge tier-s-badge">TIER S</span>
+          <span>Priceless Lifesaver (Mandatory gear with zero margin for failure)</span>
+          <span class="legend-gap">•</span>
+          <span class="legend-badge tier-a-badge">TIER A</span>
+          <span>High Utility (Primary expedition tools & fallback chains)</span>
+          <span class="legend-gap">•</span>
+          <span class="legend-badge tier-b-badge">TIER B</span>
+          <span>Convenience / Improvised wildcraft alternatives</span>
+        </div>
+      </div>
+
+      <!-- 4-Gauge Survival Telemetry Row (LCD Style Inset Panels) -->
       <div class="telemetry-row">
-        <div class="telemetry-card">
-          <div class="telemetry-label">
-            <span>💧 WATER RESERVES</span>
-            <span class="substitute-badge">TELEMETRY</span>
+        <div class="lcd-readout-card">
+          <div class="lcd-readout-label">
+            <span>WATER RESERVES</span>
+            <span class="entry-tag-pill tag-tier-s">TELEMETRY</span>
           </div>
-          <div id="telemetryWaterVal" class="telemetry-value">6.5 L</div>
-          <div id="telemetryWaterStatus" class="telemetry-status">STABLE // 3.2 DAYS</div>
+          <div id="telemetryWaterVal" class="lcd-readout-digits">6.5 L</div>
+          <div id="telemetryWaterStatus" class="lcd-readout-status">STABLE // 3.2 DAYS</div>
         </div>
 
-        <div class="telemetry-card">
-          <div class="telemetry-label">
-            <span>🩹 MEDICAL UNITS</span>
-            <span class="substitute-badge">TRAUMA</span>
+        <div class="lcd-readout-card">
+          <div class="lcd-readout-label">
+            <span>MEDICAL UNITS</span>
+            <span class="entry-tag-pill tag-deadly">TRAUMA</span>
           </div>
-          <div id="telemetryMedVal" class="telemetry-value">04 UNITS</div>
-          <div id="telemetryMedStatus" class="telemetry-status alert">CRITICAL LOW // RESTOCK</div>
+          <div id="telemetryMedVal" class="lcd-readout-digits">04 UNITS</div>
+          <div id="telemetryMedStatus" class="lcd-readout-status alert">CRITICAL LOW // RESTOCK</div>
         </div>
 
-        <div class="telemetry-card">
-          <div class="telemetry-label">
-            <span>🍲 FOOD RATIONS</span>
-            <span class="substitute-badge">CALORIES</span>
+        <div class="lcd-readout-card">
+          <div class="lcd-readout-label">
+            <span>FOOD RATIONS</span>
+            <span class="entry-tag-pill tag-tier">CALORIES</span>
           </div>
-          <div id="telemetryFoodVal" class="telemetry-value">3.5 DAYS</div>
-          <div id="telemetryFoodStatus" class="telemetry-status">RATIONED // 1800 KCAL</div>
+          <div id="telemetryFoodVal" class="lcd-readout-digits">3.5 DAYS</div>
+          <div id="telemetryFoodStatus" class="lcd-readout-status">RATIONED // 1800 KCAL</div>
         </div>
 
-        <div class="telemetry-card">
-          <div class="telemetry-label">
-            <span>⚡ POWER & FUEL</span>
-            <span class="substitute-badge">BATTERY</span>
+        <div class="lcd-readout-card">
+          <div class="lcd-readout-label">
+            <span>POWER & FUEL</span>
+            <span class="entry-tag-pill tag-tier-s">BATTERY</span>
           </div>
-          <div id="telemetryPowerVal" class="telemetry-value">84% / 42Wh</div>
-          <div id="telemetryPowerStatus" class="telemetry-status">SOLAR READY // RESERVE OK</div>
+          <div id="telemetryPowerVal" class="lcd-readout-digits">84% / 42Wh</div>
+          <div id="telemetryPowerStatus" class="lcd-readout-status">SOLAR READY // RESERVE OK</div>
         </div>
       </div>
 
@@ -601,11 +655,26 @@
     <!-- SECTION 4: SURVIVAL KITCHEN & RATIONS                                -->
     <!-- ==================================================================== -->
     <section id="section-recipes" class="section-view">
+      <div style="padding: 0 24px 10px 24px;">
+        <!-- Tier S/A/B Legend Panel defining each tier -->
+        <div class="tier-legend-panel">
+          <span style="font-weight: 800; letter-spacing: 0.05em; color: var(--text-primary);">TIER DEFINITIONS:</span>
+          <span class="legend-badge tier-s-badge">TIER S</span>
+          <span>Priceless Lifesaver (Emergency clinical hydration / toxin adsorption)</span>
+          <span class="legend-gap">•</span>
+          <span class="legend-badge tier-a-badge">TIER A</span>
+          <span>High Utility (Calorie-dense rations & long-term storage biscuits)</span>
+          <span class="legend-gap">•</span>
+          <span class="legend-badge tier-b-badge">TIER B</span>
+          <span>Field Forage (Wild cooked greens, leached acorn porridge, cattail starch)</span>
+        </div>
+      </div>
+
       <div class="recipes-layout">
         <aside class="pantry-sidebar">
           <div class="pantry-section-title">🎒 Scavenged Pantry</div>
           <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 12px;">
-            Check off raw ingredients in your pack to filter what survival meals and lifesaving remedies you can craft right now.
+            Check off raw ingredients in your pack to filter what survival meals and remedies you can craft right now.
           </p>
           <div id="pantryIngredientsList" class="ingredient-tags-list">
             <!-- Dynamic Ingredients List -->
@@ -618,11 +687,11 @@
         <div>
           <div class="lifesavers-banner">
             <div class="lifesavers-title">
-              <span>⚠️ PRIORITY LIFESAVERS (CRITICAL MEDICAL & ENDURANCE RECIPES)</span>
+              <span>⚠️ PRIORITY EMERGENCY FORMULATIONS</span>
             </div>
-            <span style="font-size: 11px; color: #aaa;">WHO ORS • Charcoal • Pine Infusion • Hardtack</span>
+            <span style="font-size: 11px; color: #aaa;">Oral Rehydration Salts (ORS) • Activated Charcoal Slurry • Hardtack</span>
           </div>
-          <div id="recipesGrid" class="modern-grid">
+          <div id="recipesGrid" class="modern-grid" style="padding: 20px;">
             <!-- Dynamic Recipe Cards -->
           </div>
         </div>
@@ -633,6 +702,21 @@
     <!-- SECTION 5: FIELD MANUAL & VISUAL BLUEPRINTS                         -->
     <!-- ==================================================================== -->
     <section id="section-manual" class="section-view">
+      <div style="padding: 0 24px 10px 24px;">
+        <!-- Tier S/A/B Legend Panel defining each tier -->
+        <div class="tier-legend-panel">
+          <span style="font-weight: 800; letter-spacing: 0.05em; color: var(--text-primary);">TIER DEFINITIONS:</span>
+          <span class="legend-badge tier-s-badge">TIER S</span>
+          <span>Priceless Lifesaver (Core bio-sand filtration, water procurement)</span>
+          <span class="legend-gap">•</span>
+          <span class="legend-badge tier-a-badge">TIER A</span>
+          <span>High Utility (Tactical Dakota fire hole, sun direction azimuth)</span>
+          <span class="legend-gap">•</span>
+          <span class="legend-badge tier-b-badge">TIER B</span>
+          <span>Knotcraft & Improvised shelter lashings</span>
+        </div>
+      </div>
+
       <div id="manualGrid" class="modern-grid" style="padding: 0 24px 32px 24px;">
         <!-- Four Fingers Sunset, Hydration Scale, Sand-Charcoal Filter Column, Dakota Fire Hole, Knots -->
       </div>
@@ -642,7 +726,22 @@
     <!-- SECTION 6: CRISIS PLAYBOOKS & TRIAGE                                -->
     <!-- ==================================================================== -->
     <section id="section-incaseof" class="section-view">
-      <!-- Interactive Emergency Tools Banner -->
+      <div style="padding: 0 24px 10px 24px;">
+        <!-- Tier S/A/B Legend Panel defining each tier -->
+        <div class="tier-legend-panel">
+          <span style="font-weight: 800; letter-spacing: 0.05em; color: var(--text-primary);">TIER DEFINITIONS:</span>
+          <span class="legend-badge danger-badge">IMMEDIATE 0-4 MINS</span>
+          <span>Cardiac arrest CPR, arterial bleeding & tourniquet application</span>
+          <span class="legend-gap">•</span>
+          <span class="legend-badge tier-a-badge">CRITICAL 15-60 MINS</span>
+          <span>Venomous snakebite immobilization, nuclear detonation 7-10 shelter</span>
+          <span class="legend-gap">•</span>
+          <span class="legend-badge tier-b-badge">TACTICAL SURVIVAL</span>
+          <span>Severe thunderstorm lightning crouch, wildfire burnover, flash flood</span>
+        </div>
+      </div>
+
+      <!-- Interactive Emergency Tools Banner (LCD Style Readout Panels) -->
       <div class="tool-banner-card">
         <!-- Tool A: CPR Audio Metronome -->
         <div class="interactive-box">
@@ -651,7 +750,7 @@
             <span class="entry-tag-pill tag-deadly">110 BPM</span>
           </div>
           <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
-            Call 112 first. Administer continuous chest compressions directly on center sternum to this exact audio-visual tempo.
+            Step 1: Call 112 first and send for an AED. Push hard and fast at center of chest (2-2.4 in / 5-6 cm depth) without stopping.
           </p>
           <div id="cprPulseBox" class="cpr-visual-pulse">PUSH ON BEAT</div>
           <button id="cprStartBtn" class="keycap-tile key-teal" style="width: 100%; font-weight: 800; font-family: var(--font-mono); margin-top: 10px;">
@@ -663,27 +762,27 @@
         <div class="interactive-box">
           <div class="interactive-box-title">
             <span>☢️ 7-10 NUCLEAR FALLOUT CALCULATOR</span>
-            <span class="entry-tag-pill tag-tier-s">7x Time = 10x Less Dose</span>
+            <span class="entry-tag-pill tag-tier-s">RELATIVE TO 1-HR DOSE (R0)</span>
           </div>
           <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
-            Relative to dose rate at 1 hour after detonation (R0). Minimum slider: 1 Hour.
+            Radiological decay is relative to the dose rate at 1 hour post-detonation (R0). Slider minimum: 1 Hour.
           </p>
           <div class="calc-slider-group">
-            <div style="display: flex; justify-content: space-between; font-size: 11px;">
-              <span>TIME ELAPSED SINCE DETONATION:</span>
-              <strong id="falloutHoursDisplay">7 Hours</strong>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; font-family: var(--font-mono);">
+              <span>TIME POST-DETONATION:</span>
+              <strong id="falloutHoursDisplay" style="color: var(--tile-cream-bg);">7 Hours</strong>
             </div>
             <input type="range" id="falloutHoursSlider" class="calc-slider" min="1" max="168" value="7" step="1">
           </div>
-          <div id="falloutResultBox" class="calc-result-display">
+          <div id="falloutResultBox" class="lcd-readout-panel" style="margin-top: 10px;">
             <!-- Injected via JS -->
           </div>
         </div>
       </div>
 
       <!-- Scenarios Grid -->
-      <div id="crisisGrid" class="modern-grid" style="padding: 0 24px 32px 24px;">
-        <!-- Thunderstorm, Nuclear, Wildfire, Flash Flood, Blizzard, Snakebite -->
+      <div id="crisisGrid" class="modern-grid" style="padding: 24px;">
+        <!-- CPR, Arterial Bleed, Snakebite, Nuclear, Thunderstorm, Wildfire, Flash Flood, Blizzard -->
       </div>
     </section>
 
@@ -692,7 +791,7 @@
     <!-- ==================================================================== -->
     <section id="section-radio" class="section-view">
       <div style="padding: 24px;">
-        <!-- Morse Transceiver -->
+        <!-- Morse Transceiver (LCD Style Output) -->
         <div class="morse-console">
           <div class="interactive-box-title">
             <span>📻 OPTICAL & AUDIO MORSE CODE TRANSCEIVER</span>
@@ -749,6 +848,7 @@
         </div>
       </div>
 
+      <!-- Inset Dark Fields with Cream Monospace Labels -->
       <div class="vault-form-grid">
         <div class="form-field">
           <label class="form-label">Full Name / Callsign</label>
@@ -798,10 +898,36 @@
             <div id="modalSubtitle" style="font-size: 12px; font-style: italic; color: var(--text-secondary);"></div>
           </div>
         </div>
-        <button id="modalCloseBtn" class="modal-close-btn">&times;</button>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button id="modalBookmarkBtn" class="keycap-tile key-dark" style="min-height: 36px; padding: 4px 10px; font-size: 11px;">
+            🔖 Bookmark
+          </button>
+          <button id="modalCloseBtn" class="modal-close-btn">&times;</button>
+        </div>
       </div>
       <div id="modalBody" class="modal-body">
         <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Bookmarks Modal Overlay -->
+  <div id="bookmarksModalOverlay" class="modal-overlay">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <div class="modal-icon-key">🔖</div>
+          <div>
+            <h3 class="modal-title">Saved Bookmarks</h3>
+            <div style="font-size: 12px; color: var(--text-secondary);">Quick-access pinned field references</div>
+          </div>
+        </div>
+        <button id="bookmarksCloseBtn" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="bookmarksListContainer">
+          <!-- Injected dynamically -->
+        </div>
       </div>
     </div>
   </div>
@@ -871,11 +997,62 @@
         </div>
 
         <div style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--tile-cream-bg); margin-bottom: 8px; letter-spacing: 0.08em;">
+          LEGAL & MEDICAL DISCLAIMER
+        </div>
+        <button id="btnShowDisclaimer" class="keycap-tile key-dark" style="margin-bottom: 20px;">
+          ⚠️ View Clinical & Legal Disclaimer
+        </button>
+
+        <div style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--tile-cream-bg); margin-bottom: 8px; letter-spacing: 0.08em;">
           OFFLINE CACHE & STORAGE STATUS
         </div>
         <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
           All assets, typography, and data are 100% self-hosted on this local machine. No external CDNs are contacted. All local edits are persisted in encrypted browser localStorage.
         </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- First-Launch Medical & Emergency Disclaimer Modal -->
+  <div id="disclaimerModalOverlay" class="modal-overlay">
+    <div class="modal-sheet" style="max-width: 680px;">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <div class="modal-icon-key" style="background: var(--tile-orange-bg); color: var(--tile-orange-ink);">⚠️</div>
+          <div>
+            <h3 class="modal-title">CRITICAL SAFETY DISCLAIMER</h3>
+            <div style="font-size: 12px; color: var(--tile-orange-bg); font-weight: 700;">REQUIRED ACKNOWLEDGMENT</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <!-- English -->
+        <div style="margin-bottom: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+          <strong style="color: var(--tile-cream-bg); font-size: 13px;">[ENGLISH] INFORMATIONAL REFERENCE ONLY</strong>
+          <p style="font-size: 13px; color: var(--text-primary); margin-top: 4px; line-height: 1.5;">
+            CODEX CAMAEL is an offline emergency digital reference designed for field guidance during infrastructure failure. It is <strong>NOT</strong> a substitute for professional clinical judgment, licensed medical treatment, or official emergency services (112 in India). In any medical crisis, activating emergency services and reaching a hospital must always be your first priority.
+          </p>
+        </div>
+
+        <!-- Malayalam -->
+        <div style="margin-bottom: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 14px; font-family: 'Noto Sans Malayalam', sans-serif;">
+          <strong style="color: var(--tile-cream-bg); font-size: 13px;">[മലയാളം] വിവരശേഖരണ ആവശ്യങ്ങൾക്ക് മാത്രം</strong>
+          <p style="font-size: 13px; color: var(--text-primary); margin-top: 4px; line-height: 1.7;">
+            കോഡെക്സ് കാമയേൽ ഒരു ഓഫ്‌ലൈൻ റഫറൻസ് മാത്രമാണ്. ഇത് വിദഗ്ദ്ധ വൈദ്യസഹായത്തിനോ അടിയന്തര സേവനങ്ങൾക്കോ (112) പകരമല്ല. അടിയന്തിര സാഹചര്യങ്ങളിൽ ഉടൻ ആശുപത്രി സഹായം തേടുക.
+          </p>
+        </div>
+
+        <!-- Telugu -->
+        <div style="margin-bottom: 18px; font-family: 'Noto Sans Telugu', sans-serif;">
+          <strong style="color: var(--tile-cream-bg); font-size: 13px;">[తెలుగు] కేవలం సమాచార ప్రయోజనాల కోసం మాత్రమే</strong>
+          <p style="font-size: 13px; color: var(--text-primary); margin-top: 4px; line-height: 1.7;">
+            కోడెక్స్ కామాయెల్ అనేది అత్యవసర సమయాల్లో ఉపయోగపడే ఆఫ్‌లైన్ సమాచార గైడ్ మాత్రమే. ఇది వృత్తిపరమైన వైద్య చికిత్సకు లేదా అత్యవసర సేవలకు (112) ప్రత్యామ్నాయం కాదు.
+          </p>
+        </div>
+
+        <button id="btnAcknowledgeDisclaimer" class="keycap-tile key-cream" style="width: 100%; font-weight: 800; font-size: 14px; text-align: center; justify-content: center; margin-top: 10px;">
+          ✓ I UNDERSTAND & ACKNOWLEDGE
+        </button>
       </div>
     </div>
   </div>

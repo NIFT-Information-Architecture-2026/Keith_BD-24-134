@@ -1,6 +1,7 @@
 // CODEX CAMAEL: Master Compendium & Taxonomy Database
 // Full Information Architecture: Multi-Biome Tagging, Tool Sourcing, and Risk Mitigation Routing
 // Visual System: Retro-Futuristic Keycaps, Common Names, Scientific Formulas, SVG Icons
+// Note: Review status defaults to "Not yet reviewed", Source status defaults to "Source: unverified"
 
 window.CAMAEL_ITEMS = [
   // =========================================================================
@@ -32,15 +33,15 @@ window.CAMAEL_ITEMS = [
     survivalUsage: "Core electrolyte in the WHO ORS formulation. Essential for tanning animal hides and pickling wild forage. Historically used as literal monetary currency ('salary').",
     riskMitigation: {
       risk: "Hypernatremia & dehydration: Ingesting pure salt without sufficient fresh water forces cellular fluid depletion and causes renal failure.",
-      solution: "Never consume dry salt during water scarcity. Dissolve in exact WHO clinical ratios with water and sugar.",
+      solution: "Never consume dry salt during water scarcity. Dissolve in exact clinical ratios with water and sugar.",
       solutionAction: {
         section: "recipes",
         targetId: "rec_ors",
         buttonText: "Go to WHO/UNICEF ORS Formula →"
       }
     },
-    sources: ["World Health Organization (WHO) Guidelines", "Wilderness Medical Society"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "item_antibiotics",
@@ -50,10 +51,10 @@ window.CAMAEL_ITEMS = [
     symbol: "Rx",
     iconName: "pill",
     category: "materials",
-    tier: "S",
-    tierLabel: "TIER S (INFO ONLY)",
+    tier: "INFO",
+    tierLabel: "INFORMATION ONLY",
     edibility: "Pharmaceutical Oral Tablet",
-    barterValue: "Tier S (Priceless)",
+    barterValue: "Information Only (Medical Supervision)",
     biomes: ["Urban & Industrial Ruins"],
     toolsRequired: [
       {
@@ -64,19 +65,19 @@ window.CAMAEL_ITEMS = [
     safetyRating: "Information Only / Medical Supervision Required",
     timeFrame: "Urgent (1–15 mins)",
     domains: ["Trauma & Medicine", "Barter & Currency"],
-    description: "The definitive barrier against systemic sepsis, infected lacerations, tooth abscesses, bacterial dysentery, and secondary respiratory collapse. For informational reference only: never self-prescribe without verified clinical assessment.",
-    survivalUsage: "Store bone-dry below 25°C. Solid dry pill tablets in intact packaging often maintain active efficacy past manufacturer dates, but degradation risks toxicity (e.g. expired tetracyclines).",
+    description: "The definitive barrier against systemic bacterial infections. For informational reference only: never self-prescribe without qualified clinical assessment. Misuse drives antimicrobial resistance and creates severe allergy or fatal anaphylaxis risks.",
+    survivalUsage: "Informational guidance only. Never self-prescribe or consume unprescribed courses. Proper antibiotic selection requires precise microbiological diagnosis. Store below 25°C in original moisture-barrier packaging.",
     riskMitigation: {
-      risk: "Severe allergic anaphylaxis, drug-induced organ toxicity, and rapid microbial resistance.",
-      solution: "Confirm allergy history before any administration. Pair with clean hydration salts and medical evacuation.",
+      risk: "Severe allergic anaphylaxis, organ toxicity, and acceleration of drug-resistant pathogens from inappropriate self-treatment.",
+      solution: "Never self-prescribe. Seek licensed medical evaluation and susceptibility testing. In an emergency with severe reaction, activate EMS (112) immediately.",
       solutionAction: {
         section: "incaseof",
         targetId: "crisis_cpr",
         buttonText: "View Anaphylaxis / Emergency Trauma →"
       }
     },
-    sources: ["WHO Essential Medicines List", "Infectious Diseases Society of America (IDSA)"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "item_bleach",
@@ -105,7 +106,7 @@ window.CAMAEL_ITEMS = [
     timeFrame: "Urgent (1–15 mins)",
     domains: ["Water & Hydration", "Trauma & Medicine", "Barter & Currency"],
     description: "Cold chemical water purification powerhouse. A single 1-gallon jug of unscented household bleach can disinfect over 3,800 Liters of contaminated raw water against bacterial pathogens and viruses.",
-    survivalUsage: "DOSAGE MATRIX: Exactly 2 drops per 1 Liter of clear water (stir and wait 30 minutes). 4 drops per 1 Liter if water is turbid, cold, or cloudy (wait 60 minutes). Note: Does not reliably kill Cryptosporidium oocysts.",
+    survivalUsage: "DOSAGE MATRIX: Exactly 2 drops per 1 Liter of clear water (stir and wait 30 minutes). 4 drops per 1 Liter if water is turbid, cold, or cloudy (wait 60 minutes). Note: Does not reliably kill Cryptosporidium oocysts; boiling is preferred when possible.",
     riskMitigation: {
       risk: "Severe caustic chemical burns to esophagus, gastric lining, and eyes if ingested undiluted or if scented industrial surfactants are present.",
       solution: "Use only regular, unscented sodium hypochlorite. If turbid, pre-filter water through sand/charcoal column before adding bleach.",
@@ -115,8 +116,8 @@ window.CAMAEL_ITEMS = [
         buttonText: "Go to Bio-Sand Water Filter Column →"
       }
     },
-    sources: ["CDC Disinfection Guidelines", "EPA Emergency Disinfection of Drinking Water"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
 
   // =========================================================================
@@ -148,19 +149,19 @@ window.CAMAEL_ITEMS = [
     safetyRating: "Safe & Nourishing",
     timeFrame: "Standard (1–4 hours)",
     domains: ["Food & Caloric Energy", "Shelter & Protection", "Fire & Heat"],
-    description: "The undisputed 'Supermarket of the Swamp'. Spring shoots are eaten raw like cucumbers; summer yellow pollen serves as nutritious flour extender; rhizomes provide pure carbohydrate starch; seeddown makes thermal coat insulation.",
+    description: "The undisputed 'Supermarket of the Swamp'. Spring shoots are eaten raw like cucumbers; summer yellow pollen serves as nutritious flour extender; rhizomes provide pure carbohydrate starch; seeddown makes thermal coat insulation. Golden foraging rule: Never eat anything you cannot 100% identify.",
     survivalUsage: "Starch extraction: crush peeled rhizomes in water basin, settle starch sediment, decant top liquid, and bake cakes on flat campfire stones.",
     riskMitigation: {
-      risk: "Swamp water pathogens & toxic lookalike: Yellow Iris (Iris pseudacorus) rhizomes cause violent emesis. Industrial wetlands also concentrate heavy metals.",
-      solution: "Verify leaf cross-section (cattail is flat on one side, curved/D-shaped at base; iris leaves are flat and sword-shaped). Always harvest from moving clean headwaters.",
+      risk: "Swamp water pathogens & toxic lookalike: Yellow Iris (Iris pseudacorus) rhizomes cause violent emesis. Poison Hemlock (Conium maculatum) also inhabits wetland borders.",
+      solution: "Verify leaf cross-section (cattail is flat on one side, curved/D-shaped at base; iris leaves are flat and sword-shaped with a distinct central vein). Always harvest from clean headwaters.",
       solutionAction: {
         section: "recipes",
         targetId: "rec_cattail_cakes",
         buttonText: "Go to Cattail Ash Cakes Recipe →"
       }
     },
-    sources: ["US Army Survival Manual FM 21-76", "National Audubon Society Field Guide"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "item_pine",
@@ -188,8 +189,8 @@ window.CAMAEL_ITEMS = [
     safetyRating: "Safe & Nourishing",
     timeFrame: "Urgent (1–15 mins)",
     domains: ["Trauma & Medicine", "Fire & Heat", "Shelter & Protection"],
-    description: "Premier temperate survival tree. Fresh green needles provide concentrated Vitamin C, historically utilized to ward off scurvy in winter expeditions. Pitch/resin acts as waterproof glue, antiseptic salve, and fire starter.",
-    survivalUsage: "Pitch Glue Formula: Melt pine resin over coals, mix with 1/3 finely powdered hardwood charcoal. Cools into rock-hard waterproof epoxy for sealing arrowheads, tool bindings, and containers.",
+    description: "Premier temperate survival tree. Fresh green needles provide Vitamin C, historically utilized in winter expeditions. Pitch/resin acts as waterproof glue, antiseptic salve, and fire starter.",
+    survivalUsage: "Pitch Glue Formula: Melt pine resin over coals, mix with 1/3 finely powdered hardwood charcoal. Cools into rock-hard waterproof epoxy for sealing bindings and containers.",
     riskMitigation: {
       risk: "Boiling needles directly destroys ascorbic acid. Toxic lookalikes: Yew (Taxus), Norfolk Island Pine, and Ponderosa Pine needles contain hazardous compounds and abortifacient toxins.",
       solution: "Steep needles in warm water off the flame (infusion, not rolling boil). Verify 5-needle bundles for White Pine.",
@@ -199,8 +200,8 @@ window.CAMAEL_ITEMS = [
         buttonText: "Go to Pine Needle Vitamin C Infusion →"
       }
     },
-    sources: ["Wilderness Medical Society", "USDA Forest Service Silva Reference"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "item_willow",
@@ -232,15 +233,15 @@ window.CAMAEL_ITEMS = [
     survivalUsage: "Flexible 1st-year green branches are premier wilderness material for weaving fish traps, shelter lashings, and friction fire drill sets.",
     riskMitigation: {
       risk: "Contraindicated in children/teens (risk of fatal Reye's syndrome), aspirin allergy, pregnancy, stomach ulcers, or concurrent blood thinners.",
-      solution: "Gently simmer inner bark for 15 minutes, strain woody fibers, and limit intake to 1 cup every 6 hours. Never give to children.",
+      solution: "Gently simmer inner bark for 15 minutes, strain woody fibers, and limit intake to 1 cup every 6 hours. Never give to children or teenagers.",
       solutionAction: {
         section: "recipes",
         targetId: "rec_willow_bark_tea",
         buttonText: "Go to Willow Bark Decoction Guide →"
       }
     },
-    sources: ["World Health Organization Monograph on Selected Medicinal Plants", "AHA Clinical Guidelines"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "item_yarrow",
@@ -275,8 +276,8 @@ window.CAMAEL_ITEMS = [
         buttonText: "Compare with Poison Hemlock Identification →"
       }
     },
-    sources: ["European Medicines Agency (EMA) Herbal Monographs", "Army FM 21-76"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "item_batteries",
@@ -315,8 +316,8 @@ window.CAMAEL_ITEMS = [
         buttonText: "Go to Tactical Firecraft Guide →"
       }
     },
-    sources: ["US Department of Energy Battery Safety Specs", "IEEE Safety Standards"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "item_car_battery",
@@ -355,8 +356,8 @@ window.CAMAEL_ITEMS = [
         buttonText: "View Acid Burn & Trauma Protocol →"
       }
     },
-    sources: ["OSHA Battery Handling Standards", "NFPA Electrical Safety Code"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
 
   // =========================================================================
@@ -399,8 +400,8 @@ window.CAMAEL_ITEMS = [
         buttonText: "Go to Leached Acorn Porridge Recipe →"
       }
     },
-    sources: ["USDA Agricultural Research Service", "Peterson Field Guide to Edible Wild Plants"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "item_stinging_nettle",
@@ -439,8 +440,8 @@ window.CAMAEL_ITEMS = [
         buttonText: "Go to Cordage & Knots Guide →"
       }
     },
-    sources: ["National Center for Complementary and Integrative Health", "Army FM 21-76"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "item_copper_pipe",
@@ -475,8 +476,8 @@ window.CAMAEL_ITEMS = [
         buttonText: "Go to Clean Water Procurement Guide →"
       }
     },
-    sources: ["Copper Development Association Technical Data", "WHO Water Distillation Guidelines"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
 
   // =========================================================================
@@ -509,15 +510,15 @@ window.CAMAEL_ITEMS = [
     survivalUsage: "ZERO SURVIVAL VALUE. Extreme tactical hazard. Frequently misidentified by novice foragers as wild carrot, wild parsley, or yarrow.",
     riskMitigation: {
       risk: "Fatal respiratory paralysis. No pharmaceutical antidote exists.",
-      solution: "Call emergency services immediately (112 in India). If conscious and under medical guidance, activated charcoal slurry can bind alkaloids. Initiate artificial rescue breathing if respiration slows.",
+      solution: "Call emergency services immediately (112 in India). If conscious and under medical guidance, pharmacy-grade activated charcoal slurry can bind alkaloids. Initiate artificial rescue breathing if respiration slows.",
       solutionAction: {
         section: "recipes",
         targetId: "rec_charcoal_slurry",
         buttonText: "Go to Emergency Charcoal Slurry →"
       }
     },
-    sources: ["CDC NIOSH Emergency Response Card: Coniine", "American Association of Poison Control Centers"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "item_death_cap",
@@ -553,8 +554,8 @@ window.CAMAEL_ITEMS = [
         buttonText: "Go to Emergency Charcoal Slurry →"
       }
     },
-    sources: ["North American Mycological Association (NAMA)", "WHO Poisoning Database"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "item_nightshade",
@@ -590,8 +591,8 @@ window.CAMAEL_ITEMS = [
         buttonText: "Go to Emergency Charcoal Slurry →"
       }
     },
-    sources: ["CDC Clinical Toxicology Review: Anticholinergic Toxins", "National Poison Data System"],
-    lastReviewed: "2026-10-15"
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   }
 ];
 
@@ -635,6 +636,6 @@ window.CAMAEL_UET = [
   {
     step: 8,
     title: "Swallow Test & 8-Hour Fast",
-    desc: "Swallow the single small piece. Wait 8 continuous hours. If nausea, abdominal cramps, diarrhea, or vomiting occur, seek medical care and drink charcoal slurry. If zero symptoms appear after 8 hours, test a 1/4 cup portion."
+    desc: "Swallow the single small piece. Wait 8 continuous hours. If nausea, abdominal cramps, diarrhea, or vomiting occur, call emergency services (112 in India) / poison control immediately and reach a hospital. Never apply the Universal Edibility Test to mushrooms or fungi—amatoxins produce delayed organ necrosis 6 to 24 hours later, making the test dangerously ineffective for fungi. If zero symptoms appear after 8 hours, test a 1/4 cup portion."
   }
 ];

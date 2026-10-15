@@ -1,13 +1,14 @@
-// CAMAEL: Survival Recipes & Lifesavers Database
-// Comprehensive formulations for emergency sustenance, wild cooking, and vital medical remedies
+// CODEX CAMAEL: Survival Recipes & Sustenance Formulations
+// Standard field preparations, emergency hydration, and pantry filtering
+// Note: Review status defaults to "Not yet reviewed", Source status defaults to "Source: unverified"
 
 window.CAMAEL_RECIPES = [
   // =========================================================================
-  // LIFESAVERS (Special Emergency Section)
+  // EMERGENCY HYDRATION & ADSORBENTS
   // =========================================================================
   {
     id: "rec_ors",
-    name: "WHO/UNICEF Oral Rehydration Salts (ORS)",
+    name: "Oral Rehydration Salts (ORS)",
     category: "lifesavers",
     tier: "S",
     prepTime: "2 minutes",
@@ -15,19 +16,21 @@ window.CAMAEL_RECIPES = [
     smokeRisk: "None (Cold Prep)",
     shelfLife: "24 hours once mixed",
     ingredients: ["Clean Water", "Sugar", "Salt"],
-    summary: "The single most lifesaving medical formula in human history. Treats fatal dehydration from cholera, dysentery, heat exhaustion, and diarrhea.",
+    summary: "Essential electrolyte and glucose formulation for rapid oral rehydration during severe diarrhea, cholera, heat exhaustion, or fluid depletion.",
     instructions: [
-      "1. Measure exactly 1 Liter (approx. 4.2 metric cups) of clean, boiled or purified water into a sterile container.",
-      "2. Add exactly 6 level teaspoons of granulated sugar (or clean wild honey: 1.5 tablespoons).",
+      "1. Measure exactly 1 Liter of clean, boiled or verified potable water into a clean container.",
+      "2. Add exactly 6 level teaspoons of clean granulated sugar.",
       "3. Add exactly 1/2 level teaspoon of table salt (sodium chloride).",
-      "4. Stir vigorously until completely dissolved. The water should taste no saltier than human tears.",
-      "5. Administer in small, frequent sips (one cup after every loose stool or 250ml every hour during heat exhaustion)."
+      "4. Stir vigorously until completely dissolved. The solution should taste no saltier than tears.",
+      "5. Administer in small, frequent sips. Do not exceed specified salt ratio to prevent hypernatremic fluid shifts."
     ],
-    survivalNotes: "Do NOT make it overly salty—excess sodium without clean water can cause hypernatremic seizures. The sugar is essential; it triggers the intestinal sodium-glucose cotransporter, forcing water absorption."
+    survivalNotes: "Never make the solution overly salty. Sugar is mandatory as it activates the intestinal sodium-glucose cotransporter, driving rapid cellular water absorption.",
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "rec_charcoal_slurry",
-    name: "Activated Charcoal Poisoning Slurry",
+    name: "Activated Charcoal Ingestion Slurry",
     category: "lifesavers",
     tier: "S",
     prepTime: "5 minutes",
@@ -35,103 +38,115 @@ window.CAMAEL_RECIPES = [
     smokeRisk: "None",
     shelfLife: "Indefinite (dry powder)",
     ingredients: ["Clean Water", "Charcoal"],
-    summary: "Emergency universal toxin sponge. Binds to ingested plant poisons, mushroom toxins, and drug overdoses in the stomach before bloodstream absorption.",
+    summary: "Gastrointestinal toxin adsorbent for specific ingested poisons. Step 1 is always immediate emergency medical transport. Use only pharmacy-grade activated charcoal.",
     instructions: [
-      "1. Grind pure hardwood charcoal (never briquettes with chemical lighter fluid!) into a fine micro-powder.",
-      "2. Measure 2 to 3 heaped tablespoons (approx. 25-50g) of charcoal powder.",
-      "3. Mix into 250ml of clean drinking water to create a dark slurry.",
-      "4. Administer orally as quickly as possible within 1 to 2 hours of toxic ingestion."
+      "1. Step 1: Call emergency services / poison control immediately (112 in India) and arrange transport to a hospital.",
+      "2. CONTRAINDICATIONS: Never administer to a drowsy, lethargic, or unconscious person, anyone without an intact gag reflex, or following ingestion of caustic substances (acids/lye) or petroleum hydrocarbons (risk of severe chemical pneumonitis).",
+      "3. Note: Never use crude campfire charcoal or barbecue briquettes; use ONLY pharmacy-grade activated charcoal powder.",
+      "4. Mix 25g to 50g of pharmacy-grade activated charcoal into 250ml of clean drinking water to form an oral suspension.",
+      "5. Note: Ineffective against alcohol, cyanide, lithium, iron, or mineral acids. Death Cap (Amanita phalloides) requires hospital ICU supportive care, as toxins rapidly bind hepatocyte targets."
     ],
-    survivalNotes: "Ineffective against heavy metals, cyanide, alcohol, or corrosive acids/lye. In extreme cases, repeat half-dose every 4 hours. Will cause harmless black stools."
-  },
-  {
-    id: "rec_pine_needle_tea",
-    name: "Pine Needle Vitamin C Infusion",
-    category: "lifesavers",
-    tier: "S",
-    prepTime: "10 minutes",
-    calories: "5 kcal",
-    smokeRisk: "Low (Small Fire)",
-    shelfLife: "Consume fresh",
-    ingredients: ["Clean Water", "Pine Needles"],
-    summary: "Historic Arctic scurvy cure. Contains 4 to 5 times more Vitamin C by weight than fresh orange juice. Boosts immune function and wards off systemic connective tissue collapse.",
-    instructions: [
-      "1. Harvest fresh, vibrant green needles from White Pine, Scots Pine, or Spruce (AVOID Ponderosa Pine, Yew, and Norfolk Island Pine which are toxic!).",
-      "2. Finely chop or crush the needles to break open the outer waxy cuticle.",
-      "3. Bring 500ml of clean water to a rolling boil, then remove from heat.",
-      "4. Steep the chopped needles in the hot water for 8 to 10 minutes. Do NOT boil the needles directly, as excessive heat destroys Vitamin C.",
-      "5. Strain the needles and drink warm. Add honey if available."
-    ],
-    survivalNotes: "Pregnant women should avoid large amounts of pine needle tea due to potential uterine stimulation."
+    survivalNotes: "Administer only under medical advice or while awaiting urgent hospital transport. Causes black stools.",
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "rec_willow_bark_tea",
-    name: "Willow Bark Salicin Decoction (Wild Aspirin)",
+    name: "Willow Bark Decoction",
     category: "lifesavers",
-    tier: "S",
+    tier: "A",
     prepTime: "20 minutes",
     calories: "0 kcal",
     smokeRisk: "Low",
     shelfLife: "48 hours in cold container",
     ingredients: ["Clean Water", "Willow Bark"],
-    summary: "Natural precursor to synthetic aspirin (acetylsalicylic acid). Potent anti-inflammatory, reduces incapacitating fevers, relieves joint/tooth pain.",
+    summary: "Herbal salicin decoction for mild fever and joint ache. Requires strict contraindication screening.",
     instructions: [
-      "1. Strip the outer bark of young willow twigs (Salix species) to expose the green inner cambium layer.",
-      "2. Scrape 1 to 2 teaspoons of the inner bark.",
-      "3. Place bark in 300ml of water and simmer gently for 15 minutes.",
-      "4. Let cool, strain out bark fibers, and drink."
+      "1. WARNING & CONTRAINDICATIONS: Never administer to children or teenagers under 19 years old due to the risk of fatal Reye's syndrome. Contraindicated in aspirin allergy, bleeding disorders, concurrent blood thinners, pregnancy, or peptic ulcer disease.",
+      "2. Strip the outer bark of young willow twigs (Salix species) to expose the green inner cambium layer.",
+      "3. Scrape 1 to 2 teaspoons of the inner cambium bark.",
+      "4. Simmer gently in 300ml of clean water for 15 minutes.",
+      "5. Cool and strain out woody fibers before consumption. Limit intake to 1 cup every 6 hours."
     ],
-    survivalNotes: "Takes 20-30 minutes to take effect. Do not administer to anyone with known aspirin allergies, ulcers, or bleeding disorders."
+    survivalNotes: "Onset is delayed (20-30 minutes) as salicin requires metabolic conversion in the liver. Discontinue immediately if stomach irritation occurs.",
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
+  },
+  {
+    id: "rec_pine_needle_tea",
+    name: "Pine Needle Warm Infusion",
+    category: "cooking",
+    tier: "B",
+    prepTime: "10 minutes",
+    calories: "5 kcal",
+    smokeRisk: "Low (Small Fire)",
+    shelfLife: "Consume fresh",
+    ingredients: ["Clean Water", "Pine Needles"],
+    summary: "Wild evergreen needle beverage containing Vitamin C. Avoid toxic lookalikes; geographic occurrence is restricted to temperate and montane zones.",
+    instructions: [
+      "1. CRITICAL IDENTIFICATION & LOOKALIKES: Confirm genuine pine species (e.g. Eastern White Pine in North America; Chir Pine / Pinus roxburghii or Blue Pine in the Himalayas). AVOID toxic Yew (Taxus baccata - lethal cardiotoxins), Norfolk Island Pine, and Ponderosa Pine (causes bovine abortions). Note: Pines do not grow naturally in the tropical plains of Telangana or Kerala.",
+      "2. Finely chop or crush clean green needles to rupture the outer resinous cuticle.",
+      "3. Bring 500ml of clean water to a boil, then REMOVE FROM HEAT.",
+      "4. Steep chopped needles in the hot water for 8 to 10 minutes. Do NOT boil needles directly, as heat degrades ascorbic acid.",
+      "5. Strain fibers and drink warm. Contraindicated in pregnancy."
+    ],
+    survivalNotes: "Do not rely on wild infusions as a sole therapeutic agent. Confirm species with 100% certainty before consumption.",
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "rec_hardtack",
     name: "Survival Hardtack (Ship's Biscuit)",
-    category: "lifesavers",
+    category: "cooking",
     tier: "A",
     prepTime: "60 minutes",
     calories: "350 kcal / biscuit",
     smokeRisk: "Medium (Oven/Embers)",
-    shelfLife: "25+ Years if kept bone dry",
+    shelfLife: "Long-term if kept bone dry",
     ingredients: ["Flour", "Clean Water", "Salt"],
-    summary: "The ultimate survival staple ration. With zero fats to turn rancid, completely dried hardtack will last decades without refrigeration.",
+    summary: "Dry emergency travel ration. Contains no fats to oxidize or turn rancid, surviving long storage in moisture-proof containers.",
     instructions: [
-      "1. Mix 2 cups of white or whole wheat flour, 1/2 cup of water, and 1 teaspoon of salt until a dense, non-sticky dough forms.",
-      "2. Roll out dough to 1/2 inch (1.2 cm) thickness on a clean surface.",
+      "1. Mix 2 cups of flour, 1/2 cup of water, and 1 teaspoon of salt into a stiff, dense dough.",
+      "2. Roll dough out to 1/2 inch (1.2 cm) thickness on a clean surface.",
       "3. Cut into 3x3 inch squares.",
-      "4. Punch a grid of 16 small holes completely through each biscuit using a clean nail or skewer (prevents puffing and ensures core drying).",
-      "5. Bake slowly near hot coals or flat rocks for 30 minutes on each side until rock-hard and pale.",
+      "4. Dock a grid of 16 holes through each biscuit with a clean skewer to ensure thorough core moisture release.",
+      "5. Bake slowly near campfire coals or oven for 30 minutes per side until completely dry and rock-hard.",
       "6. Cool completely before storing in an airtight, moisture-free cache."
     ],
-    survivalNotes: "Never bite directly into dry hardtack—you risk breaking teeth. Soak in broth, water, coffee, or stew for 5 minutes before eating."
+    survivalNotes: "Never bite directly into dry hardtack to avoid tooth fractures. Soften in warm broth, water, or tea for 5 minutes before eating.",
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "rec_pemmican",
-    name: "Pemmican (Indigenous Survival Calorie Bar)",
-    category: "lifesavers",
-    tier: "S",
+    name: "Pemmican Calorie Bar",
+    category: "cooking",
+    tier: "A",
     prepTime: "4 hours (prep)",
     calories: "700 kcal / 100g",
     smokeRisk: "High (Smoker / Rendering)",
-    shelfLife: "5 to 10 Years",
+    shelfLife: "Extended in cool storage",
     ingredients: ["Dried Meat", "Animal Fat", "Berries"],
-    summary: "Invented by Indigenous North Americans. The highest energy-density survival food on Earth, combining 50% lean dried protein with 50% rendered tallow/fat.",
+    summary: "High energy-density emergency trail ration combining 50% dried lean protein powder with 50% clarified rendered animal tallow.",
     instructions: [
-      "1. Dehydrate lean meat (venison, beef, rabbit) until brittle like crackers (zero moisture).",
-      "2. Pound or grind the dried meat into a fluffy, fibrous powder.",
-      "3. Melt and clarify clean animal tallow/suet (render over gentle heat and strain out cracklings).",
-      "4. Optional: Add crushed dried berries (blueberries, cranberries) for trace antioxidants.",
-      "5. Mix liquid tallow with the powdered meat in a 1:1 weight ratio until a thick paste forms.",
-      "6. Press into flat bars or balls and allow to solidify in cool air."
+      "1. Dehydrate lean meat until brittle with zero residual moisture.",
+      "2. Pound or grind dried meat into a fibrous powder.",
+      "3. Render and clarify clean animal tallow, straining out all cracklings.",
+      "4. Optional: Incorporate crushed dried tart berries for flavor.",
+      "5. Thoroughly blend liquid tallow and powdered meat in an equal 1:1 weight ratio.",
+      "6. Press firmly into blocks and allow to solidify in cool air."
     ],
-    survivalNotes: "Two 100g pemmican bars provide an entire day's caloric and fat requirements for a human surviving in freezing wilderness conditions."
+    survivalNotes: "Provides dense caloric fuel in freezing wilderness conditions. Keep protected from moisture and pests.",
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
 
   // =========================================================================
-  // CAMPFIRE & FIELD RATIONS
+  // CAMPFIRE & FIELD FORAGE
   // =========================================================================
   {
     id: "rec_cattail_cakes",
-    name: "Cattail Starch Ash Cakes",
+    name: "Cattail Starch Cakes",
     category: "cooking",
     tier: "B",
     prepTime: "25 minutes",
@@ -139,19 +154,21 @@ window.CAMAEL_RECIPES = [
     smokeRisk: "Medium",
     shelfLife: "2 days",
     ingredients: ["Cattail Root", "Clean Water", "Salt"],
-    summary: "Cattail rhizomes are the 'supermarket of the swamp'. High in clean, easily digestible starches.",
+    summary: "Clean starch extraction from wild cattail rhizomes. Requires strict habitat and lookalike confirmation.",
     instructions: [
-      "1. Dig up thick cattail rhizomes from clean, non-polluted wetland mud.",
-      "2. Peel off outer spongy skin to reveal white fibrous starch core.",
-      "3. Crush and wash the fibers in a bowl of clean water to release the white starch sediment.",
-      "4. Pour off excess water, leaving the thick wet starch at the bottom.",
-      "5. Mix in a pinch of salt, pat into thin flat cakes, and bake on a hot, flat river stone near campfire coals for 5 minutes per side."
+      "1. FORAGING SAFETY: Never harvest from stagnant industrial drainage or contaminated runoff. Beware toxic lookalike Yellow Iris (flattened leaves) and Poison Hemlock in wetland fringes. Golden Rule: Never eat anything you cannot 100% identify.",
+      "2. Dig clean cattail rhizomes from moving freshwater mud.",
+      "3. Peel outer spongy rind to access the white fibrous starch core.",
+      "4. Macerate fibers in clean water to settle the dense white starch.",
+      "5. Decant surface liquid, mix starch with a pinch of salt, shape into flat cakes, and bake on a hot stone near coals for 5 minutes per side."
     ],
-    survivalNotes: "Rich in complex carbohydrates. Ensure wetland is not near industrial or road chemical runoff."
+    survivalNotes: "Digestible carbohydrate source. Always cook thoroughly before ingestion.",
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "rec_dandelion_greens",
-    name: "Steamed Dandelion & Wild Onion Greens",
+    name: "Steamed Dandelion & Wild Greens",
     category: "cooking",
     tier: "B",
     prepTime: "10 minutes",
@@ -159,18 +176,20 @@ window.CAMAEL_RECIPES = [
     smokeRisk: "Low",
     shelfLife: "1 day",
     ingredients: ["Dandelion Greens", "Wild Onion", "Clean Water"],
-    summary: "Abundant early-spring survival salad. Packed with iron, potassium, calcium, and prebiotics to restore gut microflora.",
+    summary: "Wild forage greens providing micronutrients. Must confirm wild allium identity through strong onion aroma.",
     instructions: [
-      "1. Harvest young dandelion leaves (older leaves are extremely bitter).",
-      "2. Dig up wild garlic/onion bulbs, washing off all soil.",
-      "3. Boil or steam greens in clean water for 3 to 5 minutes to leach out excess bitterness.",
-      "4. Toss with diced wild onion bulbs. Drink the steaming water as a nutrient broth."
+      "1. Harvest young, tender dandelion leaves before flowering to minimize bitter sesquiterpenes.",
+      "2. FORAGING SAFETY: Confirm wild onion/garlic by distinct pungent allium aroma. Discard immediately if lacking onion scent to avoid toxic lookalike Death Camas.",
+      "3. Wash thoroughly and steam or simmer in clean water for 3 to 5 minutes.",
+      "4. Season with salt and consume warm."
     ],
-    survivalNotes: "Ensure you confirm wild onion has a distinct, strong onion/garlic aroma to avoid toxic lookalike Death Camas (which has NO onion scent)."
+    survivalNotes: "Provides trace potassium, calcium, and vitamins during food scarcity.",
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "rec_beans_rice",
-    name: "Complete Protein Ration (Survival Rice & Beans)",
+    name: "Campfire Rice & Beans",
     category: "cooking",
     tier: "A",
     prepTime: "40 minutes",
@@ -178,14 +197,16 @@ window.CAMAEL_RECIPES = [
     smokeRisk: "Low",
     shelfLife: "2 days cooked",
     ingredients: ["Rice", "Beans", "Clean Water", "Salt"],
-    summary: "The quintessential disaster survival meal. Rice and beans combine to form all 9 essential amino acids, creating a complete biological protein.",
+    summary: "Complete dietary protein combining grains and legumes with all nine essential amino acids.",
     instructions: [
-      "1. Soak dry beans overnight or for at least 4 hours to reduce cook time and fuel consumption.",
-      "2. Boil beans in 3 parts water until tender (approx. 30 minutes).",
-      "3. Add 1 part white rice and salt to the pot.",
-      "4. Cover tightly, remove to the cooler edge of campfire coals, and simmer for 15 minutes until liquid is absorbed."
+      "1. Soak dry beans in clean water for at least 4 to 8 hours to decrease cooking time.",
+      "2. SAFETY WARNING: Never consume raw or undercooked kidney beans due to toxic phytohaemagglutinin; boil actively for at least 10 minutes.",
+      "3. Simmer beans until soft, then combine with 1 part white rice and salt in 2 parts water.",
+      "4. Cover tightly and simmer on low coals for 15 minutes until moisture is fully absorbed."
     ],
-    survivalNotes: "Crucial survival tip: Never eat raw or undercooked kidney beans—they contain toxic phytohaemagglutinin which requires at least 10 minutes of active boiling to neutralize."
+    survivalNotes: "Long-term dried storage staple. Store uncooked ingredients in sealed, rodent-proof bins.",
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "rec_acorn_mash",
@@ -197,19 +218,20 @@ window.CAMAEL_RECIPES = [
     smokeRisk: "Low",
     shelfLife: "3 days",
     ingredients: ["Oak Acorns", "Clean Water", "Salt"],
-    summary: "Dense source of fats and carbohydrates. Oak acorns sustained prehistoric human civilizations across the Northern Hemisphere for millennia.",
+    summary: "Wild carbohydrate and lipid porridge prepared from oak nutmeat after thorough tannin leaching.",
     instructions: [
-      "1. Collect sound acorns (reject any with worm exit holes or cracks).",
-      "2. Crack and remove outer shells, extracting the nutmeat.",
-      "3. Crush nutmeat into coarse meal.",
-      "4. COLD/HOT WATER LEACHING: Soak acorn meal in repeated changes of clean water until all bitter, astringent tannins are washed away (taste a tiny crumb—if bitter, keep leaching!).",
-      "5. Once sweet/nutty, boil leached meal with water and salt into a thick porridge."
+      "1. Gather intact acorns, rejecting any with bore holes, mold, or cracks.",
+      "2. Shell nuts and crush nutmeats into a coarse meal.",
+      "3. TANNIN LEACHING: Soak acorn meal through repeated changes of clean water until all bitter, astringent tannins are rinsed away. Taste a small crumb: if any puckering bitterness remains, continue leaching.",
+      "4. Boil leached meal with clean water and a pinch of salt until thickened into porridge."
     ],
-    survivalNotes: "Tannins are toxic in high doses and cause kidney damage if not thoroughly leached out."
+    survivalNotes: "Ingesting unleached raw acorns causes gastric mucosal irritation and potential renal stress.",
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   },
   {
     id: "rec_bone_broth",
-    name: "Mineral-Rich Bone Marrow Broth",
+    name: "Bone Marrow Broth",
     category: "cooking",
     tier: "A",
     prepTime: "3 to 6 hours",
@@ -217,13 +239,16 @@ window.CAMAEL_RECIPES = [
     smokeRisk: "Low (Smoldering Coals)",
     shelfLife: "3 days",
     ingredients: ["Clean Water", "Animal Bones", "Salt", "Wild Onion"],
-    summary: "Extracts deep calcium, phosphorus, magnesium, gelatin, and collagen from scavenged animal carcasses.",
+    summary: "Warm mineral and collagen extraction from fresh animal bones to support hydration and recovery.",
     instructions: [
-      "1. Crack large animal leg bones open with a clean rock to expose inner nutrient-rich marrow.",
-      "2. Place bones, marrow, wild onion, and salt into a lidded pot of clean water.",
-      "3. Simmer over low, steady campfire coals for several hours until the liquid turns cloudy and rich.",
-      "4. Drink hot to rehydrate, rebuild connective tissue, and soothe inflamed gut lining."
+      "1. Inspect bones to ensure freshness; never utilize spoiled or putrid animal remains.",
+      "2. Crack heavy limb bones with a clean tool to expose inner marrow cavities.",
+      "3. Place cracked bones into a pot of clean water with salt and wild onion.",
+      "4. Simmer gently over steady campfire coals for 3 to 6 hours until broth is rich and opaque.",
+      "5. Skim surface scum and consume warm."
     ],
-    survivalNotes: "One of the best convalescent meals for sick, injured, or hypothermic survivors."
+    survivalNotes: "Gentle oral nutrition for convalescing individuals experiencing gastrointestinal recovery.",
+    reviewStatus: "Not yet reviewed",
+    sourceStatus: "Source: unverified"
   }
 ];
