@@ -5,13 +5,14 @@
 window.CAMAEL_CRISIS = [
   {
     id: "crisis_cpr",
-    title: "In Case of: Cardiac Arrest & Unresponsive Victim",
+    title: "In Case of: Adult CPR & Cardiac Arrest",
     category: "medical",
     urgency: "IMMEDIATE (0-4 Minutes)",
     icon: "🫀",
-    summary: "Immediate, high-quality chest compressions at 100-120 BPM maintain vital cerebral and myocardial perfusion. Step 1 is always activating emergency medical response.",
+    summary: "Immediate, high-quality chest compressions at 100-120 BPM maintain vital cerebral and myocardial perfusion. Step 1 is always activating emergency medical response. Child/infant technique differs: call 112 and follow the dispatcher.",
     first60s: [
       "STEP 1: Call emergency services immediately (112 in India, 911 in US) and shout for someone to locate an Automated External Defibrillator (AED).",
+      "NOTE: Child/infant technique differs: call 112 and follow the dispatcher.",
       "Check responsiveness: Firmly tap shoulders and shout loudly: 'Are you okay?!'",
       "Check breathing: Look, listen, and feel for normal breathing for NO MORE than 10 seconds. Agonal gasping is NOT normal breathing.",
       "Position victim flat on their back on a FIRM, HARD, flat surface (ground or floor; never on a mattress).",
@@ -39,8 +40,8 @@ window.CAMAEL_CRISIS = [
     first60s: [
       "STEP 1: Call emergency services (112 in India) immediately.",
       "DIRECT PRESSURE FIRST: Place a sterile dressing, clean cloth, or gloved hand directly over the bleeding site and exert firm, continuous, two-handed pressure.",
-      "WOUND PACKING: For deep junctional or extremity wounds, pack clean gauze deeply into the bleeding wound cavity directly onto the bleeding vessel while maintaining continuous downward pressure.",
-      "If direct pressure and wound packing fail to control life-threatening arterial extremity bleeding (bright red pulsatile blood), deploy a mechanical windlass tourniquet immediately."
+      "WOUND PACKING BEFORE TOURNIQUET: For deep junctional or extremity wounds, pack clean gauze deeply into the bleeding wound cavity directly onto the bleeding vessel while maintaining continuous downward pressure.",
+      "TOURNIQUET ONLY IF PRESSURE FAILS: If direct pressure and wound packing fail to control life-threatening arterial extremity bleeding (bright red pulsatile blood), deploy a mechanical windlass tourniquet immediately."
     ],
     nextHour: [
       "TOURNIQUET APPLICATION: Apply the tourniquet 2 to 3 inches above the bleeding site directly onto the skin (never over a joint). If site is uncertain, place 'high and tight' on the extremity.",
@@ -74,7 +75,7 @@ window.CAMAEL_CRISIS = [
       "- Common Krait (Bungarus caeruleus): Potent neurotoxin, painless nocturnal bite, abdominal cramps, descending paralysis.",
       "- Spectacled Cobra (Naja naja): Neurotoxic, ptosis (drooping eyelids), respiratory paralysis, local tissue necrosis.",
       "WESTERN GHATS & KERALA PIT VIPER NOTE: The Hump-nosed Pit Viper (Hypnale hypnale) is common in plantations and rainforests of Kerala and Western Ghats. Standard Indian polyvalent ASV does NOT effectively neutralize Hypnale hypnale venom; management requires hospital supportive care for coagulopathy and acute kidney injury.",
-      "WHAT NEVER TO DO (Per Indian National Guidelines / MoHFW & WHO SEARO):",
+      "WHAT NEVER TO DO:",
       "- Do NOT make incisions or cut the bite site.",
       "- Do NOT attempt oral or mechanical suction.",
       "- Do NOT apply arterial tourniquets (causes severe ischemic gangrene and limb loss).",

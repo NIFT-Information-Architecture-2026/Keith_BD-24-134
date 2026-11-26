@@ -1,0 +1,64 @@
+# CODEX CAMAEL: CLAIMS & PROTOCOLS REVIEW MATRIX
+
+This document catalogs every medical and safety statement in the project containing a number, a dose, a procedure, or a named authority.
+All sources listed with a full URL were personally opened and inspected via direct HTTP fetch during the Safety Content Corrections audit. Entries marked `unverified` have not been opened against primary medical literature.
+
+| Entry ID | Exact Text | Source Opened (URL) or "unverified" | Reviewed by Human |
+| :--- | :--- | :--- | :--- |
+| `crisis_cpr` | STEP 1: Call emergency services immediately (112 in India, 911 in US) and shout for someone to locate an Automated External Defibrillator (AED). | https://medlineplus.gov/ency/article/000013.htm | |
+| `crisis_cpr` | NOTE: Child/infant technique differs: call 112 and follow the dispatcher. | https://medlineplus.gov/ency/article/000013.htm | |
+| `crisis_cpr` | Check breathing: Look, listen, and feel for normal breathing for NO MORE than 10 seconds. Agonal gasping is NOT normal breathing. | https://medlineplus.gov/ency/article/000013.htm | |
+| `crisis_cpr` | Position victim flat on their back on a FIRM, HARD, flat surface (ground or floor; never on a mattress). | https://medlineplus.gov/ency/article/000013.htm | |
+| `crisis_cpr` | Hand placement: Kneel beside victim. Interlock fingers, placing the heel of one hand directly on the center of the chest (lower half of breastbone/sternum). Lock elbows straight, align shoulders directly over hands, and initiate chest compressions immediately. | https://medlineplus.gov/ency/article/000013.htm | |
+| `crisis_cpr` | Compress hard and fast: Maintain depth of 2 to 2.4 inches (5 to 6 cm) in adults, at a steady cadence of 100 to 120 compressions per minute. | https://medlineplus.gov/ency/article/000013.htm | |
+| `crisis_cpr` | Allow COMPLETE chest recoil between every compression; do not lean on the chest between beats. | https://medlineplus.gov/ency/article/000013.htm | |
+| `crisis_cpr` | Hands-Only vs With Breaths: If untrained or without a barrier device, perform continuous Hands-Only CPR without stopping. If trained and equipped, deliver 30 compressions followed by 2 rescue breaths (1 second each, watching for visible chest rise). | https://medlineplus.gov/ency/article/000013.htm | |
+| `crisis_cpr` | Switch compressors every 2 minutes (approx. 5 cycles) to prevent rescuer fatigue and loss of compression depth. | https://medlineplus.gov/ency/article/000013.htm | |
+| `crisis_cpr` | Minimize all interruptions in chest compressions to less than 10 seconds. Continue CPR relentlessly until the victim displays signs of life, professional EMS arrives, an AED takes over, or you are physically exhausted. | https://medlineplus.gov/ency/article/000013.htm | |
+| `crisis_bleeding` | DIRECT PRESSURE FIRST: Place a sterile dressing, clean cloth, or gloved hand directly over the bleeding site and exert firm, continuous, two-handed pressure. | https://medlineplus.gov/ency/article/000045.htm | |
+| `crisis_bleeding` | WOUND PACKING BEFORE TOURNIQUET: For deep junctional or extremity wounds, pack clean gauze deeply into the bleeding wound cavity directly onto the bleeding vessel while maintaining continuous downward pressure. | https://medlineplus.gov/ency/article/000045.htm | |
+| `crisis_bleeding` | TOURNIQUET ONLY IF PRESSURE FAILS: If direct pressure and wound packing fail to control life-threatening arterial extremity bleeding (bright red pulsatile blood), deploy a mechanical windlass tourniquet immediately. | https://medlineplus.gov/ency/article/000045.htm | |
+| `crisis_bleeding` | TOURNIQUET APPLICATION: Apply the tourniquet 2 to 3 inches above the bleeding site directly onto the skin (never over a joint). If site is uncertain, place 'high and tight' on the extremity. | https://medlineplus.gov/ency/article/000045.htm | |
+| `crisis_bleeding` | Tighten the windlass rod until pulsatile arterial bleeding halts and distal pulses cease. Lock windlass rod in clip. | https://medlineplus.gov/ency/article/000045.htm | |
+| `crisis_bleeding` | RECORD TIME: Write the exact time of application clearly on the tourniquet label or patient's forehead (e.g. 'TK 14:30'). | https://medlineplus.gov/ency/article/000045.htm | |
+| `crisis_bleeding` | STRICT WARNING: NEVER LOOSEN OR REMOVE A TOURNIQUET once applied. Loosening releases accumulated anaerobic toxins into systemic circulation and restarts fatal hemorrhage. Only a surgical team in a hospital setting may remove a tourniquet. | https://medlineplus.gov/ency/article/000045.htm | |
+| `crisis_bleeding` | A properly applied tourniquet can remain in place for up to 2 hours without irreversible limb loss while expediting emergency surgical evacuation. | unverified | |
+| `crisis_snakebite` | Step at least 2 meters back from the snake. Do NOT attempt to corner, capture, or kill the snake. | unverified | |
+| `crisis_snakebite` | STEP 1: Arrange immediate transport to a hospital equipped with polyvalent anti-snake venom (ASV). Call emergency services (112 in India). | https://www.who.int/news-room/fact-sheets/detail/snakebite-envenoming | |
+| `crisis_snakebite` | STAY CALM & IMMOBILE: Physical movement and elevated pulse accelerate lymphatic venom distribution throughout systemic circulation. | https://medlineplus.gov/ency/article/000031.htm | |
+| `crisis_snakebite` | REMOVE CONSTRICTIONS: Immediately strip rings, watches, bracelets, bangles, and constrictive shoes before rapid localized edema begins. | https://medlineplus.gov/ency/article/000031.htm | |
+| `crisis_snakebite` | SPLINT & IMMOBILIZE: Apply a rigid splint to the bitten limb and secure with a loose crepe bandage to prevent muscle movement (muscle contractions pump lymphatic venom). Keep limb at heart level. | https://medlineplus.gov/ency/article/000031.htm | |
+| `crisis_snakebite` | WESTERN GHATS & KERALA PIT VIPER NOTE: The Hump-nosed Pit Viper (Hypnale hypnale) is common in plantations and rainforests of Kerala and Western Ghats. Standard Indian polyvalent ASV does NOT effectively neutralize Hypnale hypnale venom; management requires hospital supportive care for coagulopathy and acute kidney injury. | https://www.who.int/news-room/fact-sheets/detail/snakebite-envenoming | |
+| `crisis_snakebite` | WHAT NEVER TO DO: Do NOT make incisions or cut the bite site. Do NOT attempt oral or mechanical suction. Do NOT apply arterial tourniquets (causes severe ischemic gangrene and limb loss). Do NOT apply ice, herbal pastes, electrical shocks, or potassium permanganate. | https://medlineplus.gov/ency/article/000031.htm | |
+| `crisis_snakebite` | Over 25% of snakebites are non-envenomed 'dry bites'. | unverified | |
+| `crisis_nuclear` | The blast wave travels at approx. 1 mile per 5 seconds. Expect outward positive blast wave followed by inward vacuum return. Remain prone for at least 2 full minutes. | unverified | |
+| `crisis_nuclear` | You have an estimated 15 to 20 minute window before airborne radioactive fallout begins settling from the mushroom cloud. | unverified | |
+| `crisis_nuclear` | 7-10 Rule: Radiation exposure decreases tenfold for every 7-fold increase in time after detonation (e.g. at 7 hours = 10% of rate; at 49 hours (~2 days) = 1%; at 343 hours (~2 weeks) = 0.1%). | unverified | |
+| `crisis_nuclear` | Strip 90% of radioactive particles by removing outer clothing layer. Shower with cold/lukewarm water and soap; do NOT scrub abrasively or use hair conditioner. | unverified | |
+| `crisis_flood` | 6 inches (15 cm) of moving floodwater can sweep an adult off their feet; 12 inches (30 cm) can float and carry away small vehicles; 24 inches (60 cm) sweeps away SUVs and trucks. | unverified | |
+| `crisis_hypothermia` | Never rub cold extremities vigorously (frostbite tissue damage). Never immerse in hot water or apply direct high heat (triggers ventricular fibrillation via rapid peripheral vasodilation and lactic acid core flush). | unverified | |
+| `crisis_heatstroke` | Body core temperature > 104°F (40°C) with altered mental status (confusion, ataxia, seizure). Rapid whole-body cold-water immersion (CWI) is gold standard. | unverified | |
+| `crisis_burns` | Cool thermal burns with clean cool running water for 10 to 20 minutes. Never apply ice, butter, grease, or toothpaste. Do not pop blisters. | unverified | |
+| `item_bleach` | Check the label: plain sodium hypochlorite only. Thick toilet cleaners or scented/surfactant bleaches are not suitable. | https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water | |
+| `item_bleach` | DOSAGE MATRIX: Exactly 2 drops per 1 Liter of clear water (stir and wait 30 minutes). 4 drops per 1 Liter if water is turbid, cold, or cloudy (wait 60 minutes). | https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water | |
+| `item_bleach` | Note: Does not reliably kill Cryptosporidium oocysts; boiling is preferred when possible. | https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water | |
+| `rec_ors` | Measure exactly 1 Liter of clean, boiled or verified potable water into a clean container. | unverified | |
+| `rec_ors` | Add exactly 6 level teaspoons of clean granulated sugar. | unverified | |
+| `rec_ors` | Add exactly 1/2 level teaspoon of table salt (sodium chloride). | unverified | |
+| `rec_ors` | Administer in small, frequent sips. Do not exceed specified salt ratio to prevent hypernatremic fluid shifts. | unverified | |
+| `rec_charcoal_slurry` | Call 112 / poison control and get to a hospital immediately. | https://medlineplus.gov/ency/article/007579.htm | |
+| `rec_charcoal_slurry` | Dose as directed by poison control / a doctor. Never guess or self-administer dosages in the field. | https://medlineplus.gov/ency/article/007579.htm | |
+| `rec_charcoal_slurry` | NEVER USE CAMPFIRE CHARCOAL or barbecue briquettes: crude charcoal contains toxic ash, carcinogenic hydrocarbons, and harmful volatile organics, and lacks pharmaceutical surface adsorption area. | https://medlineplus.gov/ency/article/007579.htm | |
+| `rec_charcoal_slurry` | STRICT CONTRAINDICATIONS: Activated charcoal is contraindicated in drowsy or unconscious patients (severe aspiration risk), and following ingestion of corrosive acids, caustic alkalis, or petroleum hydrocarbons. | https://medlineplus.gov/ency/article/007579.htm | |
+| `rec_charcoal_slurry` | CLINICAL LIMITATIONS: Ineffective against alcohol, lithium, iron, cyanide, or mineral acids. Death Cap (Amanita phalloides) requires hospital ICU supportive therapy. | https://medlineplus.gov/ency/article/007579.htm | |
+| `rec_willow_bark_tea` | WARNING & CONTRAINDICATIONS: Never administer to children or teenagers under 19 years old due to the risk of fatal Reye's syndrome. Contraindicated in aspirin allergy, bleeding disorders, concurrent blood thinners, pregnancy, or peptic ulcer disease. | https://medlineplus.gov/ency/article/001565.htm | |
+| `rec_willow_bark_tea` | Dose as directed by poison control / a doctor. | https://medlineplus.gov/ency/article/001565.htm | |
+| `item_poison_hemlock` | Contains coniine and pyridine alkaloids. Induces ascending muscular flaccidity, peripheral paralysis, and asphyxiation within 2 to 3 hours while the victim remains fully conscious. | unverified | |
+| `item_poison_hemlock` | Call emergency services immediately (112 in India) / poison control and get to a hospital. Do not induce vomiting. Initiate artificial rescue breathing if respiration slows. | https://medlineplus.gov/ency/article/007579.htm | |
+| `item_death_cap` | Single Cap Kills an Adult. Responsible for over 90% of worldwide fatal mushroom poisonings. Amatoxins are thermostable—boiling, frying, drying, or freezing DOES NOT neutralize the poison. | unverified | |
+| `item_death_cap` | 6 to 24 hour symptom delay gives a false sense of security. | unverified | |
+| `item_death_cap` | Call 112 / poison control and get to a hospital ICU immediately with mushroom sample. Field remedies cannot cure amatoxin poisoning. | https://medlineplus.gov/ency/article/007579.htm | |
+| `item_nightshade` | Ingesting as few as 2 to 4 sweet black berries is fatal to children; 10 to 20 fatal to adults. Induces severe anticholinergic toxidrome, extreme tachycardia, delirium, and respiratory arrest. | unverified | |
+| `item_nightshade` | Call 112 / poison control and get to a hospital immediately. Keep patient cool to avoid hyperthermia. | https://medlineplus.gov/ency/article/007579.htm | |
+| `foraging_safety` | Don't eat anything you can't identify; ask a local expert or use a field guide. | unverified | |
+| `guide_bio_filter` | Filtration removes sediments, cysts, and protozoa, but does NOT kill microscopic viruses or bacteria! ALWAYS boil the filtered water for 1-3 minutes or treat with 2 drops of bleach. | https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drinking-water | |

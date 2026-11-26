@@ -30,14 +30,14 @@ window.CAMAEL_ITEMS = [
     timeFrame: "Immediate (< 1 min)",
     domains: ["Water & Hydration", "Trauma & Medicine", "Food & Caloric Energy", "Barter & Currency"],
     description: "The most indispensable biological mineral on Earth. Regulates cellular osmolarity, nerve conduction, muscle contraction, and food preservation. Salting meat or fish dehydrates bacteria, preserving protein for months without refrigeration.",
-    survivalUsage: "Core electrolyte in the WHO ORS formulation. Essential for tanning animal hides and pickling wild forage. Historically used as literal monetary currency ('salary').",
+    survivalUsage: "Core electrolyte in oral rehydration salt (ORS) formulations. Essential for tanning animal hides and pickling wild forage. Historically used as literal monetary currency ('salary').",
     riskMitigation: {
       risk: "Hypernatremia & dehydration: Ingesting pure salt without sufficient fresh water forces cellular fluid depletion and causes renal failure.",
       solution: "Never consume dry salt during water scarcity. Dissolve in exact clinical ratios with water and sugar.",
       solutionAction: {
         section: "recipes",
         targetId: "rec_ors",
-        buttonText: "Go to WHO/UNICEF ORS Formula →"
+        buttonText: "Go to Emergency ORS Formula →"
       }
     },
     reviewStatus: "Not yet reviewed",
@@ -106,10 +106,10 @@ window.CAMAEL_ITEMS = [
     timeFrame: "Urgent (1–15 mins)",
     domains: ["Water & Hydration", "Trauma & Medicine", "Barter & Currency"],
     description: "Cold chemical water purification powerhouse. A single 1-gallon jug of unscented household bleach can disinfect over 3,800 Liters of contaminated raw water against bacterial pathogens and viruses.",
-    survivalUsage: "DOSAGE MATRIX: Exactly 2 drops per 1 Liter of clear water (stir and wait 30 minutes). 4 drops per 1 Liter if water is turbid, cold, or cloudy (wait 60 minutes). Note: Does not reliably kill Cryptosporidium oocysts; boiling is preferred when possible.",
+    survivalUsage: "Check the label: plain sodium hypochlorite only. Thick toilet cleaners or scented/surfactant bleaches are not suitable. DOSAGE MATRIX: Exactly 2 drops per 1 Liter of clear water (stir and wait 30 minutes). 4 drops per 1 Liter if water is turbid, cold, or cloudy (wait 60 minutes). Note: Does not reliably kill Cryptosporidium oocysts; boiling is preferred when possible.",
     riskMitigation: {
       risk: "Severe caustic chemical burns to esophagus, gastric lining, and eyes if ingested undiluted or if scented industrial surfactants are present.",
-      solution: "Use only regular, unscented sodium hypochlorite. If turbid, pre-filter water through sand/charcoal column before adding bleach.",
+      solution: "Check the label: plain sodium hypochlorite only. Thick toilet cleaners or scented/surfactant bleaches are not suitable. If turbid, pre-filter water through sand/charcoal column before adding bleach.",
       solutionAction: {
         section: "manual",
         targetId: "guide_bio_filter",
@@ -510,11 +510,11 @@ window.CAMAEL_ITEMS = [
     survivalUsage: "ZERO SURVIVAL VALUE. Extreme tactical hazard. Frequently misidentified by novice foragers as wild carrot, wild parsley, or yarrow.",
     riskMitigation: {
       risk: "Fatal respiratory paralysis. No pharmaceutical antidote exists.",
-      solution: "Call emergency services immediately (112 in India). If conscious and under medical guidance, pharmacy-grade activated charcoal slurry can bind alkaloids. Initiate artificial rescue breathing if respiration slows.",
+      solution: "Call emergency services immediately (112 in India) / poison control and get to a hospital. Do not induce vomiting. Initiate artificial rescue breathing if respiration slows.",
       solutionAction: {
-        section: "recipes",
-        targetId: "rec_charcoal_slurry",
-        buttonText: "Go to Emergency Charcoal Slurry →"
+        section: "incaseof",
+        targetId: "crisis_cpr",
+        buttonText: "Go to Adult CPR & Resuscitation →"
       }
     },
     reviewStatus: "Not yet reviewed",
@@ -547,12 +547,8 @@ window.CAMAEL_ITEMS = [
     survivalUsage: "IDENTIFICATION: Pale yellow-olive cap, pure white gills under cap, floppy white stem ring (annulus), and cupped white sack (volva) buried at root base. Field treatment cannot save a patient once toxins enter hepatic circulation; immediate ICU hospitalization is mandatory.",
     riskMitigation: {
       risk: "Irreversible acute hepatic and renal cellular necrosis. 6 to 24 hour symptom delay gives a false sense of security.",
-      solution: "Call emergency services immediately and transport to hospital ICU with mushroom sample. Field remedies cannot cure amatoxin poisoning.",
-      solutionAction: {
-        section: "recipes",
-        targetId: "rec_charcoal_slurry",
-        buttonText: "Go to Emergency Charcoal Slurry →"
-      }
+      solution: "Call 112 / poison control and get to a hospital ICU immediately with mushroom sample. Field remedies cannot cure amatoxin poisoning.",
+      solutionAction: null
     },
     reviewStatus: "Not yet reviewed",
     sourceStatus: "Source: unverified"
@@ -584,58 +580,13 @@ window.CAMAEL_ITEMS = [
     survivalUsage: "IDENTIFICATION: Shiny solitary jet-black berries seated inside a distinct green 5-pointed star-shaped calyx cup. Dull purple-green bell-shaped flowers.",
     riskMitigation: {
       risk: "Severe anticholinergic toxidrome (blind as a bat, mad as a hatter, red as a beet, hot as a hare, dry as a bone).",
-      solution: "Call emergency services immediately (112 in India). Keep patient cool to avoid hyperthermia. Transport immediately to emergency facility.",
-      solutionAction: {
-        section: "recipes",
-        targetId: "rec_charcoal_slurry",
-        buttonText: "Go to Emergency Charcoal Slurry →"
-      }
+      solution: "Call 112 / poison control and get to a hospital immediately. Keep patient cool to avoid hyperthermia.",
+      solutionAction: null
     },
     reviewStatus: "Not yet reviewed",
     sourceStatus: "Source: unverified"
   }
 ];
 
-// Universal Edibility Test (UET) Protocol Steps (Military Field Manual FM 21-76)
-window.CAMAEL_UET = [
-  {
-    step: 1,
-    title: "Part Separation",
-    desc: "Divide plant into component parts: roots, stems, leaves, flowers, seeds. Test only ONE single part at a time. Many plants (like potatoes) have edible roots but deadly toxic leaves."
-  },
-  {
-    step: 2,
-    title: "Smell & Olfactory Test",
-    desc: "Crush a sample of the chosen part and smell it. Discard immediately if it smells strongly of bitter almonds (cyanide indicator) or peach pit aroma."
-  },
-  {
-    step: 3,
-    title: "Fast / Clear System",
-    desc: "Fast from all food for 8 hours prior to testing. Drink only purified water. This ensures any adverse physical reaction is attributable only to the test plant."
-  },
-  {
-    step: 4,
-    title: "Skin Contact Test (15 Minutes)",
-    desc: "Rub the crushed plant part vigorously on a sensitive skin area (inner wrist or elbow crease). Wait 15 minutes. If itching, burning, redness, or hives appear, reject the plant."
-  },
-  {
-    step: 5,
-    title: "Lip Contact Test (3 Minutes)",
-    desc: "If skin shows zero reaction, touch a small piece of the prepared plant part to the outer edge of your lips. Wait 3 minutes. Discard if burning, tingling, or numbness occurs."
-  },
-  {
-    step: 6,
-    title: "Tongue Test (15 Minutes)",
-    desc: "Place a small piece on the tip of your tongue for 15 minutes. Do NOT chew or swallow. Watch for burning, soapiness, or metallic bitterness."
-  },
-  {
-    step: 7,
-    title: "Chew & Hold Test (15 Minutes)",
-    desc: "Chew a small piece thoroughly and hold it in your mouth for 15 minutes without swallowing. If any irritation occurs, spit it out immediately and rinse mouth with clean water."
-  },
-  {
-    step: 8,
-    title: "Swallow Test & 8-Hour Fast",
-    desc: "Swallow the single small piece. Wait 8 continuous hours. If nausea, abdominal cramps, diarrhea, or vomiting occur, call emergency services (112 in India) / poison control immediately and reach a hospital. Never apply the Universal Edibility Test to mushrooms or fungi—amatoxins produce delayed organ necrosis 6 to 24 hours later, making the test dangerously ineffective for fungi. If zero symptoms appear after 8 hours, test a 1/4 cup portion."
-  }
-];
+// Foraging safety rule replacing military UET
+window.CAMAEL_FORAGING_SAFETY = "Don't eat anything you can't identify; ask a local expert or use a field guide.";

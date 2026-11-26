@@ -118,7 +118,7 @@ body.red-light-mode {
   --tile-dark-pressed: #2a0808 !important;
 }
 
-/* OLED Black Mode */
+/* OLED Ultra-Reserve Mode: 100% black pixels, zero animations to preserve dying battery */
 body.oled-mode {
   --bg-console: #000000 !important;
   --bg-primary: #000000 !important;
@@ -126,7 +126,43 @@ body.oled-mode {
   --bg-tertiary: #000000 !important;
   --bg-card: #000000 !important;
   --bg-inset: #000000 !important;
-  --border-color: #1a1a1a !important;
+  --border-color: #222222 !important;
+}
+body.oled-mode * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Phase 2: Tactical Night-Vision Red Mode (Astronomical & Tent Darkness) */
+body.night-vision-mode {
+  --bg-console: #060101 !important;
+  --bg-primary: #0a0202 !important;
+  --bg-secondary: #120303 !important;
+  --bg-tertiary: #1a0404 !important;
+  --bg-card: #150303 !important;
+  --bg-inset: #080202 !important;
+  --border-color: #550808 !important;
+  --border-light: #660a0a !important;
+  --text-primary: #ff3b3b !important;
+  --text-secondary: #cc2929 !important;
+  --text-muted: #881a1a !important;
+  --tile-cream-bg: #3a0606 !important;
+  --tile-cream-ink: #ff7777 !important;
+  --tile-cream-edge: #550a0a !important;
+  --tile-orange-bg: #8b0000 !important;
+  --tile-orange-ink: #ffcccc !important;
+  --tile-orange-edge: #5a0000 !important;
+  --tile-teal-bg: #660000 !important;
+  --tile-teal-ink: #ff9999 !important;
+  --tile-teal-edge: #440000 !important;
+  --lcd-screen-bg: #090101 !important;
+  --lcd-screen-border: #440808 !important;
+  --lcd-screen-ink: #ff3333 !important;
+  --lcd-amber-ink: #ff4444 !important;
+}
+body.night-vision-mode svg {
+  color: #ff3b3b !important;
+  fill: currentColor !important;
 }
 
 /* Phase 1B Light Theme */

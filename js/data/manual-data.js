@@ -83,7 +83,7 @@ window.CAMAEL_MANUAL = [
       "1. Check urine color in clean sunlight against the reference matrix.",
       "2. Levels 1-2 (Pale straw to light yellow): Optimal hydration status.",
       "3. Level 3 (Deep amber/honey): Body is conserving water; physical performance drops by 15-20%. Drink 500ml immediately.",
-      "4. Level 4 (Dark tea/brown): Severe dehydration or rhabdomyolysis (muscle breakdown). Administer WHO ORS solution immediately."
+      "4. Level 4 (Dark tea/brown): Severe dehydration or rhabdomyolysis (muscle breakdown). Administer oral rehydration salts (ORS) immediately."
     ],
     proTip: "Never ration water by sipping small droplets when dehydrated. Drink enough to satisfy thirst; rationing water in your canteen instead of your belly leads to heat stroke."
   },

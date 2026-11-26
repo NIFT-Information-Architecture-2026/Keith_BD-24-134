@@ -117,7 +117,7 @@
         </button>
         <button class="swiss-nav-item" data-section="recipes">
           <span><span class="swiss-nav-index">04</span>SURVIVAL KITCHEN & RATIONS</span>
-          <span style="font-size: 10px; color: var(--text-secondary);">LIFESAVERS & PANTRY</span>
+          <span style="font-size: 10px; color: var(--text-secondary);">EMERGENCY & PANTRY</span>
         </button>
         <button class="swiss-nav-item" data-section="manual">
           <span><span class="swiss-nav-index">05</span>FIELD MANUAL & BLUEPRINTS</span>
@@ -136,6 +136,32 @@
           <span style="font-size: 10px; color: var(--text-secondary);">LOCAL BACKUP</span>
         </button>
       </div>
+
+      <!-- Phase 2: User Archetypes & Behavioral Focus -->
+      <div class="persona-section-box" style="padding: 16px 20px; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.15);">
+        <div style="font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--tile-cream-bg); letter-spacing: 0.08em; margin-bottom: 8px;">
+          BEHAVIORAL FOCUS // USER ARCHETYPES
+        </div>
+        <div style="display: flex; gap: 8px; flex-direction: column;">
+          <button id="personaAllBtn" class="keycap-tile key-dark active" onclick="CAMAEL.setPersona('all');" style="min-height: 36px; padding: 4px 10px; font-size: 11px; justify-content: flex-start;">
+            <span>🌐 Full Tactical System (All Modules)</span>
+          </button>
+          <button id="personaAdventurerBtn" class="keycap-tile key-dark" onclick="CAMAEL.setPersona('adventurer');" style="min-height: 36px; padding: 4px 10px; font-size: 11px; justify-content: flex-start;">
+            <span>🎒 Archetype A: The Adventurer (Trail / Pack / Forage)</span>
+          </button>
+          <button id="personaRealistBtn" class="keycap-tile key-dark" onclick="CAMAEL.setPersona('realist');" style="min-height: 36px; padding: 4px 10px; font-size: 11px; justify-content: flex-start;">
+            <span>🛡️ Archetype B: The Crisis Realist (Triage / Depletion / Comms)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Phase 2: Tactical Night-Vision Red Light Toggle -->
+      <div class="night-vision-box" style="padding: 12px 20px; border-top: 1px solid var(--border-color); display: flex; gap: 10px; align-items: center; justify-content: space-between;">
+        <span style="font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);">TACTICAL LIGHTING:</span>
+        <button id="drawerNightVisionBtn" class="keycap-tile key-dark" onclick="CAMAEL.toggleNightVision();" style="min-height: 34px; padding: 4px 12px; font-size: 11px;">
+          🔴 NIGHT VISION: OFF
+        </button>
+      </div>
     </div>
   </div>
 
@@ -147,6 +173,9 @@
         <span>CRITICAL EMERGENCY CHEAT SHEET // ZERO FLUFF</span>
       </div>
       <div style="display: flex; gap: 10px; align-items: center;">
+        <button id="sosNightVisionBtn" class="keycap-tile key-dark" onclick="CAMAEL.toggleNightVision();" style="min-height: 36px; padding: 4px 12px; font-size: 11px;">
+          🔴 NIGHT VISION: OFF
+        </button>
         <button id="toggleUltraReserveBtn" class="keycap-tile key-dark" style="min-height: 36px; padding: 4px 12px; font-size: 11px;">
           🔋 ULTRA-RESERVE OLED: OFF
         </button>
@@ -158,21 +187,21 @@
       <!-- 1. CPR Quick Card -->
       <div class="sos-card" onclick="window.navigateToSolution('incaseof', 'crisis_cpr'); CAMAEL.closeSosOverlay();">
         <div class="sos-card-top">
-          <div class="sos-card-title">🫀 CARDIAC ARREST / CPR</div>
+          <div class="sos-card-title">🫀 ADULT CPR</div>
           <span class="entry-tag-pill tag-deadly">0-4 MINS</span>
         </div>
-        <p class="sos-card-desc">Call emergency services first (112 in India). Send for AED. Hard flat ground. Center sternum push 2 to 2.4 inches. 100-120 BPM tempo without stopping.</p>
-        <div class="sos-card-action">START CPR METRONOME & ACTION PLAN &rarr;</div>
+        <p class="sos-card-desc">Call emergency services first (112 in India). Send for AED. Hard flat ground. Center sternum push 2 to 2.4 inches. 100-120 BPM tempo without stopping. Child/infant technique differs: call 112 and follow the dispatcher.</p>
+        <div class="sos-card-action">START ADULT CPR METRONOME & ACTION PLAN &rarr;</div>
       </div>
 
       <!-- 2. Poison Quick Card -->
-      <div class="sos-card" onclick="window.navigateToSolution('recipes', 'rec_charcoal_slurry'); CAMAEL.closeSosOverlay();">
+      <div class="sos-card" onclick="CAMAEL.closeSosOverlay();">
         <div class="sos-card-top">
           <div class="sos-card-title">☠️ TOXIC POISONING / INGESTION</div>
-          <span class="entry-tag-pill tag-deadly">IMMEDIATE</span>
+          <span class="entry-tag-pill tag-deadly">CALL 112</span>
         </div>
-        <p class="sos-card-desc">Step 1: Call poison control / emergency services (112) and transport to hospital. Pharmacy-grade activated charcoal only (contraindicated if unconscious, caustic, or petroleum ingestion). No field cure for Death Cap.</p>
-        <div class="sos-card-action">VIEW CHARCOAL SLURRY DOSAGE &rarr;</div>
+        <p class="sos-card-desc">Call 112 / poison control and get to a hospital immediately. Do NOT induce vomiting. Do NOT administer campfire charcoal or homemade slurries. Activated charcoal is strictly for clinical hospital administration under physician oversight.</p>
+        <div class="sos-card-action">CALL 112 & GET TO HOSPITAL &rarr;</div>
       </div>
 
       <!-- 3. Severe Bleeding / Trauma Card -->
@@ -181,7 +210,7 @@
           <div class="sos-card-title">🩸 ARTERIAL BLEED / TOURNIQUET</div>
           <span class="entry-tag-pill tag-deadly">CRITICAL</span>
         </div>
-        <p class="sos-card-desc">Direct pressure and wound packing BEFORE tourniquet. Apply 2-3 inches above wound (never on joint). Record application time. NEVER loosen or remove once placed. Urgent hospital evacuation.</p>
+        <p class="sos-card-desc">Direct pressure and wound packing BEFORE the tourniquet. Apply 2-3 inches above wound (never on joint). Record application time. NEVER loosen or remove once placed. Urgent hospital evacuation.</p>
         <div class="sos-card-action">VIEW TRAUMA & TOURNIQUET ACTION &rarr;</div>
       </div>
 
@@ -191,7 +220,7 @@
           <div class="sos-card-title">💧 INSTANT WATER PURIFICATION</div>
           <span class="entry-tag-pill tag-tier-s">COLD BLEACH</span>
         </div>
-        <p class="sos-card-desc">Exactly 2 drops unscented household bleach (6-8.25%) per 1L clear water (4 drops if cloudy). Wait 30 mins. Note: Does NOT reliably kill Cryptosporidium; boiling for 1 min is preferred when possible.</p>
+        <p class="sos-card-desc">Check the label: plain sodium hypochlorite only. Thick toilet cleaners or scented/surfactant bleaches are not suitable. Exactly 2 drops unscented household bleach (6-8.25%) per 1L clear water (4 drops if cloudy). Wait 30 mins.</p>
         <div class="sos-card-action">VIEW CHEMICAL PURIFICATION MATRIX &rarr;</div>
       </div>
 
@@ -267,8 +296,8 @@
             </div>
             <div class="tile-divider"></div>
             <div class="tile-title-col">
-              <div class="tile-title">MEDICAL & CPR TRIAGE</div>
-              <div class="tile-subline">AHA 110 BPM Metronome • Cardiac Arrest • Trauma</div>
+              <div class="tile-title">MEDICAL & ADULT CPR TRIAGE</div>
+              <div class="tile-subline">Adult CPR 110 BPM Metronome • Cardiac Arrest • Trauma</div>
             </div>
           </div>
         </button>
@@ -482,7 +511,7 @@
         <div class="tier-legend-panel">
           <span style="font-weight: 800; letter-spacing: 0.05em; color: var(--text-primary);">TIER DEFINITIONS:</span>
           <span class="legend-badge tier-s-badge">TIER S</span>
-          <span>Priceless Lifesaver (Immediate critical survival or biological need)</span>
+          <span>Critical Survival (Immediate critical survival or biological need)</span>
           <span class="legend-gap">•</span>
           <span class="legend-badge tier-a-badge">TIER A</span>
           <span>High Utility (Essential field tool, high-yield nutrition or primary skill)</span>
@@ -510,7 +539,7 @@
         <div class="tier-legend-panel">
           <span style="font-weight: 800; letter-spacing: 0.05em; color: var(--text-primary);">TIER DEFINITIONS:</span>
           <span class="legend-badge tier-s-badge">TIER S</span>
-          <span>Priceless Lifesaver (Mandatory gear with zero margin for failure)</span>
+          <span>Critical Survival (Mandatory gear with zero margin for failure)</span>
           <span class="legend-gap">•</span>
           <span class="legend-badge tier-a-badge">TIER A</span>
           <span>High Utility (Primary expedition tools & fallback chains)</span>
@@ -557,6 +586,17 @@
           <div id="telemetryPowerVal" class="lcd-readout-digits">84% / 42Wh</div>
           <div id="telemetryPowerStatus" class="lcd-readout-status">SOLAR READY // RESERVE OK</div>
         </div>
+      </div>
+
+      <!-- Phase 2: Interactive Depletion Warning Bar (Crisis Realist Touchpoint) -->
+      <div id="depletionAlertBox" class="depletion-alert-box" style="display: none; margin: 0 24px 16px 24px; padding: 12px 18px; background: rgba(235,63,18,0.12); border: 1px solid var(--tile-orange-bg); justify-content: space-between; align-items: center; border-radius: 4px;">
+        <div>
+          <span style="font-weight: 800; color: var(--tile-orange-bg); font-family: var(--font-mono); font-size: 11px;">⚠️ CRITICAL DEPLETION WARNING:</span>
+          <span id="depletionAlertMsg" style="font-size: 12px; margin-left: 8px; color: var(--text-primary);">Extended field mission requires immediate resupply contingency.</span>
+        </div>
+        <button id="depletionMitigateBtn" onclick="window.navigateToSolution('compendium', 'item_bleach');" class="keycap-tile key-orange" style="min-height: 32px; padding: 4px 12px; font-size: 10px; font-weight: 700;">
+          EXECUTE MITIGATION &rarr;
+        </button>
       </div>
 
       <!-- Trip Loadout Generator Controls -->
@@ -660,7 +700,7 @@
         <div class="tier-legend-panel">
           <span style="font-weight: 800; letter-spacing: 0.05em; color: var(--text-primary);">TIER DEFINITIONS:</span>
           <span class="legend-badge tier-s-badge">TIER S</span>
-          <span>Priceless Lifesaver (Emergency clinical hydration / toxin adsorption)</span>
+          <span>Critical Emergency (Clinical rehydration / hospital clinical info)</span>
           <span class="legend-gap">•</span>
           <span class="legend-badge tier-a-badge">TIER A</span>
           <span>High Utility (Calorie-dense rations & long-term storage biscuits)</span>
@@ -689,7 +729,7 @@
             <div class="lifesavers-title">
               <span>⚠️ PRIORITY EMERGENCY FORMULATIONS</span>
             </div>
-            <span style="font-size: 11px; color: #aaa;">Oral Rehydration Salts (ORS) • Activated Charcoal Slurry • Hardtack</span>
+            <span style="font-size: 11px; color: #aaa;">Oral Rehydration Salts (ORS) • Activated Charcoal (Clinical Info) • Hardtack</span>
           </div>
           <div id="recipesGrid" class="modern-grid" style="padding: 20px;">
             <!-- Dynamic Recipe Cards -->
@@ -707,7 +747,7 @@
         <div class="tier-legend-panel">
           <span style="font-weight: 800; letter-spacing: 0.05em; color: var(--text-primary);">TIER DEFINITIONS:</span>
           <span class="legend-badge tier-s-badge">TIER S</span>
-          <span>Priceless Lifesaver (Core bio-sand filtration, water procurement)</span>
+          <span>Critical Survival (Core bio-sand filtration, water procurement)</span>
           <span class="legend-gap">•</span>
           <span class="legend-badge tier-a-badge">TIER A</span>
           <span>High Utility (Tactical Dakota fire hole, sun direction azimuth)</span>

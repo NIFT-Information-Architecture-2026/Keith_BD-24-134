@@ -27,28 +27,30 @@ A 100% offline standalone survival reference and crisis field kit designed for e
 
 ### 2. 🍲 Rations & Survival Kitchen (Recipes)
 * **Pantry Matcher**: Check off scavenged ingredients to see ready-to-make recipes.
-* **🚨 Priority Lifesavers**:
-  * **WHO/UNICEF ORS Formula**: 6 tsp sugar + 1/2 tsp salt in 1L water for severe dehydration/cholera.
-  * **Activated Charcoal Slurry**: Emergency universal poison and toxin binder.
-  * **Pine Needle Infusion**: High-dose Vitamin C scurvy remedy.
-  * **Willow Bark Decoction**: Natural salicin (aspirin) for fevers and pain.
+* **🚨 Priority Emergency Formulations**:
+  * **Oral Rehydration Salts (ORS)**: 6 tsp sugar + 1/2 tsp salt in 1L clean water for rapid electrolyte and fluid rehydration.
+  * **Activated Charcoal**: Clinical hospital reference information only (under poison control/physician guidance; no homemade slurries).
+  * **Pine Needle Infusion**: Vitamin C infusion off rolling boil.
+  * **Willow Bark Decoction**: Natural salicin (aspirin) for fevers and pain (contraindicated under age 19 for Reye's syndrome; dose as directed by doctor).
   * **Hardtack & Pemmican**: Multi-year shelf-stable emergency high-calorie rations.
 
 ### 3. 🌿 Scavenger’s Compendium & Barter Value Index
-* 50+ survival items (wild edibles, medicinal herbs, industrial salvage, and toxic hazards).
-* **Barter Value Badges**: Tier S (Priceless/Antibiotics/Salt), Tier A (High/Batteries/Alcohol), Tier B (Utility/Tools), Tier C (Scrap).
-* **Universal Edibility Test (UET)**: The 8-stage military test checklist for unknown flora.
+* Curated multi-biome survival database (wild edibles, medicinal herbs, industrial salvage, and toxic hazards).
+* **Barter Value Badges**: Tier S (Critical Survival/Antibiotics/Salt/Bleach), Tier A (High Utility/Batteries), Tier B (Resource/Sustenance), Danger (Lethal Hazards).
+* **Foraging Safety Principle**: Replaces unsafe multi-stage tests with the imperative rule: *"Don't eat anything you can't identify; ask a local expert or use a field guide."*
 
 ### 4. ⚠️ "In Case Of..." Crisis Playbooks & Tools
 * Immediate action playbooks: First 60s &rarr; Next 1h &rarr; 24h.
-* **🫀 CPR Audio Metronome**: Real-time 110 BPM visual/audio metronome for chest compressions (Web Audio API).
+* **🫀 Adult CPR Audio Metronome**: Real-time 110 BPM visual/audio metronome for adult chest compressions (2 to 2.4 in depth; child/infant technique differs).
+* **🩸 Severe Arterial Trauma & Tourniquets**: Direct pressure and wound packing protocol preceding windlass tourniquet placement.
 * **☢️ 7-10 Nuclear Radiation Decay Calculator**: Calculates safe shelter exit time based on physical radiation half-life ($7\times$ time = $10\times$ less dose).
-* Guides for Thunderstorms (30/30 rule), Wildfire burnovers, Flash Floods, Blizzards, and Snakebites.
+* **🐍 Venomous Snakebite Protocols**: Big Four identification, immobilization at heart level, and Western Ghats *Hypnale hypnale* (Hump-nosed Pit Viper) polyvalent antivenom ineffectiveness warning.
+* Guides for Thunderstorms (30/30 rule), Wildfire burnovers, Flash Floods, Blizzards, and Hypothermia.
 
 ### 5. 🛠️ Field Manual (With Standalone SVG Diagrams)
 * **✋ Four-Fingers Sunset Rule**: Measuring daylight to the horizon (1 finger = ~15 mins).
 * **💧 Hydration Urine Scale**: Color matrix for evaluating dehydration severity.
-* **🧪 DIY Sand & Charcoal Bio-Filter Column**: Clean water filtration instructions.
+* **🧪 DIY Sand & Charcoal Bio-Filter Column**: Mechanical sediment and odor water filtration column.
 * **🔥 Dakota Fire Hole**: Smokeless tactical firepit design.
 * **🪢 4 Essential Knots**: Bowline, Taut-line hitch, Square knot, Clove hitch.
 
@@ -62,6 +64,12 @@ A 100% offline standalone survival reference and crisis field kit designed for e
 * Primary, secondary, and tertiary family rally point coordinates.
 * Radio check-in schedule and bug-out bag weight calculator.
 * **Backup & Restore**: 1-click JSON export and import.
+
+### 8. 🛡️ Empathy & Behavioral Stress Systems
+* **🔴 Tactical Night-Vision Red Mode**: Low-glare deep crimson palette (`#060101` / `#ff3b3b`) preserving retinal rhodopsin inside tents and nocturnal ops.
+* **🔋 OLED Ultra-Reserve Battery Mode**: Freezes all CSS animations and GPU rendering loops to preserve dying batteries (< 5%).
+* **🎒 User Archetype Switcher**: Tailored view modes for **The Adventurer** (trail & pack planning) vs. **The Crisis Realist** (triage & depletion alerts).
+* **⚠️ Dynamic Resource Depletion Engine**: Computes fluid/caloric consumption ($N_{\text{party}} \times T_{\text{days}} \times M_{\text{biome}}$) and alerts users before critical dehydration thresholds.
 
 ---
 

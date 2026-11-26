@@ -30,23 +30,23 @@ window.CAMAEL_RECIPES = [
   },
   {
     id: "rec_charcoal_slurry",
-    name: "Activated Charcoal Ingestion Slurry",
+    name: "Activated Charcoal (Medical Information Only)",
     category: "lifesavers",
     tier: "S",
-    prepTime: "5 minutes",
+    prepTime: "Clinical Use Only",
     calories: "0 kcal",
     smokeRisk: "None",
-    shelfLife: "Indefinite (dry powder)",
-    ingredients: ["Clean Water", "Charcoal"],
-    summary: "Gastrointestinal toxin adsorbent for specific ingested poisons. Step 1 is always immediate emergency medical transport. Use only pharmacy-grade activated charcoal.",
+    shelfLife: "Indefinite (pharmacy seal)",
+    ingredients: ["Clean Water", "Medical / Doctor Direction"],
+    summary: "Medical information only. Gastrointestinal toxin adsorbent for specific ingested poisons administered in a clinical healthcare facility under poison control or doctor direction. Not for home preparation.",
     instructions: [
-      "1. Step 1: Call emergency services / poison control immediately (112 in India) and arrange transport to a hospital.",
-      "2. CONTRAINDICATIONS: Never administer to a drowsy, lethargic, or unconscious person, anyone without an intact gag reflex, or following ingestion of caustic substances (acids/lye) or petroleum hydrocarbons (risk of severe chemical pneumonitis).",
-      "3. Note: Never use crude campfire charcoal or barbecue briquettes; use ONLY pharmacy-grade activated charcoal powder.",
-      "4. Mix 25g to 50g of pharmacy-grade activated charcoal into 250ml of clean drinking water to form an oral suspension.",
-      "5. Note: Ineffective against alcohol, cyanide, lithium, iron, or mineral acids. Death Cap (Amanita phalloides) requires hospital ICU supportive care, as toxins rapidly bind hepatocyte targets."
+      "1. Call 112 / poison control and get to a hospital immediately.",
+      "2. Dose as directed by poison control / a doctor. Never guess or self-administer dosages in the field.",
+      "3. NEVER USE CAMPFIRE CHARCOAL or barbecue briquettes: crude charcoal contains toxic ash, carcinogenic hydrocarbons, and harmful volatile organics, and lacks pharmaceutical surface adsorption area.",
+      "4. STRICT CONTRAINDICATIONS: Activated charcoal is contraindicated in drowsy or unconscious patients (severe aspiration risk), and following ingestion of corrosive acids, caustic alkalis, or petroleum hydrocarbons.",
+      "5. CLINICAL LIMITATIONS: Ineffective against alcohol, lithium, iron, cyanide, or mineral acids. Death Cap (Amanita phalloides) requires hospital ICU supportive therapy."
     ],
-    survivalNotes: "Administer only under medical advice or while awaiting urgent hospital transport. Causes black stools.",
+    survivalNotes: "Clinical hospital information entry only. Dose as directed by poison control / a doctor. Causes black stools.",
     reviewStatus: "Not yet reviewed",
     sourceStatus: "Source: unverified"
   },
@@ -66,9 +66,9 @@ window.CAMAEL_RECIPES = [
       "2. Strip the outer bark of young willow twigs (Salix species) to expose the green inner cambium layer.",
       "3. Scrape 1 to 2 teaspoons of the inner cambium bark.",
       "4. Simmer gently in 300ml of clean water for 15 minutes.",
-      "5. Cool and strain out woody fibers before consumption. Limit intake to 1 cup every 6 hours."
+      "5. Cool and strain out woody fibers before consumption. Dose as directed by poison control / a doctor."
     ],
-    survivalNotes: "Onset is delayed (20-30 minutes) as salicin requires metabolic conversion in the liver. Discontinue immediately if stomach irritation occurs.",
+    survivalNotes: "Onset is delayed (20-30 minutes) as salicin requires metabolic conversion in the liver. Dose as directed by poison control / a doctor. Discontinue immediately if stomach irritation occurs.",
     reviewStatus: "Not yet reviewed",
     sourceStatus: "Source: unverified"
   },

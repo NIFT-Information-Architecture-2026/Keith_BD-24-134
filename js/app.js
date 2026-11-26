@@ -56,6 +56,16 @@ const CAMAEL = {
     this.initLogbook();
     this.initModal();
 
+    // Restore Phase 2: Empathy Model Settings (Night-Vision & Behavioral Persona)
+    if (localStorage.getItem("codex_camael_night_vision") === "true") {
+      document.body.classList.add("night-vision-mode");
+      this.updateNightVisionState(true);
+    }
+    const savedPersona = localStorage.getItem("codex_camael_persona");
+    if (savedPersona) {
+      this.setPersona(savedPersona);
+    }
+
     console.log("CODEX CAMAEL: Retro-Futuristic Survival Control Panel Initialized. All systems 100% offline.");
   },
 
@@ -199,6 +209,72 @@ const CAMAEL = {
     });
   },
 
+  // Phase 2: Tactical Night-Vision Red Light System
+  toggleNightVision() {
+    const isNight = document.body.classList.toggle("night-vision-mode");
+    localStorage.setItem("codex_camael_night_vision", isNight ? "true" : "false");
+    this.updateNightVisionState(isNight);
+  },
+
+  updateNightVisionState(isActive) {
+    const ids = ["drawerNightVisionBtn", "sosNightVisionBtn"];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = isActive ? "🔴 NIGHT VISION: ACTIVE" : "🔴 NIGHT VISION: OFF";
+        el.classList.toggle("active", isActive);
+      }
+    });
+  },
+
+  // Phase 2: User Archetypes & Behavioral Focus Models
+  setPersona(personaKey) {
+    localStorage.setItem("codex_camael_persona", personaKey);
+    const buttons = {
+      all: document.getElementById("personaAllBtn"),
+      adventurer: document.getElementById("personaAdventurerBtn"),
+      realist: document.getElementById("personaRealistBtn")
+    };
+    Object.keys(buttons).forEach(k => {
+      if (buttons[k]) buttons[k].classList.toggle("active", k === personaKey);
+    });
+
+    this.applyPersonaFocus(personaKey);
+  },
+
+  applyPersonaFocus(personaKey) {
+    const homeTiles = document.querySelectorAll(".keycap-tile.tile-hero-half, .keycap-tile.tile-standard");
+    homeTiles.forEach(tile => {
+      tile.style.opacity = "1";
+    });
+
+    if (personaKey === "adventurer") {
+      // Adventurer prioritizes Flora/Compendium, Water, Sun Direction, Manual, Gear Planner
+      const prioritize = ["Plants & Taxonomy", "Water & Purification", "Sun & Direction", "Field Manual", "Gear & Loadouts", "സസ്യങ്ങളും", "ജലശുദ്ധീകരണം", "മొక్కలు", "నీటి శుద్ధి"];
+      homeTiles.forEach(tile => {
+        const text = tile.textContent || "";
+        const isPriority = prioritize.some(p => text.includes(p));
+        if (!isPriority && !tile.id.includes("homeSosTile")) {
+          tile.style.opacity = "0.7";
+        } else {
+          tile.style.opacity = "1";
+        }
+      });
+    } else if (personaKey === "realist") {
+      // Crisis Realist prioritizes 60s Crisis Playbooks, Medical CPR, Comms Morse, ICE Vault
+      const prioritize = ["CRISIS", "MEDICAL", "Comms", "Vault", "SOS", "ക്രൈസിസ്", "മെഡിക്കൽ", "സംక్షోభ", "వైద్య"];
+      homeTiles.forEach(tile => {
+        const text = tile.textContent || "";
+        const isPriority = prioritize.some(p => text.includes(p));
+        if (!isPriority && !tile.id.includes("homeSosTile")) {
+          tile.style.opacity = "0.65";
+        } else {
+          tile.style.opacity = "1";
+        }
+      });
+    }
+  },
+
   // ------------------------------------------------------------------------
   // Top LCD Status Strip (Offline, Location, Battery, Region, Language)
   // ------------------------------------------------------------------------
@@ -319,8 +395,8 @@ const CAMAEL = {
         sosTitle: "SOS // CRITICAL EMERGENCY SHEET",
         sosSub: "Instant 1-Click Access • Cardiac CPR • Arterial Trauma • Poison • Nuclear 7-10",
         sosTag: "6 CARDS",
-        medTitle: "MEDICAL & CPR TRIAGE",
-        medSub: "AHA 110 BPM Metronome • Cardiac Arrest • Trauma",
+        medTitle: "MEDICAL & ADULT CPR",
+        medSub: "Adult CPR 110 BPM Metronome • Cardiac Arrest • Trauma",
         medTag: "110 BPM",
         crisisTitle: "CRISIS PLAYBOOKS (60s)",
         crisisSub: "7-10 Nuclear Decay • Severe Storms • Snakebite",
@@ -350,8 +426,8 @@ const CAMAEL = {
         sosTitle: "SOS // അടിയന്തര സഹായ ഷീറ്റ്",
         sosSub: "ഉടൻ പ്രവേശനം • കാർഡിയാക് CPR • ആർട്ടീരിയൽ ട്രോമ • വിഷബാധ • ന്യൂക്ലിയർ 7-10",
         sosTag: "6 കാർഡുകൾ",
-        medTitle: "മെഡിക്കൽ & CPR ട്രയേജ്",
-        medSub: "AHA 110 BPM മെട്രോണോം • ഹൃദയാഘാതം • ട്രോമ",
+        medTitle: "മെഡിക്കൽ & മുതിർന്നവരുടെ CPR",
+        medSub: "Adult CPR 110 BPM മെട്രോണോം • ഹൃദയാഘാതം • ട്രോമ",
         medTag: "110 BPM",
         crisisTitle: "ക്രൈസിസ് പ്ലേബുക്ക് (60s)",
         crisisSub: "7-10 ന്യൂക്ലിയർ ശോഷണം • ചുഴലിക്കാറ്റ് • പാമ്പുകടി",
@@ -381,8 +457,8 @@ const CAMAEL = {
         sosTitle: "SOS // అత్యవసర సహాయ షీట్",
         sosSub: "తక్షణ యాక్సెస్ • కార్డియాక్ CPR • తీవ్ర రక్తస్రావం • విషప్రభావం • న్యూక్లియర్ 7-10",
         sosTag: "6 కార్డులు",
-        medTitle: "వైద్య & CPR ట్రయాజ్",
-        medSub: "AHA 110 BPM మెట్రోనొమ్ • గుండెపోటు • అత్యవసర గాయాలు",
+        medTitle: "వైద్య & అడల్ట్ CPR",
+        medSub: "Adult CPR 110 BPM మెట్రోనొమ్ • గుండెపోటు • అత్యవసర గాయాలు",
         medTag: "110 BPM",
         crisisTitle: "సంక్షోభ ప్లేబుక్స్ (60s)",
         crisisSub: "7-10 రేడియేషన్ క్షయం • భయంకర తుఫానులు • పాముకాటు",
@@ -926,11 +1002,11 @@ const CAMAEL = {
         break;
 
       case "recipes":
-        if (titleEl) titleEl.textContent = "Survival Kitchen & Lifesavers";
+        if (titleEl) titleEl.textContent = "Survival Kitchen & Emergency Formulations";
         if (countEl) countEl.textContent = `${window.CAMAEL_RECIPES.length} Recipes`;
         this.createFilterPills([
           { label: "All Recipes", key: "all", active: true },
-          { label: "🚨 Lifesavers Only", key: "lifesavers" },
+          { label: "🚨 Critical Priority", key: "lifesavers" },
           { label: "Camp Cooking", key: "cooking" }
         ], (key) => this.filterRecipes(key));
         break;
@@ -1531,6 +1607,30 @@ const CAMAEL = {
     if (medVal) medVal.textContent = `${medUnits < 10 ? '0' + medUnits : medUnits} UNITS`;
     if (foodVal) foodVal.textContent = `${foodDays} DAYS`;
 
+    // Phase 2: Dynamic Depletion Alerts & Direct Mitigation (Crisis Realist Model)
+    const alertBox = document.getElementById("depletionAlertBox");
+    const alertMsg = document.getElementById("depletionAlertMsg");
+    const alertBtn = document.getElementById("depletionMitigateBtn");
+
+    if (days >= 3 || parseFloat(totalWater) >= 20) {
+      if (alertBox) alertBox.style.display = "flex";
+      if (alertMsg) alertMsg.textContent = `Extended ${days}-day mission with ${party} persons requires ${totalWater}L water. Pack chemical purification or bio-sand filter!`;
+      if (alertBtn) {
+        alertBtn.textContent = "VIEW WATER PURIFICATION PROTOCOL →";
+        alertBtn.onclick = () => window.navigateToSolution('compendium', 'item_bleach');
+      }
+      if (waterStatus) {
+        waterStatus.textContent = "DEPLETION ALERT // ACTIVE RESUPPLY";
+        waterStatus.className = "lcd-readout-status alert";
+      }
+    } else {
+      if (alertBox) alertBox.style.display = "none";
+      if (waterStatus) {
+        waterStatus.textContent = "STABLE // TARGET ADEQUATE";
+        waterStatus.className = "lcd-readout-status";
+      }
+    }
+
     if (window.CAMAEL_GEAR) {
       const filtered = window.CAMAEL_GEAR.filter(g => !g.biomes || g.biomes.some(b => b.includes(biome.split(' ')[0])));
       this.renderGearPlanner(filtered);
@@ -1569,7 +1669,7 @@ const CAMAEL = {
 
       card.innerHTML = `
         <div class="card-top">
-          <div class="card-lead-symbol" style="font-size: 20px;">${isLifesaver ? "🚨 LIFESAVER" : "🍲 RATION"}</div>
+          <div class="card-lead-symbol" style="font-size: 20px;">${isLifesaver ? "🚨 CRITICAL" : "🍲 RATION"}</div>
           <span class="entry-tag-pill ${isLifesaver ? 'tag-tier-s' : 'tag-tier'}">${recipe.prepTime}</span>
         </div>
         <div>
